@@ -6,7 +6,7 @@ spring:
   application:
     name: rainbow-academic-management
   datasource:
-    url: jdbc:mariadb://192.168.0.39/first_project
+    url: jdbc:mariadb://192.168.0.39/final_project_not_user
     username: green3
     password: figma502
     driver-class-name: org.mariadb.jdbc.Driver
