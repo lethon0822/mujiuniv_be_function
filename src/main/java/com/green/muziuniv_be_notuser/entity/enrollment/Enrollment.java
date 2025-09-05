@@ -20,7 +20,7 @@ import jakarta.persistence.*;
 public class Enrollment extends CreatedAt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int enrollmentId;
+    private Long  enrollmentId;
 
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
@@ -35,8 +35,8 @@ public class Enrollment extends CreatedAt {
     @Column(name = "ev_score")
     private int evScore;
 
-    @Column(nullable = false, columnDefinition = "varchar(50) default '수강중'")
-    private String status;
+    @Column(nullable = false)
+    private String status = "수강중";
 
 
 }
