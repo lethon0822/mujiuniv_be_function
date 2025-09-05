@@ -22,7 +22,7 @@ import java.time.Year;
 public class Semester {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long semesterId;
+    private int semesterId;
 
     @Column(nullable = false, columnDefinition = "YEAR")
     private Year year;
