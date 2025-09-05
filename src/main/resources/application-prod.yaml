@@ -1,0 +1,16 @@
+constants:
+  file:
+    directory: /home/download
+
+spring:
+  application:
+    name: rainbow-academic-management
+  datasource:
+    url: jdbc:mariadb://192.168.0.39/first_project
+    username: green3
+    password: figma502
+    driver-class-name: org.mariadb.jdbc.Driver
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+  mapper-locations: mappers/**/*.xml
