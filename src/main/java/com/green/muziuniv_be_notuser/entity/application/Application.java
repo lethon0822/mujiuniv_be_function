@@ -21,7 +21,7 @@ public class Application extends CreatedAt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "app_id")
-    private Long appId;
+    private int appId;
 
     @Embedded
     private UserId userId;
