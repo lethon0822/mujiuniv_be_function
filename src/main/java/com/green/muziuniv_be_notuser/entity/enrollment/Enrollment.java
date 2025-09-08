@@ -20,7 +20,7 @@ import jakarta.persistence.*;
 public class Enrollment extends CreatedAt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long  enrollmentId;
+    private int enrollmentId;
 
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
