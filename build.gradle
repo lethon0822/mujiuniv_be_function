@@ -24,18 +24,29 @@ repositories {
     mavenCentral()
 }
 
+ext {
+    set('springCloudVersion', "2025.0.0")
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
 dependencies {
 
     // https://mvnrepository.com/artifact/io.hypersistence/hypersistence-utils-hibernate-63
     //implementation 'io.hypersistence:hypersistence-utils-hibernate-63:3.10.3' //TSID
 
 //    // https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-openfeign
-    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:4.3.0'
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
     // https://mvnrepository.com/artifact/org.bgee.log4jdbc-log4j2/log4jdbc-log4j2-jdbc4.1
     implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
 
-//    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+
 //
 //    // https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-kubernetes-client
 //    implementation 'org.springframework.cloud:spring-cloud-starter-kubernetes-client'
