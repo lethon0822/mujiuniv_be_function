@@ -1,6 +1,7 @@
 package com.green.muziuniv_be_notuser.entity.notice;
 
 
+
 import com.green.muziuniv_be_notuser.entity.UpdatedAt;
 import jakarta.persistence.*;
 import lombok.*;
@@ -21,4 +22,5 @@ public class Notice extends UpdatedAt {
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String noticeContent;
+
 }
