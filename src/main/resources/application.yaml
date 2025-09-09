@@ -2,6 +2,9 @@ constants:
   file:
     directory: /home/download   # ??? ??
 
+  open-feign:
+    function: rainbow-academic-function
+
 spring:
   application:
     name: rainbow-academic-function
