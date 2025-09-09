@@ -31,6 +31,9 @@ public class Course extends CreatedAt {
     @Column(nullable = false, length = 5)
     private String type;
 
+    @Column(nullable = false, length = 50)
+    private String time;
+
     @Column(nullable = false, length = 20)
     private Integer remStd = 0;
 

@@ -1,4 +1,24 @@
 package com.green.muziuniv_be_notuser.entity.notice;
 
-public class Notice {
+
+import com.green.muziuniv_be_notuser.entity.UpdatedAt;
+import jakarta.persistence.*;
+import lombok.*;
+
+@Entity
+@Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode
+public class Notice extends UpdatedAt {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer noticeId;
+
+    @Column(nullable = false, length = 100)
+    private String noticeTitle;
+
+    @Column(columnDefinition = "TEXT", nullable = false)
+    private String noticeContent;
 }
