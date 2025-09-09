@@ -30,7 +30,7 @@ dependencies {
     //implementation 'io.hypersistence:hypersistence-utils-hibernate-63:3.10.3' //TSID
 
 //    // https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-openfeign
-//    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:4.3.0'
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:4.3.0'
 
     // https://mvnrepository.com/artifact/org.bgee.log4jdbc-log4j2/log4jdbc-log4j2-jdbc4.1
     implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
