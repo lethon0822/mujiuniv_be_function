@@ -3,7 +3,7 @@ constants:
     directory: /home/download   # ??? ??
 
   open-feign:
-    function: rainbow-academic-user #유저 서버 이름
+    user: rainbow-academic-user #유저 서버 이름
 
 spring:
   application:
