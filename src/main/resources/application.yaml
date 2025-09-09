@@ -7,7 +7,7 @@ constants:
 
 spring:
   application:
-    name: rainbow-academic-function
+    name: mujiuniv-be-not-user
 
   datasource:
     # log4jdbc ?? ???? DriverSpy + jdbc:log4jdbc: ?? ??
@@ -74,6 +74,15 @@ server:
         same-site: lax   # Lax / Strict / None
         path: /          # ??? /
         # domain: localhost  # ??? ?? ??? ?? ??? ? ??
+
+eureka:
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://localhost:8888/eureka
+  instance:
+      instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
 
 logging:
   level:
