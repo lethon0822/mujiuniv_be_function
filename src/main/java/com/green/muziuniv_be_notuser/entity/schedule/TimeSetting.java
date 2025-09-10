@@ -16,9 +16,9 @@ import java.time.LocalDateTime;
 public class TimeSetting {
 
     @Column(nullable = false)
-    private LocalDateTime startDate;
+    private LocalDateTime startDatetime;
 
     @Column(nullable = false)
-    private LocalDateTime endDate;
+    private LocalDateTime endDatetime;
 
 }

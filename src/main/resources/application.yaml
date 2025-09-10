@@ -7,7 +7,7 @@ constants:
 
 spring:
   application:
-    name: rainbow-academic-function
+    name: RAINBOW-ACADEMIC-USER
 
   datasource:
     # log4jdbc ?? ???? DriverSpy + jdbc:log4jdbc: ?? ??
