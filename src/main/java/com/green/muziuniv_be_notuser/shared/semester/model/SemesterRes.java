@@ -9,6 +9,5 @@ import lombok.*;
 @Builder
 public class SemesterRes {
     private Integer semesterId;
-    private Integer year;
-    private Integer semester;
+
 }

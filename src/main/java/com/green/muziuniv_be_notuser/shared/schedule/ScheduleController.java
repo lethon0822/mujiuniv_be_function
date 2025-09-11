@@ -5,7 +5,6 @@ import com.green.muziuniv_be_notuser.shared.schedule.model.ScheduleRes;
 import com.green.muziuniv_be_notuser.shared.schedule.model.ScheduleUpdateReq;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 
