@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.List;
 
 @Service
@@ -33,29 +34,34 @@ public class ScheduleService {
         Semester semester = semesterRepository.findById(req.getSemesterId())
                 .orElseThrow(() -> new IllegalArgumentException("학기를 찾을 수 없습니다."));
 
-        Schedule entity = Schedule.builder()
-                .semester(semester)
-                .scheduleType(req.getScheduleType())
-                .timeSetting(new TimeSetting(req.getStartDatetime(), req.getEndDatetime()))
-                .description(req.getDescription())
-                .build();
-
+        // 맵퍼 일원화
+        Schedule entity = mapper.toEntity(
+                semester, req.getScheduleType(),
+                req.getStartDatetime(), req.getEndDatetime(),
+                req.getDescription()
+        );
         return mapper.toRes(scheduleRepository.save(entity));
+    }
+
+    @Transactional(readOnly = true)
+    public List<ScheduleRes> listByMonth(YearMonth ym, Integer semesterId) {
+        LocalDateTime monthStart = ym.atDay(1).atStartOfDay();
+        LocalDateTime monthEndExclusive = ym.plusMonths(1).atDay(1).atStartOfDay();
+
+        List<Schedule> rows = (semesterId == null)
+                ? scheduleRepository
+                .findByTimeSetting_StartDatetimeLessThanAndTimeSetting_EndDatetimeGreaterThanOrderByTimeSetting_StartDatetimeAsc(
+                        monthEndExclusive, monthStart)
+                : scheduleRepository
+                .findBySemester_SemesterIdAndTimeSetting_StartDatetimeLessThanAndTimeSetting_EndDatetimeGreaterThanOrderByTimeSetting_StartDatetimeAsc(
+                        semesterId, monthEndExclusive, monthStart);
+
+        return rows.stream().map(mapper::toRes).toList();
     }
 
     @Transactional(readOnly = true)
     public List<ScheduleRes> listBySemester(Integer semesterId) {
         return scheduleRepository.findBySemester_SemesterId(semesterId)
-                .stream().map(mapper::toRes).toList();
-    }
-
-    @Transactional(readOnly = true)
-    public List<ScheduleRes> listByMonth(LocalDateTime monthStartInclusive) {
-        LocalDateTime start = monthStartInclusive.withDayOfMonth(1).toLocalDate().atStartOfDay();
-        LocalDateTime end = monthStartInclusive.withDayOfMonth(monthStartInclusive.toLocalDate().lengthOfMonth())
-                .toLocalDate().atTime(23,59,59);
-        return scheduleRepository
-                .findByTimeSetting_StartDatetimeLessThanEqualAndTimeSetting_EndDatetimeGreaterThanEqual(end, start)
                 .stream().map(mapper::toRes).toList();
     }
 
@@ -69,7 +75,6 @@ public class ScheduleService {
                 new TimeSetting(req.getStartDatetime(), req.getEndDatetime()),
                 req.getDescription()
         );
-        // 변경감지로 flush 시 UPDATE
         return mapper.toRes(entity);
     }
 

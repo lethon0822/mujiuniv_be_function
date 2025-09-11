@@ -11,12 +11,14 @@ import java.util.List;
 @Repository
 public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
 
-    // ScheduleService.listBySemester()에서 사용
     List<Schedule> findBySemester_SemesterId(Integer semesterId);
 
-    // ScheduleService.listByMonth()에서 사용 (해당 기간과 겹치는 일정)
-    List<Schedule> findByTimeSetting_StartDatetimeLessThanEqualAndTimeSetting_EndDatetimeGreaterThanEqual(
-            LocalDateTime end, LocalDateTime start
+    // start < monthEndExclusive AND end >= monthStart
+    List<Schedule> findByTimeSetting_StartDatetimeLessThanAndTimeSetting_EndDatetimeGreaterThanOrderByTimeSetting_StartDatetimeAsc(
+            LocalDateTime monthEndExclusive, LocalDateTime monthStart
     );
 
+    List<Schedule> findBySemester_SemesterIdAndTimeSetting_StartDatetimeLessThanAndTimeSetting_EndDatetimeGreaterThanOrderByTimeSetting_StartDatetimeAsc(
+            Integer semesterId, LocalDateTime monthEndExclusive, LocalDateTime monthStart
+    );
 }
