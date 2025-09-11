@@ -17,8 +17,6 @@ public class SemesterMapper {
     public SemesterRes toRes(Semester s) {
         return SemesterRes.builder()
                 .semesterId(s.getSemesterId())
-                .year(s.getYear())
-                .semester(s.getSemester())
                 .build();
     }
 }
