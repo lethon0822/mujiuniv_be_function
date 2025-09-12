@@ -35,11 +35,6 @@ public class SemesterController {
                             @RequestParam Integer semester) {
         return semesterService.getByYearAndSemester(year, semester);
     }
-    @GetMapping("/test")
-    public String findkd(@AuthenticationPrincipal SignedUser signedUser){
-        log.info("signedUser:{}", signedUser);
-        return null;
-    }
 
     // ID로 단건 조회
     @GetMapping("/{semesterId}")
