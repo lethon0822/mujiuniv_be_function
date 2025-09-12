@@ -2,14 +2,13 @@ package com.green.muziuniv_be_notuser.entity.enrollment;
 
 import com.green.muziuniv_be_notuser.entity.course.Course;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor
-@Entity
+@EqualsAndHashCode
 @Table(
         name = "enrollment",
         uniqueConstraints = {
@@ -22,7 +21,7 @@ public class Enrollment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int enrollmentId;
+    private Long enrollmentId;
 
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
@@ -40,4 +39,11 @@ public class Enrollment {
 
     @Column(nullable = false)
     private String status = "수강중";
+
+    public Enrollment(Long userId, Long courseId){
+        this.userId = userId;
+        this.course = new Course(courseId);
+        this.status = "수강중";
+    }
+
 }

@@ -19,6 +19,7 @@ public class WebSecurityConfiguration {
                         .requestMatchers("/api/course/**").permitAll()
                         .requestMatchers(HttpMethod.PUT,"/api/professor/course/check/**").permitAll()
                         .requestMatchers("/api/semester/**").permitAll()
+                        .requestMatchers("/api/department").permitAll()
 
                         .anyRequest().authenticated() // 그 외 요청은 인증 필요
                 );

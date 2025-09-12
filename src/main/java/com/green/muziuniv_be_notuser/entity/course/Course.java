@@ -15,7 +15,7 @@ public class Course {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int courseId;
+    private Long courseId;
 
     @Column(nullable = false)
     private UserId userId;
@@ -62,6 +62,10 @@ public class Course {
 
     @Column(unique = true, nullable = false, length = 20)
     private String courseCode;
+
+    public Course(Long courseId){
+        this.courseId = courseId;
+    }
 
 
 
