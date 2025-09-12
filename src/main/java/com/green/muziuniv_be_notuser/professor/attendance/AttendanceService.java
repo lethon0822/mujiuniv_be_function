@@ -1,9 +1,11 @@
-package com.green.muziuniv_be_notuser.entity.attendance;
+package com.green.muziuniv_be_notuser.professor.attendance;
 
-import com.green.muziuniv_be_notuser.entity.attendance.model.AttendanceReq;
-import com.green.muziuniv_be_notuser.entity.attendance.model.AttendanceRes;
+import com.green.muziuniv_be_notuser.entity.attendance.Attendance;
+import com.green.muziuniv_be_notuser.entity.attendance.AttendanceIds;
+import com.green.muziuniv_be_notuser.professor.attendance.model.AttendanceReq;
+import com.green.muziuniv_be_notuser.professor.attendance.model.AttendanceRes;
 import com.green.muziuniv_be_notuser.entity.enrollment.Enrollment;
-import com.green.muziuniv_be_notuser.entity.enrollment.EnrollmentRepository;
+import com.green.muziuniv_be_notuser.student.enrollment.EnrollmentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

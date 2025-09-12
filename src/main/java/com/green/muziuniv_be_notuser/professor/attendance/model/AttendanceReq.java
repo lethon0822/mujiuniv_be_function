@@ -1,4 +1,4 @@
-package com.green.muziuniv_be_notuser.entity.attendance.model;
+package com.green.muziuniv_be_notuser.professor.attendance.model;
 
 import lombok.Getter;
 import lombok.Setter;
