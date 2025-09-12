@@ -69,4 +69,13 @@ public class ApplicationService {
             default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "type은 LEAVE/RETURN 이어야 합니다.");
         };
     }
+    @Transactional
+    public void cancel(Long userId, Long appId) {
+        // 본인 + '처리중' 인 건만 '취소'로 변경
+        int updated = applicationMapper.cancelIfPending(appId, userId);
+        if (updated == 0) {
+            // 상태가 처리중이 아니거나, 본인 소유가 아니거나, 존재하지 않는 경우
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "취소할 수 없는 상태이거나 권한이 없습니다.");
+        }
+    }
 }

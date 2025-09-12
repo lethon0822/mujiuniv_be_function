@@ -26,4 +26,5 @@ public interface ApplicationMapper {
 
     List<ApplicationListRow> selectMyApplications(@Param("userId") Long userId,
                                                   @Param("status") String status);
+    int cancelIfPending(@Param("appId") Long appId, @Param("userId") Long userId);
 }

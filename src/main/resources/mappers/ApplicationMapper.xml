@@ -50,7 +50,7 @@
         a.app_id          AS appId,
         a.status,
         a.reason,
-        a.created_at      AS submittedAt,   -- ★ here
+        a.created_at      AS submittedAt,
         sc.schedule_type  AS scheduleType,
         sc.start_datetime AS scheduleStart,
         sc.end_datetime   AS scheduleEnd,
@@ -71,5 +71,13 @@
         </if>
         ORDER BY a.created_at DESC
     </select>
+    <update id="cancelIfPending">
+        UPDATE application
+        SET status = '취소'
+        <!-- , canceled_at = NOW()  - 컬럼 있으면 주석 해제 -->
+        WHERE app_id = #{appId}
+        AND user_id = #{userId}
+        AND status = '처리중'
+    </update>
 
 </mapper>
