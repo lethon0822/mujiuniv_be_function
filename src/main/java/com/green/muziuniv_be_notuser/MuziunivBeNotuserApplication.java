@@ -7,10 +7,7 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @EnableFeignClients
-@SpringBootApplication(exclude = {
-        SecurityAutoConfiguration.class,
-        ManagementWebSecurityAutoConfiguration.class // 추가!
-})
+@SpringBootApplication
 public class MuziunivBeNotuserApplication {
 
     public static void main(String[] args) {

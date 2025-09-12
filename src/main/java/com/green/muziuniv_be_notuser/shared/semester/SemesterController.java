@@ -1,16 +1,20 @@
 package com.green.muziuniv_be_notuser.shared.semester;
 
+import com.green.muziuniv_be_notuser.configuration.model.SignedUser;
 import com.green.muziuniv_be_notuser.shared.semester.model.SemesterCreateReq;
 import com.green.muziuniv_be_notuser.shared.semester.model.SemesterRes;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/semester")
+@RequestMapping("/semester")
 @RequiredArgsConstructor
+@Slf4j
 public class SemesterController {
     private final SemesterService semesterService;
 
@@ -30,6 +34,11 @@ public class SemesterController {
     public SemesterRes find(@RequestParam Integer year,
                             @RequestParam Integer semester) {
         return semesterService.getByYearAndSemester(year, semester);
+    }
+    @GetMapping("/test")
+    public String findkd(@AuthenticationPrincipal SignedUser signedUser){
+        log.info("signedUser:{}", signedUser);
+        return null;
     }
 
     // ID로 단건 조회
