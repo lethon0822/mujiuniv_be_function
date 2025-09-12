@@ -3,11 +3,11 @@ constants:
     directory: /home/download   # ??? ??
 
   open-feign:
-    user: rainbow-academic-user #유저 서버 이름
+    user: RAINBOW-ACADEMIC-USER #유저 서버 이름
 
 spring:
   application:
-    name: RAINBOW-ACADEMIC-USER
+    name: rainbow-academic-function
 
   datasource:
     # log4jdbc ?? ???? DriverSpy + jdbc:log4jdbc: ?? ??
@@ -82,7 +82,7 @@ eureka:
     service-url:
       defaultZone: http://localhost:8888/eureka
   instance:
-      instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
 
 logging:
   level:
@@ -96,4 +96,3 @@ logging:
     jdbc.audit: OFF
     jdbc.resultset: OFF
     jdbc.connection: OFF
-
