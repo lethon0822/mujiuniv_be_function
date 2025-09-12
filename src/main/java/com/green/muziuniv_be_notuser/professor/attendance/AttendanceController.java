@@ -1,13 +1,10 @@
-package com.green.muziuniv_be_notuser.entity.attendance;
+package com.green.muziuniv_be_notuser.professor.attendance;
 
-import com.green.muziuniv_be_notuser.entity.attendance.model.AttendanceReq;
-import com.green.muziuniv_be_notuser.entity.attendance.model.AttendanceRes;
+import com.green.muziuniv_be_notuser.professor.attendance.model.AttendanceReq;
+import com.green.muziuniv_be_notuser.professor.attendance.model.AttendanceRes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
