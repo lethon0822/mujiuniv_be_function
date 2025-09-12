@@ -1,6 +1,7 @@
 package com.green.muziuniv_be_notuser.shared.course;
 
-import com.green.muziuniv_be_notuser.common.model.ResultResponse;
+
+import com.green.muziuniv_be_notuser.configuration.model.ResultResponse;
 import com.green.muziuniv_be_notuser.openfeign.user.model.ProGetRes;
 import com.green.muziuniv_be_notuser.openfeign.user.UserClient;
 import com.green.muziuniv_be_notuser.shared.course.model.CourseFilterReq;

@@ -39,8 +39,8 @@ dependencies {
     // https://mvnrepository.com/artifact/io.hypersistence/hypersistence-utils-hibernate-63
     //implementation 'io.hypersistence:hypersistence-utils-hibernate-63:3.10.3' //TSID
 
-//    // https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-openfeign
-    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+// https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-openfeign
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:4.3.0'
 
     // https://mvnrepository.com/artifact/org.bgee.log4jdbc-log4j2/log4jdbc-log4j2-jdbc4.1
     implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
@@ -49,7 +49,7 @@ dependencies {
 
 //
 //    // https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-kubernetes-client
-//    implementation 'org.springframework.cloud:spring-cloud-starter-kubernetes-client'
+    implementation 'org.springframework.cloud:spring-cloud-starter-kubernetes-client'
 
     //스프링 시큐리티
     implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -72,11 +72,10 @@ dependencies {
     // --- Spring ---
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'   // ← 추가 (DTO @Valid 등)
 
     // --- MyBatis ---
-    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
-    testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.5'
+    testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.5'
 
     // --- DB Driver (MariaDB 사용) ---
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
