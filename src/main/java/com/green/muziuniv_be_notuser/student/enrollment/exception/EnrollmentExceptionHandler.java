@@ -3,7 +3,9 @@ package com.green.muziuniv_be_notuser.student.enrollment.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+@RestControllerAdvice
 public class EnrollmentExceptionHandler {
     //EnrollmentException 터지면 여기서 잡힘.
     @ExceptionHandler(EnrollmentException.class)

@@ -16,6 +16,7 @@ public class EnrollmentRes {
     private String title; //강의 이름
     private String classroom; //강의실
     private String type; //이수 구분
+    private Long userId; //담당 교수 번호
     private String professorName; //담당 교수
     private int grade; //수강 학년
     private int year; //연도

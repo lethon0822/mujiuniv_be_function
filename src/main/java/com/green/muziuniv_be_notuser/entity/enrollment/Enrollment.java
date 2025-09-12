@@ -1,14 +1,13 @@
 package com.green.muziuniv_be_notuser.entity.enrollment;
 
+import com.green.muziuniv_be_notuser.entity.CreatedAt;
 import com.green.muziuniv_be_notuser.entity.course.Course;
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Getter
 @Setter
 @NoArgsConstructor
-@EqualsAndHashCode
 @Table(
         name = "enrollment",
         uniqueConstraints = {
@@ -17,7 +16,7 @@ import lombok.*;
                 )
         }
 )
-public class Enrollment {
+public class Enrollment extends CreatedAt {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,10 +39,5 @@ public class Enrollment {
     @Column(nullable = false)
     private String status = "수강중";
 
-    public Enrollment(Long userId, Long courseId){
-        this.userId = userId;
-        this.course = new Course(courseId);
-        this.status = "수강중";
-    }
 
 }

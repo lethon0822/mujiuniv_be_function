@@ -14,7 +14,7 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
 
     // 잔여 인원 확인
     @Query("SELECT c.remStd FROM Course c WHERE c.courseId= :courseId")
-    int checkRemainingSeats(Long courseId);
+    Integer checkRemainingSeats(Long courseId);
 
     // 수강 신청 성공시 잔여 인원 감소
     @Modifying
