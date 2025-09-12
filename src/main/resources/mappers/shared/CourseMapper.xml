@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.green.muziuniv_be_notuser.shared.course.CourseMapper">
+
+    <!-- 개설된 강의들을 연도, 학기, 학과( 교양이면 학과를 교양학부로 함. ),
+    타입(교양,전공)별로 조회. 필요시 강의명으로 검색할 수도 있음-->
+
+    <select id="findCoursesByFilter">
+        SELECT
+        c.status,
+        c.course_id,
+        c.course_code,
+        c.title,
+        c.classroom,
+        c.type,
+        c.grade,
+        s.year,
+        s.semester,
+        c.time,
+        c.credit,
+        c.max_std,
+        c.rem_std,
+        c.user_id
+
+        FROM course c
+        JOIN semester s
+        ON s.semester_id = c.semester_id
+        WHERE s.year = #{year}
+        AND c.status = '승인'
+
+        <if test="semester != null and semester != ''">
+            AND s.semester = #{semester}
+        </if>
+
+        <!-- 전공 ( 전공 선택, 전공 필수 ), 교양 ( 교양 선택, 교양 필수 )-->
+        <if test="type != null and type != ''">
+            AND c.type LIKE CONCAT(#{type}, '%')
+        </if>
+
+        <if test="grade != null and grade != ''">
+            AND c.grade = #{grade}
+        </if>
+
+        <if test="keyword != null and keyword != ''">
+            AND c.title LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+    </select>
+
+</mapper>
