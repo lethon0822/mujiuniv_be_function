@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class AttendanceReq {
     private String attendDate; // yyyy-MM-dd
-    private Integer enrollmentId;
+    private Long enrollmentId;
     private String status; // 출석, 지각, 결석 등
     private String note;
 }
