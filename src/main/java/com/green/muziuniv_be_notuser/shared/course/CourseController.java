@@ -3,6 +3,7 @@ package com.green.muziuniv_be_notuser.shared.course;
 import com.green.muziuniv_be_notuser.shared.course.model.CourseDetailRes;
 import com.green.muziuniv_be_notuser.shared.course.model.CourseFilterReq;
 import com.green.muziuniv_be_notuser.shared.course.model.CourseFilterRes;
+import com.green.muziuniv_be_notuser.shared.department.model.DepartmentRes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +16,6 @@ import java.util.List;
 public class CourseController {
     private final CourseService courseService;
 
-    // 필터바에 띄울 학과 목록을 가져옴.
 
     @GetMapping
     public ResponseEntity<?> findAllCourses(@ModelAttribute CourseFilterReq courseFilterReq) {

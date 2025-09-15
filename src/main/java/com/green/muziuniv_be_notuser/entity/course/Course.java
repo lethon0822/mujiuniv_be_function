@@ -65,6 +65,10 @@ public class Course extends CreatedAt {
     @Column(unique = true, nullable = false, length = 20)
     private String courseCode;
 
+    public Course(Long courseId){
+        this.courseId = courseId;
+    }
+
 
 
 

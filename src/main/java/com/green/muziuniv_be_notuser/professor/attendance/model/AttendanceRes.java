@@ -7,7 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class AttendanceRes {
     private String attendDate;
-    private Integer enrollmentId;
+    private Long enrollmentId;
     private String status;
     private String note;
 }
