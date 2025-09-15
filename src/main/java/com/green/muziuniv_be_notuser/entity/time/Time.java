@@ -16,7 +16,7 @@ public class Time  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)  // AUTO_INCREMENT
     @Column(name = "id", nullable = false )
-    private Integer id;
+    private Long id;
 
     @Column(name = "time", length =5)
     private String time;

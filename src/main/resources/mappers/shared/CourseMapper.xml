@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.green.muziuniv_be_notuser.shared.course.CourseMapper">
+<mapper namespace="com.green.muziuniv_be_notuser.app.shared.course.CourseMapper">
 
     <!-- 개설된 강의들을 연도, 학기, 학과( 교양이면 학과를 교양학부로 함. ),
     타입(교양,전공)별로 조회. 필요시 강의명으로 검색할 수도 있음-->
