@@ -9,7 +9,7 @@ import jakarta.persistence.*;
 public class Score extends UpdatedAt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int scoreId;
+    private Long scoreId;
 
     @OneToOne
     @JoinColumn(name = "enrollment_id", nullable = false, unique = true)

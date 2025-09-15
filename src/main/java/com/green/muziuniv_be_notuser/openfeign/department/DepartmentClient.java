@@ -2,7 +2,7 @@ package com.green.muziuniv_be_notuser.openfeign.department;
 
 import com.green.muziuniv_be_notuser.configuration.FeignConfiguration;
 import com.green.muziuniv_be_notuser.configuration.model.ResultResponse;
-import com.green.muziuniv_be_notuser.shared.department.model.DepartmentRes;
+import com.green.muziuniv_be_notuser.app.shared.department.model.DepartmentRes;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 

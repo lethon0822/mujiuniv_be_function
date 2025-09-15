@@ -19,7 +19,7 @@ public class Schedule extends CreatedAt {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int scheduleId;
+    private Long scheduleId;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "semester_id", nullable = false)
