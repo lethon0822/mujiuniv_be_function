@@ -1,5 +1,6 @@
 package com.green.muziuniv_be_notuser.entity.course;
 
+import com.green.muziuniv_be_notuser.entity.CreatedAt;
 import com.green.muziuniv_be_notuser.entity.UserId;
 import com.green.muziuniv_be_notuser.entity.semester.Semester;
 import jakarta.persistence.*;
@@ -11,11 +12,12 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class Course {
+@ToString
+public class Course extends CreatedAt {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int courseId;
+    private Long courseId;
 
     @Column(nullable = false)
     private UserId userId;

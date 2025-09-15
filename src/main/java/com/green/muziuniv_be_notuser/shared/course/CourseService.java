@@ -2,13 +2,19 @@ package com.green.muziuniv_be_notuser.shared.course;
 
 
 import com.green.muziuniv_be_notuser.configuration.model.ResultResponse;
+import com.green.muziuniv_be_notuser.entity.course.Course;
+import com.green.muziuniv_be_notuser.entity.semester.Semester;
 import com.green.muziuniv_be_notuser.openfeign.user.model.ProGetRes;
 import com.green.muziuniv_be_notuser.openfeign.user.UserClient;
+import com.green.muziuniv_be_notuser.shared.course.model.CourseDetailRes;
 import com.green.muziuniv_be_notuser.shared.course.model.CourseFilterReq;
 import com.green.muziuniv_be_notuser.shared.course.model.CourseFilterRes;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +58,40 @@ public class CourseService {
 
         }
         return courseList;
+    }
+
+    //강의계획서 조회
+    public CourseDetailRes findCourseDetail(Long courseId){
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "courseId가 존재하지 않습니다."));
+
+        List<Long> list = Arrays.asList(course.getUserId().getUserId());
+        Map<String, List<Long>> request = new HashMap<>();
+        request.put("userId", list);
+
+        ResultResponse<List<ProGetRes>> proInfo = userClient.getProInfo(request);
+        List<ProGetRes> professorsInfo = proInfo.getResult();
+
+        Map<Long, ProGetRes> proGetResMap = professorsInfo.stream()
+                .collect(Collectors.toMap(professor -> professor.getUserId(), professor -> professor));
+
+        CourseDetailRes result = CourseDetailRes.builder()
+                .courseId(course.getCourseId())
+                .classroom(course.getClassroom())
+                .type(course.getType())
+                .semester(course.getSemesterId().getSemester())
+                .time(course.getTime())
+                .title(course.getTitle())
+                .credit(course.getCredit())
+                .weekPlan(course.getWeekPlan())
+                .textBook(course.getTextBook())
+                .goal(course.getGoal())
+                .maxStd(course.getMaxStd())
+                .userName(proGetResMap.get(course.getUserId().getUserId()).getUserName())
+                .deptName(proGetResMap.get(course.getUserId().getUserId()).getDeptName())
+                .grade(course.getGrade())
+                .build();
+        return result;
     }
 
 
