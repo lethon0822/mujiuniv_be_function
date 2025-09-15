@@ -22,7 +22,7 @@ public class Enrollment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int enrollmentId;
+    private Long enrollmentId;
 
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
