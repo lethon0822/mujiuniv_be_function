@@ -6,6 +6,8 @@ import com.green.muziuniv_be_notuser.professor.attendance.model.AttendanceReq;
 import com.green.muziuniv_be_notuser.professor.attendance.model.AttendanceRes;
 import com.green.muziuniv_be_notuser.entity.enrollment.Enrollment;
 import com.green.muziuniv_be_notuser.student.enrollment.EnrollmentRepository;
+
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,9 +20,9 @@ public class AttendanceService {
     private final EnrollmentRepository enrollmentRepository;
 
     public AttendanceRes saveAttendance(AttendanceReq req) {
-        // Enrollment 확인 (없으면 예외 발생)
-        Enrollment enrollment = enrollmentRepository.findById(req.getEnrollmentId())
-                .orElseThrow(() -> new RuntimeException("등록된 수강내역이 없음"));
+//        // Enrollment 확인 (없으면 예외 발생)
+//        Enrollment enrollment = enrollmentRepository.findById(req.getEnrollmentId())
+//                .orElseThrow(() -> new RuntimeException("등록된 수강내역이 없음"));
 
         // 복합키 생성
         AttendanceIds ids = new AttendanceIds();
@@ -30,7 +32,7 @@ public class AttendanceService {
         // 엔티티 생성
         Attendance attendance = new Attendance();
         attendance.setAttendanceIds(ids);
-        attendance.setEnrollment(enrollment);
+//        attendance.setEnrollment(enrollment);
         attendance.setStatus(req.getStatus());
         attendance.setNote(req.getNote());
 

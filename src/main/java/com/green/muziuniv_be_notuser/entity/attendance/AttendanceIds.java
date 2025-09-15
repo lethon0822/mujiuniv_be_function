@@ -17,5 +17,5 @@ public class AttendanceIds implements Serializable {
     @Column(name = "attend_date", nullable = false)
     private LocalDate attendDate;
     @Column(name = "enrollment_id", nullable = false )
-    private int enrollmentId;
+    private Long enrollmentId;
 }
