@@ -25,7 +25,7 @@ public class Semester {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "semester_id")
-    private Integer semesterId;
+    private Long semesterId;
 
     @Column(nullable = false)
     private Integer year;               // 예: 2025
