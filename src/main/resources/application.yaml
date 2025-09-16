@@ -11,7 +11,7 @@ spring:
 
   datasource:
     # log4jdbc ?? ???? DriverSpy + jdbc:log4jdbc: ?? ??
-    url: jdbc:log4jdbc:mariadb://192.168.0.39/final_project_not_user?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul
+    url: jdbc:log4jdbc:mariadb://192.168.0.39/final_project_not_user?useUnicode=true&characterEncoding=UTF-8
 
     username: green3
     password: figma502
@@ -29,7 +29,7 @@ spring:
     defer-datasource-initialization: true # 중요. JPA 테이블 생성 이후 data.sql
     hibernate:
       #  ddl-auto: update #데이블은 없는데 entity가 존재하면 create 한다.
-      ddl-auto: update #프로젝트 실행시마다 테이블을 모두 drop 후 create 한다.
+      ddl-auto: update
     properties:
       hibernate:
         jdbc:

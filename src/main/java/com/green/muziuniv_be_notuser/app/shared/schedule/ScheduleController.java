@@ -7,27 +7,32 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-
 import java.time.YearMonth;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/schedule")
+@RequestMapping("/schedule")
 @RequiredArgsConstructor
 public class ScheduleController {
     private final ScheduleService scheduleService;
 
-    // 예: /api/schedules?month=2025-09&semesterId=12
     @GetMapping
     public List<ScheduleRes> list(
-            @RequestParam(required = false) String month,      // "yyyy-MM"
+            @RequestParam(required = false) String month,
             @RequestParam(required = false) Integer semesterId
     ) {
-        if (month != null && !month.isBlank()) {
-            return scheduleService.listByMonth(YearMonth.parse(month), semesterId);
-        }
-        // month 없으면 현재달
-        return scheduleService.listByMonth(YearMonth.now(), semesterId);
+        YearMonth ym = (month != null && !month.isBlank())
+                ? YearMonth.parse(month)
+                : YearMonth.now();
+        return scheduleService.listByMonth(ym, semesterId);
+    }
+
+    @GetMapping("/for")
+    public ScheduleRes getFor(
+            @RequestParam Integer semesterId,
+            @RequestParam String scheduleType
+    ) {
+        return scheduleService.listBySemesterAndType(semesterId, scheduleType);
     }
 
     @PostMapping

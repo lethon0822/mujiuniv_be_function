@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Getter @Setter
 public class ScheduleCreateReq {
     @NotNull
-    private Integer semesterId;
+    private Long semesterId;
     @NotBlank
     @Size(max = 20)
     private String scheduleType;

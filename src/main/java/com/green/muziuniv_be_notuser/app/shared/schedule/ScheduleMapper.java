@@ -1,40 +1,23 @@
 package com.green.muziuniv_be_notuser.app.shared.schedule;
 
+
 import com.green.muziuniv_be_notuser.app.shared.schedule.model.ScheduleRes;
-import com.green.muziuniv_be_notuser.entity.schedule.Schedule;
-import com.green.muziuniv_be_notuser.entity.schedule.TimeSetting;
-import com.green.muziuniv_be_notuser.entity.semester.Semester;
-import org.springframework.stereotype.Component;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
-import java.time.LocalDateTime;
 
-@Component
-public class ScheduleMapper {
 
-    // 엔티티 생성용
-    public Schedule toEntity(Semester semester,
-                             String scheduleType,
-                             LocalDateTime startDatetime,
-                             LocalDateTime endDatetime,
-                             String description) {
-        return Schedule.builder()
-                .semester(semester)
-                .scheduleType(scheduleType)
-                .timeSetting(new TimeSetting(startDatetime, endDatetime))
-                .description(description)
-                .build();
-    }
+import java.util.List;
 
-    // 응답 DTO 변환용
-    public ScheduleRes toRes(Schedule s) {
-        return ScheduleRes.builder()
-                .scheduleId(s.getScheduleId())
-                .semesterId(s.getSemester().getSemesterId())
-                .scheduleType(s.getScheduleType())
-                .startDatetime(s.getTimeSetting().getStartDatetime())
-                .endDatetime(s.getTimeSetting().getEndDatetime())
-                .description(s.getDescription())
-                .createdAt(s.getCreatedAt())
-                .build();
-    }
+@Mapper
+public interface ScheduleMapper {
+
+    // 학기+유형별 일정 1건
+    ScheduleRes selectBySemesterAndType(@Param("semesterId") Integer semesterId,
+                                        @Param("scheduleType") String scheduleType);
+
+    // 월별 일정 목록
+    List<ScheduleRes> selectByMonth(@Param("start") String start,
+                                    @Param("end") String end,
+                                    @Param("semesterId") Integer semesterId);
 }

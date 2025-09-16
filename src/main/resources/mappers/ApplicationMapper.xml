@@ -13,20 +13,8 @@
         LIMIT 1
     </select>
 
-    <!-- 특정 학기/유형의 접수 일정(스케줄 창) -->
-    <select id="selectScheduleForSemesterAndType">
-        SELECT
-        sc.schedule_id    AS scheduleId,
-        sc.start_datetime AS startDate,
-        sc.end_datetime   AS endDate
-        FROM schedule sc
-        WHERE sc.semester_id  = #{semesterId}
-        AND sc.schedule_type = #{scheduleType}
-        LIMIT 1
-    </select>
-
     <!-- 현재 시각이 일정 창 안인지 -->
-    <select id="isScheduleOpenNow">
+    <select id="isScheduleOpenNow" >
         SELECT CASE WHEN NOW() BETWEEN sc.start_datetime AND sc.end_datetime THEN 1 ELSE 0 END
         FROM schedule sc
         WHERE sc.schedule_id = #{scheduleId}
@@ -34,42 +22,41 @@
 
     <!-- 단순 신청(사유등록) -->
     <insert id="insertAppForReason">
-        INSERT INTO `application` (user_id, schedule_id, status, reason, created_at)
+        INSERT INTO application (user_id, schedule_id, status, reason, created_at)
         VALUES (#{userId}, #{scheduleId}, '처리중', #{reason}, NOW())
     </insert>
 
     <!-- apply-next 최종 신청 생성 -->
     <insert id="insertApplication">
-        INSERT INTO `application` (user_id, schedule_id, status, reason, created_at)
+        INSERT INTO application (user_id, schedule_id, status, reason, created_at)
         VALUES (#{userId}, #{scheduleId}, '처리중', #{reason}, NOW())
     </insert>
 
     <!-- 내 신청목록 -->
-    <select id="selectMyApplications">
+    <select id="selectMyApplications" >
         SELECT
         a.app_id          AS appId,
         a.status,
         a.reason,
-        a.created_at      AS submittedAt,   -- ★ here
+        a.created_at      AS submittedAt,
         sc.schedule_type  AS scheduleType,
         sc.start_datetime AS scheduleStart,
         sc.end_datetime   AS scheduleEnd,
         sem.year          AS year,
-        sem.semester      AS semester,
-        COALESCE(ds.dept_name, dp.dept_name, '-') AS deptName
-        FROM `application` a
+        sem.semester      AS semester
+        FROM application a
         JOIN schedule sc   ON sc.schedule_id  = a.schedule_id
         JOIN semester sem  ON sem.semester_id = sc.semester_id
-        JOIN `user` u      ON u.user_id       = a.user_id
-        LEFT JOIN student   st ON st.user_id  = u.user_id
-        LEFT JOIN department ds ON ds.dept_id = st.dept_id
-        LEFT JOIN professor pf ON pf.user_id  = u.user_id
-        LEFT JOIN department dp ON dp.dept_id = pf.dept_id
         WHERE a.user_id = #{userId}
-        <if test="status != null and status != ''">
-            AND a.status = #{status}
-        </if>
         ORDER BY a.created_at DESC
     </select>
 
+    <!-- 처리중 → 취소 -->
+    <update id="cancelIfPending">
+        UPDATE application
+        SET status = '취소'
+        WHERE app_id = #{appId}
+        AND user_id = #{userId}
+        AND status = '처리중'
+    </update>
 </mapper>

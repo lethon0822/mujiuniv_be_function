@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.green.muziuniv_be_notuser.shared.schedule.ScheduleMapper">
+
+    <!-- 특정 학기 + 유형 일정 1건 -->
+    <select id="selectBySemesterAndType" >
+        <![CDATA[
+        SELECT
+            sc.schedule_id    AS scheduleId,
+            sc.semester_id    AS semesterId,
+            sc.schedule_type  AS scheduleType,
+            sc.start_datetime AS startDatetime,
+            sc.end_datetime   AS endDatetime,
+            sc.description,
+            sc.created_at     AS createdAt
+        FROM schedule sc
+        WHERE sc.semester_id = #{semesterId}
+          AND sc.schedule_type = #{scheduleType}
+        ORDER BY sc.start_datetime ASC
+        LIMIT 1
+        ]]>
+    </select>
+
+    <!-- 월별 일정 -->
+    <select id="selectByMonth" >
+        <![CDATA[
+        SELECT
+            sc.schedule_id    AS scheduleId,
+            sc.semester_id    AS semesterId,
+            sc.schedule_type  AS scheduleType,
+            sc.start_datetime AS startDatetime,
+            sc.end_datetime   AS endDatetime,
+            sc.description,
+            sc.created_at     AS createdAt
+        FROM schedule sc
+        WHERE sc.start_datetime <= #{end}
+          AND sc.end_datetime   >= #{start}
+        ]]>
+        <if test="semesterId != null">
+            AND sc.semester_id = #{semesterId}
+        </if>
+        <![CDATA[
+        ORDER BY sc.start_datetime ASC
+        ]]>
+    </select>
+</mapper>

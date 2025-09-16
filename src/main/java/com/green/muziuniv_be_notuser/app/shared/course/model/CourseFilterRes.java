@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class CourseFilterRes {
     private String status; //상태
-    private int courseId; //과목 아이디
+    private Long courseId; //과목 아이디
     private String courseCode; //과목 코드
     private String title; //강의 이름
     private String classroom; //강의실

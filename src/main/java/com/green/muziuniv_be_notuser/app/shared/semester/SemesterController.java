@@ -1,20 +1,25 @@
 package com.green.muziuniv_be_notuser.app.shared.semester;
 
+
+import com.green.muziuniv_be_notuser.app.shared.application.ApplicationMapper;
 import com.green.muziuniv_be_notuser.app.shared.semester.model.SemesterCreateReq;
 import com.green.muziuniv_be_notuser.app.shared.semester.model.SemesterRes;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/semester")
 @RequiredArgsConstructor
-@Slf4j
 public class SemesterController {
     private final SemesterService semesterService;
+    private final ApplicationMapper applicationMapper;
 
     @PostMapping
     public SemesterRes create(@Valid @RequestBody SemesterCreateReq req) {
@@ -45,4 +50,12 @@ public class SemesterController {
     public SemesterRes latest() {
         return semesterService.getLatest();
     }
+
+    @GetMapping("/{currentSemesterId}/next")
+    public Map<String, Integer> next(@PathVariable Integer currentSemesterId) {
+        Integer next = applicationMapper.selectNextSemesterId(currentSemesterId);
+        if (next == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "다음 학기 없음");
+        return Map.of("semesterId", next);
+    }
+
 }
