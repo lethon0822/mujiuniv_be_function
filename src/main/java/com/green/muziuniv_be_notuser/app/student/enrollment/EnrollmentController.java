@@ -1,8 +1,10 @@
 package com.green.muziuniv_be_notuser.app.student.enrollment;
 
 import com.green.muziuniv_be_notuser.app.student.enrollment.model.EnrollmentReq;
+import com.green.muziuniv_be_notuser.configuration.model.SignedUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,12 +12,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/enrollment")
+@RequestMapping("/student/enrollment")
 public class EnrollmentController {
     private final EnrollmentService enrollmentService;
 
+    // 수강 신청
     @PostMapping
-    public ResponseEntity<?> enrollment(@RequestBody EnrollmentReq req) {
+    public ResponseEntity<?> enrollment(@RequestBody EnrollmentReq req, @AuthenticationPrincipal SignedUser signedUser) {
+        Long userId = signedUser.signedUserId;
+        req.setUserId(userId);
         return enrollmentService.enrollment(req);
     }
+
+    // 금학기 수강 신청한 과목 리스트 조회
+
 }
