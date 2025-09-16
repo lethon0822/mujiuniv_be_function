@@ -5,10 +5,7 @@ import com.green.muziuniv_be_notuser.configuration.model.SignedUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,5 +22,11 @@ public class EnrollmentController {
     }
 
     // 금학기 수강 신청한 과목 리스트 조회
+    @GetMapping("current")
+    public ResponseEntity<?> getMyCurrentEnrollmentsCourses(@AuthenticationPrincipal SignedUser signedUser, @RequestParam Long semesterId){
+        Long userId = signedUser.signedUserId;
+        return enrollmentService.getMyCurrentEnrollmentsCourses(userId, semesterId);
+    }
+
 
 }
