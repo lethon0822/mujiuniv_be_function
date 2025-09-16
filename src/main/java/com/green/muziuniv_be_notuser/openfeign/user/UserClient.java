@@ -15,6 +15,6 @@ import java.util.Map;
 public interface UserClient {
 
     // 교수 정보 가져옴
-    @PostMapping("api/user/professor")
+    @PostMapping("api/user/list")
     ResultResponse<List<ProGetRes>> getProInfo(@RequestBody Map<String, List<Long>> request);
 }
