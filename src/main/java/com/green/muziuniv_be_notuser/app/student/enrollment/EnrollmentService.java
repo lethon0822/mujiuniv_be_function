@@ -45,6 +45,10 @@ public class EnrollmentService {
         // 3. 수강 신청 시도
         // course를 jpa가 관리하는 영속 객체로 만들어줘야함.
         Course course = courseRepository.getReferenceById(courseId);
+        // 승인 강의만 신청 가능
+        if(!"승인".equals(course.getStatus())) {
+            throw new EnrollmentException("수강신청 실패! 승인된 강의만 신청할 수 있습니다.");
+        }
         Enrollment enrollment = new Enrollment();
         enrollment.setUserId(userId);
         enrollment.setCourse(course);
@@ -55,7 +59,21 @@ public class EnrollmentService {
         enrollmentRepository.decreaseRemainingSeats(courseId);
 
         // 5. 수강 신청 완료한 강의 정보 조회 ( 이 시점에 학과, 교수명은 null )
-        EnrollmentRes res = courseRepository.findCourseByCourseId(courseId);
+        EnrollmentRes res = new EnrollmentRes();
+        res.setStatus(course.getStatus());
+        res.setCourseId(course.getCourseId());
+        res.setCourseCode(course.getCourseCode());
+        res.setTitle(course.getTitle());
+        res.setClassroom(course.getClassroom());
+        res.setType(course.getType());
+        res.setUserId(course.getUserId().getUserId());
+        res.setGrade(course.getGrade());
+        res.setYear(course.getSemesterId().getYear());
+        res.setSemester(course.getSemesterId().getSemester());
+        res.setTime(course.getTime());
+        res.setCredit(course.getCredit());
+        res.setMaxStd(course.getMaxStd());
+        res.setRemStd(course.getRemStd());
 
         // 6. user 서버 통신
 
@@ -72,7 +90,7 @@ public class EnrollmentService {
             res.setDeptName(proGetRes.getDeptName());
         }
 
-        return ResponseEntity.ok(res);
+        return ResponseEntity.ok(new ResultResponse<>("수강 신청 성공", res));
 
     }
 }
