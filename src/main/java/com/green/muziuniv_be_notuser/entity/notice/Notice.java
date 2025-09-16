@@ -15,7 +15,7 @@ import lombok.*;
 public class Notice extends UpdatedAt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer noticeId;
+    private Long noticeId;
 
     @Column(nullable = false, length = 100)
     private String noticeTitle;
