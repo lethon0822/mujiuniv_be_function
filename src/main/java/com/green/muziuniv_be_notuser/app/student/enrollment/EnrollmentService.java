@@ -1,5 +1,7 @@
 package com.green.muziuniv_be_notuser.app.student.enrollment;
 
+import com.green.muziuniv_be_notuser.app.shared.course.model.CourseFilterRes;
+import com.green.muziuniv_be_notuser.app.student.enrollment.model.GetMyCurrentEnrollmentsCoursesRes;
 import com.green.muziuniv_be_notuser.configuration.model.ResultResponse;
 import com.green.muziuniv_be_notuser.entity.course.Course;
 import com.green.muziuniv_be_notuser.entity.enrollment.Enrollment;
@@ -14,16 +16,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class EnrollmentService {
+    private final EnrollmentMapper enrollmentMapper;
     private final EnrollmentRepository enrollmentRepository;
     private final CourseRepository courseRepository;
     private final UserClient userClient;
 
+    // 수강 신청 ( + 중복, 잔여 인원 예외 처리 )
     @Transactional
     public ResponseEntity<?> enrollment(EnrollmentReq req) {
 
@@ -93,4 +99,43 @@ public class EnrollmentService {
         return ResponseEntity.ok(new ResultResponse<>("수강 신청 성공", res));
 
     }
+
+    // 금학기 수강 신청 내역 조회
+    public  ResponseEntity<?> getMyCurrentEnrollmentsCourses(Long userId, Long semesterId) {
+
+        // 금학기 수강 신청 내역 가져옴 ( 교수명, 학과 null )
+        List<GetMyCurrentEnrollmentsCoursesRes> courseList = enrollmentMapper.getMyCurrentEnrollmentsCourses(userId, semesterId);
+        if (courseList.isEmpty()) { // 금학기 수강 신청 내역이 없을 때
+            return ResponseEntity.ok(new ResultResponse<>("수강 신청 내역이 없습니다.", courseList)); // 빈 배열 리턴
+        }
+
+        // 강의 리스트에서 교수 Id (userId)만 추출
+        List<Long> professorIds = courseList.stream()
+                .map(course -> course.getUserId())
+                .distinct()
+                .collect(Collectors.toList()); //stream을 다시 list로 바꿈.
+
+        // 요청용 Map 생성
+        Map<String, List<Long>> request = new HashMap<>();
+        request.put("userId", professorIds);
+
+        // 유저 서버 호출
+        ResultResponse<List<ProGetRes>> response = userClient.getProInfo(request);
+        List<ProGetRes> professorsInfos = response.getResult();
+
+        Map<Long, ProGetRes> proGetResMap = professorsInfos.stream()
+                .collect(Collectors.toMap(professor -> professor.getUserId(), professor -> professor));
+
+        // 기존의 강의 데이터에 교수, 학과 정보 주입
+        for (GetMyCurrentEnrollmentsCoursesRes course : courseList) {
+            ProGetRes proGetRes = proGetResMap.get(course.getUserId());
+            if (proGetRes != null) {
+                course.setProfessorName(proGetRes.getUserName());
+                course.setDeptName(proGetRes.getDeptName());
+            }
+
+        }
+        return ResponseEntity.ok(courseList);
+    }
+
 }
