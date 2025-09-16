@@ -17,7 +17,7 @@ public class Score extends UpdatedAt {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long scoreId;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "enrollment_id", nullable = false, unique = true)
     private Enrollment enrollment;
 
