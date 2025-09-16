@@ -3,8 +3,10 @@ package com.green.muziuniv_be_notuser.app.shared.course;
 import com.green.muziuniv_be_notuser.app.shared.course.model.CourseDetailRes;
 import com.green.muziuniv_be_notuser.app.shared.course.model.CourseFilterReq;
 import com.green.muziuniv_be_notuser.app.shared.course.model.CourseFilterRes;
+import com.green.muziuniv_be_notuser.configuration.model.SignedUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
