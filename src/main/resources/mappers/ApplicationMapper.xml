@@ -14,26 +14,25 @@
     </select>
 
     <!-- 현재 시각이 일정 창 안인지 -->
-    <select id="isScheduleOpenNow" >
+    <select id="isScheduleOpenNow">
         SELECT CASE WHEN NOW() BETWEEN sc.start_datetime AND sc.end_datetime THEN 1 ELSE 0 END
         FROM schedule sc
         WHERE sc.schedule_id = #{scheduleId}
     </select>
 
-    <!-- 단순 신청(사유등록) -->
-    <insert id="insertAppForReason">
-        INSERT INTO application (user_id, schedule_id, status, reason, created_at)
-        VALUES (#{userId}, #{scheduleId}, '처리중', #{reason}, NOW())
-    </insert>
-
-    <!-- apply-next 최종 신청 생성 -->
-    <insert id="insertApplication">
-        INSERT INTO application (user_id, schedule_id, status, reason, created_at)
-        VALUES (#{userId}, #{scheduleId}, '처리중', #{reason}, NOW())
-    </insert>
+    <!-- 특정 학생이 같은 학기+유형으로 이미 신청했는지 확인 -->
+    <select id="existsActiveApplication">
+        SELECT COUNT(*)
+        FROM application a
+        JOIN schedule s ON a.schedule_id = s.schedule_id
+        WHERE a.user_id = #{userId}
+        AND s.semester_id = #{semesterId}
+        AND s.schedule_type = #{scheduleType}
+        AND a.status = '처리중'
+    </select>
 
     <!-- 내 신청목록 -->
-    <select id="selectMyApplications" >
+    <select id="selectMyApplications">
         SELECT
         a.app_id          AS appId,
         a.status,
@@ -59,4 +58,25 @@
         AND user_id = #{userId}
         AND status = '처리중'
     </update>
+
+    <!-- scheduleId로 학기 조회 -->
+    <select id="findSemesterIdByScheduleId">
+        SELECT semester_id
+        FROM schedule
+        WHERE schedule_id = #{scheduleId}
+    </select>
+
+    <!-- scheduleId로 유형 조회 -->
+    <select id="findScheduleTypeByScheduleId">
+        SELECT schedule_type
+        FROM schedule
+        WHERE schedule_id = #{scheduleId}
+    </select>
+
+    <!-- 신청 INSERT -->
+    <insert id="insertApplication">
+        INSERT INTO application (user_id, schedule_id, status, reason, created_at)
+        VALUES (#{userId}, #{scheduleId}, '처리중', #{reason}, NOW())
+    </insert>
+
 </mapper>

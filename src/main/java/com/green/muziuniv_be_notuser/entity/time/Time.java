@@ -9,7 +9,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Getter
 @Setter
 @Entity
-@Table(name = "Time")
+@Table(name = "time")
 @EntityListeners(AuditingEntityListener.class)
 public class Time  {
 
@@ -23,7 +23,7 @@ public class Time  {
 
 
     @ManyToOne
-    @JoinColumn(name = "course_id", nullable = false )
-    private Course courseId;
+    @JoinColumn(name = "course_id", nullable = false, foreignKey = @ForeignKey(name = "fk_time_course"))
+    private Course course;
 
 }

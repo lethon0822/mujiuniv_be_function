@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 
 @Getter @Setter
 public class ScheduleCreateReq {
+    private Integer scheduleId;
     @NotNull
     private Long semesterId;
     @NotBlank
@@ -21,4 +22,6 @@ public class ScheduleCreateReq {
     private LocalDateTime endDatetime;
     @NotBlank @Size(max = 255)
     private String description;
+
+
 }

@@ -12,7 +12,7 @@ public class Score extends UpdatedAt {
     private Long scoreId;
 
     @OneToOne
-    @JoinColumn(name = "enrollment_id", nullable = false, unique = true)
+    @JoinColumn(name = "enrollment_id", nullable = false, unique = true, foreignKey = @ForeignKey(name = "fk_score_enrollment"))
     private Enrollment enrollment;
 
     @Column(name = "mid_score")
