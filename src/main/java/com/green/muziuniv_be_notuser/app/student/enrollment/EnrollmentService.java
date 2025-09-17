@@ -138,4 +138,10 @@ public class EnrollmentService {
         return ResponseEntity.ok(courseList);
     }
 
+    // 수강 취소
+    @Transactional
+    public int deleteMyEnrollmentCourse(Long userId, Long courseId) {
+        return enrollmentRepository.deleteMyEnrollmentCourse(userId, courseId);
+    }
+
 }

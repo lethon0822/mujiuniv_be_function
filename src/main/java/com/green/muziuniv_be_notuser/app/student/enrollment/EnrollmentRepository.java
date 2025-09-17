@@ -21,4 +21,10 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
     @Modifying
     @Query("UPDATE Course c SET c.remStd = c.remStd-1 WHERE c.courseId= :courseId")
     void decreaseRemainingSeats(Long courseId);
+
+    // 수강 신청 취소
+    @Modifying
+    @Query("DELETE FROM Enrollment e WHERE e.course.courseId= :courseId AND e.userId= :userId AND e.status='수강중'")
+    int deleteMyEnrollmentCourse(Long userId, Long courseId);
+
 }
