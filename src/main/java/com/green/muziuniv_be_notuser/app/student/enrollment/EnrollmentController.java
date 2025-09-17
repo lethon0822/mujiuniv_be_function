@@ -41,7 +41,7 @@ public class EnrollmentController {
             return ResponseEntity.ok(new ResultResponse<>("수강 신청 취소 완료", result));
         }
         else{
-            return ResponseEntity.badRequest().body(result);
+            return ResponseEntity.badRequest().body(new ResultResponse<>("수강 취소 실패. 적절하지 않은 시도", result));
         }
     }
 

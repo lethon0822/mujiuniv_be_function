@@ -1,13 +1,12 @@
 package com.green.muziuniv_be_notuser.app.student.enrollment;
 
-import com.green.muziuniv_be_notuser.app.shared.course.model.CourseFilterRes;
+import com.green.muziuniv_be_notuser.app.shared.course.CourseRepository;
 import com.green.muziuniv_be_notuser.app.student.enrollment.model.GetMyCurrentEnrollmentsCoursesRes;
 import com.green.muziuniv_be_notuser.configuration.model.ResultResponse;
 import com.green.muziuniv_be_notuser.entity.course.Course;
 import com.green.muziuniv_be_notuser.entity.enrollment.Enrollment;
 import com.green.muziuniv_be_notuser.openfeign.user.UserClient;
 import com.green.muziuniv_be_notuser.openfeign.user.model.ProGetRes;
-import com.green.muziuniv_be_notuser.app.shared.course.CourseRepository;
 import com.green.muziuniv_be_notuser.app.student.enrollment.exception.EnrollmentException;
 import com.green.muziuniv_be_notuser.app.student.enrollment.model.EnrollmentReq;
 import com.green.muziuniv_be_notuser.app.student.enrollment.model.EnrollmentRes;
