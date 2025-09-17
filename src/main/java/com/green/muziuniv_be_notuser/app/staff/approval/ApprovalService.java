@@ -3,6 +3,7 @@ package com.green.muziuniv_be_notuser.app.staff.approval;
 import com.green.muziuniv_be_notuser.app.staff.approval.model.ApprovalAppGetReq;
 import com.green.muziuniv_be_notuser.app.staff.approval.model.ApprovalAppGetRes;
 import com.green.muziuniv_be_notuser.app.staff.approval.model.ApprovalPatchReq;
+import com.green.muziuniv_be_notuser.configuration.model.ResultResponse;
 import com.green.muziuniv_be_notuser.openfeign.user.UserClient;
 import com.green.muziuniv_be_notuser.openfeign.user.model.ProGetRes;
 import lombok.RequiredArgsConstructor;
@@ -32,25 +33,29 @@ public class ApprovalService {
                 .toList();
 
         Map<String, List<Long>> request = Map.of("userIds", userIds);
-        List<ProGetRes> users = userClient.getProInfo(request).getResult();
+        request.put("userId", userIds);
 
-        Map<Long, ProGetRes> userMap = users.stream()
-                .collect(Collectors.toMap(user -> user.getUserId(), user -> user));
+        ResultResponse<List<ProGetRes>> response = userClient.getProInfo(request);
+        List<ProGetRes> userInfos = response.getResult();
 
-        applications.forEach(app -> {
-            ProGetRes user = userMap.get(app.getUserId());
-            if (user != null) {
-                app.setUserName(user.getUserName());
-                app.setDeptName(user.getDeptName());
+        Map<Long, ProGetRes> userMap = userInfos.stream()
+                                       .collect(Collectors.toMap(user -> user.getUserId(), user -> user));
+
+        for (ApprovalAppGetRes app : applications) {
+            ProGetRes proGetRes = userMap.get(app.getUserId());
+            if (proGetRes != null) {
+                app.setUserId(proGetRes.getUserId());
+                app.setUserName(proGetRes.getUserName());
+                app.setDeptName(proGetRes.getDeptName());
             }
-        });
+        }
 
         return applications;
     }
 
     public String modifyStatus(ApprovalPatchReq req){
         int result =  approvalMapper.modifyStatus(req);
-        if(result == 1 && req.getStatus() == "승인") {
+        if(result == 1 && req.getStatus().equals("승인")) {
             return "승인 완료";
         } else if (req.getStatus() == "거부") {
             return "승인 거부";

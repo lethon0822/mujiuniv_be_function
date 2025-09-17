@@ -14,19 +14,18 @@ import java.util.Map;
 @RestController
 @RequestMapping("/staff/approval")
 @RequiredArgsConstructor
-@Slf4j
 public class ApprovalController {
 
     private final ApprovalService approvalService;
 
     @GetMapping
-    public ResponseEntity<List<ApprovalAppGetRes>> applicationList(@ModelAttribute ApprovalAppGetReq req) {
+    public ResponseEntity<?> applicationList(@ModelAttribute ApprovalAppGetReq req) {
         List<ApprovalAppGetRes> result = approvalService.applicationList(req);
         return ResponseEntity.ok(result);
     }
 
     @PatchMapping
-    public ResponseEntity<Map<String, String>> decideApplication(@RequestBody ApprovalPatchReq req){
+    public ResponseEntity<?> decideApplication(@RequestBody ApprovalPatchReq req){
         String result = approvalService.modifyStatus(req);
         return ResponseEntity.ok(Map.of("message", result));
     }
