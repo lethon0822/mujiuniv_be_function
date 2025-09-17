@@ -13,7 +13,7 @@ public class CourseDetailRes {
     private Integer semester ;
     private String time;
     private String title;
-    private int credit;
+    private Long credit;
     private String weekPlan;
     private String textBook;
     private String goal;

@@ -23,6 +23,7 @@ public class WebSecurityConfiguration {
                 .csrf(csrf -> csrf.disable()) //SSR(Server Side Rendering)이 아니다. 보안관련 SSR 이 아니면 보안이슈가 없기 때문에 기능을 끈다.
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/student/enrollment/**").authenticated()
+                        .requestMatchers("/api/student/graduation/**").authenticated()
                         .anyRequest().permitAll())
                 .addFilterBefore(userHeaderAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
