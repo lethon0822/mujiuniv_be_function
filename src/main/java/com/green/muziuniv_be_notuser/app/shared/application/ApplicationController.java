@@ -1,11 +1,11 @@
 package com.green.muziuniv_be_notuser.app.shared.application;
 
-
 import com.green.muziuniv_be_notuser.app.shared.application.model.AppPostReq;
 import com.green.muziuniv_be_notuser.app.shared.application.model.ApplicationListRow;
-import com.green.muziuniv_be_notuser.app.shared.application.model.ApplyNextReq;
+import com.green.muziuniv_be_notuser.configuration.model.SignedUser;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,16 +29,11 @@ public class ApplicationController {
         return applicationService.isScheduleOpenNow(scheduleId);
     }
 
-    /** 단순 사유 신청 */
-    @PostMapping("/reason")
-    public void createAppForReason(@Valid @RequestBody AppPostReq req) {
-        applicationService.createAppForReason(req);
-    }
-
     /** 정규 신청 */
     @PostMapping
-    public void createApplication(@Valid @RequestBody AppPostReq req) {
-        applicationService.createApplication(req);
+    public void createApplication(@Valid @RequestBody AppPostReq req,
+                                  @AuthenticationPrincipal SignedUser signedUser) {
+        applicationService.createApplication(req, signedUser);
     }
 
     /** 내 신청 목록 */
@@ -50,7 +45,7 @@ public class ApplicationController {
     /** 신청 취소 */
     @PutMapping("/cancel/{appId}")
     public boolean cancelApplication(@PathVariable Long appId,
-                                     @RequestParam Integer userId) {
-        return applicationService.cancelApplication(appId, userId);
+                                     @AuthenticationPrincipal SignedUser signedUser) {
+        return applicationService.cancelApplication(appId, signedUser.signedUserId);
     }
 }

@@ -1,12 +1,8 @@
 package com.green.muziuniv_be_notuser.app.shared.application;
 
-
-
 import com.green.muziuniv_be_notuser.app.shared.application.model.AppPostReq;
 import com.green.muziuniv_be_notuser.app.shared.application.model.ApplicationListRow;
-import com.green.muziuniv_be_notuser.app.shared.application.model.ApplyNextReq;
-import com.green.muziuniv_be_notuser.app.shared.application.model.ScheduleWindow;
-
+import com.green.muziuniv_be_notuser.configuration.model.SignedUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,15 +28,21 @@ public class ApplicationService {
         return result != null && result == 1;
     }
 
-    /** 단순 사유 신청 */
+    /** 정규 신청 (중복체크 + userId 세팅) */
     @Transactional
-    public void createAppForReason(AppPostReq req) {
-        applicationMapper.insertAppForReason(req);
-    }
+    public void createApplication(AppPostReq req, SignedUser signedUser){
+        req.setUserId(signedUser.signedUserId);
 
-    /** 정규 신청 (apply-next 로직) */
-    @Transactional
-    public void createApplication(AppPostReq req) {
+        // 학기와 유형은 schedule에서 조회
+        Integer semesterId = applicationMapper.findSemesterIdByScheduleId(req.getScheduleId());
+        String scheduleType = applicationMapper.findScheduleTypeByScheduleId(req.getScheduleId());
+
+        // 중복 신청 체크
+        int exists = applicationMapper.existsActiveApplication(req.getUserId(), semesterId, scheduleType);
+        if (exists > 0) {
+            throw new IllegalStateException("이미 동일 학기/유형의 신청이 존재합니다.");
+        }
+
         applicationMapper.insertApplication(req);
     }
 
@@ -52,7 +54,7 @@ public class ApplicationService {
 
     /** 신청 취소 (처리중인 건만) */
     @Transactional
-    public boolean cancelApplication(Long appId, Integer userId) {
+    public boolean cancelApplication(Long appId, Long userId) {
         return applicationMapper.cancelIfPending(appId, userId) > 0;
     }
 }

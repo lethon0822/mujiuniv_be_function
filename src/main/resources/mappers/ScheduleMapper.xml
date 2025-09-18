@@ -1,10 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.green.muziuniv_be_notuser.shared.schedule.ScheduleMapper">
+<mapper namespace="com.green.muziuniv_be_notuser.app.shared.schedule.ScheduleMapper">
+
+    <!-- 단건 조회 -->
+    <select id="selectById">
+        SELECT
+        sc.schedule_id    AS scheduleId,
+        sc.semester_id    AS semesterId,
+        sc.schedule_type  AS scheduleType,
+        sc.start_datetime AS startDatetime,
+        sc.end_datetime   AS endDatetime,
+        sc.description,
+        sc.created_at     AS createdAt
+        FROM schedule sc
+        WHERE sc.schedule_id = #{scheduleId}
+    </select>
 
     <!-- 특정 학기 + 유형 일정 1건 -->
-    <select id="selectBySemesterAndType" >
+    <select id="selectBySemesterAndType">
         <![CDATA[
         SELECT
             sc.schedule_id    AS scheduleId,
@@ -16,14 +30,14 @@
             sc.created_at     AS createdAt
         FROM schedule sc
         WHERE sc.semester_id = #{semesterId}
-          AND sc.schedule_type = #{scheduleType}
+         AND TRIM(sc.schedule_type) = TRIM(#{scheduleType})
         ORDER BY sc.start_datetime ASC
         LIMIT 1
         ]]>
     </select>
 
     <!-- 월별 일정 -->
-    <select id="selectByMonth" >
+    <select id="selectByMonth">
         <![CDATA[
         SELECT
             sc.schedule_id    AS scheduleId,
@@ -44,4 +58,41 @@
         ORDER BY sc.start_datetime ASC
         ]]>
     </select>
+
+    <!-- 등록 -->
+    <insert id="insertSchedule" useGeneratedKeys="true" keyProperty="scheduleId">
+        INSERT INTO schedule (
+        semester_id,
+        schedule_type,
+        start_datetime,
+        end_datetime,
+        description,
+        created_at
+        ) VALUES (
+        #{semesterId},
+        #{scheduleType},
+        #{startDatetime},
+        #{endDatetime},
+        #{description},
+        NOW()
+        )
+    </insert>
+
+    <!-- 수정 -->
+    <update id="updateSchedule">
+        UPDATE schedule
+        SET
+        schedule_type = #{scheduleType},
+        start_datetime = #{startDatetime},
+        end_datetime = #{endDatetime},
+        description = #{description}
+        WHERE schedule_id = #{scheduleId}
+    </update>
+
+    <!-- 삭제 -->
+    <delete id="deleteSchedule">
+        DELETE FROM schedule WHERE schedule_id = #{scheduleId}
+    </delete>
+
+
 </mapper>
