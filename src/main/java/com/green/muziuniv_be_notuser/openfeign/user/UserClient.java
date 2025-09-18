@@ -5,8 +5,10 @@ import com.green.muziuniv_be_notuser.configuration.FeignConfiguration;
 import com.green.muziuniv_be_notuser.configuration.model.ResultResponse;
 import com.green.muziuniv_be_notuser.openfeign.user.model.ProGetRes;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
@@ -18,6 +20,7 @@ public interface UserClient {
     @PostMapping("api/user/list")
     ResultResponse<List<ProGetRes>> getProInfo(@RequestBody Map<String, List<Long>> request);
 
-
-
+    // 교수 학과 가져옴
+    @GetMapping("api/user/dept")
+    ResultResponse<String> getProDeptCode(@RequestParam("id")Long userId);
 }
