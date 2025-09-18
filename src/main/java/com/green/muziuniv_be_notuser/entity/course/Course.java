@@ -45,7 +45,7 @@ public class Course extends CreatedAt {
     private String title;
 
     @Column(nullable = false)
-    private Integer credit;
+    private Long credit;
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String weekPlan;

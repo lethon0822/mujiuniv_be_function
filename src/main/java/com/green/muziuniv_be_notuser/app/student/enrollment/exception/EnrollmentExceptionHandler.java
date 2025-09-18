@@ -1,25 +1,24 @@
 package com.green.muziuniv_be_notuser.app.student.enrollment.exception;
 
+import com.green.muziuniv_be_notuser.app.student.enrollment.EnrollmentController;
+import com.green.muziuniv_be_notuser.configuration.model.ResultResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@RestControllerAdvice
+@RestControllerAdvice(assignableTypes = {EnrollmentController.class})
 public class EnrollmentExceptionHandler {
     //EnrollmentException 터지면 여기서 잡힘.
     @ExceptionHandler(EnrollmentException.class)
-    public ResponseEntity<String> handleEnrollmentException(EnrollmentException e){
+    public ResponseEntity<ResultResponse<Void>> handleEnrollmentException(EnrollmentException e) {
+        ResultResponse<Void> errorRes =
+                new ResultResponse<>(e.getMessage(), null);
+
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(e.getMessage());
+                .body(errorRes);
     }
 
-    //서버에러 처리
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleException(Exception e){
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("수강신청 실패! 서버 오류가 발생했습니다.");
-    }
+
 }
