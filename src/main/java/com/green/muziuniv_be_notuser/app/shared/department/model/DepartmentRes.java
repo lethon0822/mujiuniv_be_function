@@ -6,5 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class DepartmentRes {
+    private Long deptId;
     private String deptName;
 }

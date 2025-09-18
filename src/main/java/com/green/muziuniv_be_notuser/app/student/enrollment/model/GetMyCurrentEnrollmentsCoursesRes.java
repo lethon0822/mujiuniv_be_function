@@ -1,15 +1,11 @@
 package com.green.muziuniv_be_notuser.app.student.enrollment.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class EnrollmentRes {
+public class GetMyCurrentEnrollmentsCoursesRes {
     private String status; //상태
     private Long courseId; //과목 아이디
     private String courseCode; //과목 코드
