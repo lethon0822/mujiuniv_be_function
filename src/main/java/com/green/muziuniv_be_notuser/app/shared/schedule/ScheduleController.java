@@ -3,8 +3,11 @@ package com.green.muziuniv_be_notuser.app.shared.schedule;
 import com.green.muziuniv_be_notuser.app.shared.schedule.model.ScheduleCreateReq;
 import com.green.muziuniv_be_notuser.app.shared.schedule.model.ScheduleRes;
 import com.green.muziuniv_be_notuser.app.shared.schedule.model.ScheduleUpdateReq;
+import com.green.muziuniv_be_notuser.configuration.model.SignedUser;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.YearMonth;
@@ -13,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/schedule")
 @RequiredArgsConstructor
+@Slf4j
 public class ScheduleController {
     private final ScheduleService scheduleService;
 
@@ -32,6 +36,7 @@ public class ScheduleController {
             @RequestParam Integer semesterId,
             @RequestParam String scheduleType
     ) {
+        log.info(">>> Controller 들어온 scheduleType = {}", scheduleType);
         return scheduleService.listBySemesterAndType(semesterId, scheduleType);
     }
 

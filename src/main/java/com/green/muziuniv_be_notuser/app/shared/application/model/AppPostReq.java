@@ -9,11 +9,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AppPostReq {
-    private int userId;
+    private Long userId;
     private int scheduleId;
     private String reason;
 
-    public void setUserId(int userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 }
