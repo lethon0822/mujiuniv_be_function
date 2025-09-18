@@ -17,7 +17,7 @@ import java.util.List;
 public class CourseController {
     private final CourseService courseService;
 
-
+    // 강의 리스트 조회
     @GetMapping
     public ResponseEntity<?> findAllCourses(@ModelAttribute CourseFilterReq courseFilterReq) {
         List<CourseFilterRes> courseList = courseService.findCoursesByFilter(courseFilterReq);
