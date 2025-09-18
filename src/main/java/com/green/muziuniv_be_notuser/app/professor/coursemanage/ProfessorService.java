@@ -18,14 +18,14 @@ public class ProfessorService {
 
     public int saveCourse(ProfessorPostReq req) {
         //Random random = new Random();
-        String courseCode= accountMapper.findDeptCodeByUserId(req.getUserId());
+        //String courseCode= accountMapper.findDeptCodeByUserId(req.getUserId());
 //        for(int i = 0; i<3; i++){
 //            courseCode += (char)(random.nextInt(26)+65);
 //        }
         for(int i = 0; i <4; i++){
-            courseCode += (int)(Math.random()*10);
+//            courseCode += (int)(Math.random()*10);
         }
-        req.setCourseCode(courseCode);
+//        req.setCourseCode(courseCode);
 
         return professorMapper.saveCourse(req);
     }
