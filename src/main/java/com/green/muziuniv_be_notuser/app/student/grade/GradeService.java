@@ -3,10 +3,13 @@ package com.green.muziuniv_be_notuser.app.student.grade;
 import com.green.muziuniv_be_notuser.app.student.enrollment.model.GetMyCurrentEnrollmentsCoursesRes;
 import com.green.muziuniv_be_notuser.app.student.grade.model.GetAllPermanentGradeReq;
 import com.green.muziuniv_be_notuser.app.student.grade.model.GetAllPermanentGradeRes;
+import com.green.muziuniv_be_notuser.app.student.grade.model.GetMyCurrentGradeRes;
 import com.green.muziuniv_be_notuser.configuration.model.ResultResponse;
+import com.green.muziuniv_be_notuser.configuration.model.SignedUser;
 import com.green.muziuniv_be_notuser.openfeign.user.UserClient;
 import com.green.muziuniv_be_notuser.openfeign.user.model.ProGetRes;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class GradeService {
@@ -65,6 +69,41 @@ public class GradeService {
             }
         }
         return ResponseEntity.ok(new ResultResponse<>("영구 성적 조회 성공", res));
+    }
+
+    // 금학기 성적 조회
+    public ResponseEntity<?> getMyCurrentGrades(Long userId, int semesterId) {
+        List<GetMyCurrentGradeRes> res = gradeMapper.getMyCurrentGrade(userId, semesterId);
+
+        // res의 교수명 세팅을 위해 유저 서버랑 통신
+        // 1. 교수 id 리스트 뽑기
+        List<Long> professorIds = res.stream()
+                .map(GetMyCurrentGradeRes::getUserId)
+                .distinct()
+                .toList();
+        if (professorIds.isEmpty()) {
+            return ResponseEntity.ok(new ResultResponse<>("금학기 성적 없음", res));
+        }
+
+        // 2. 유저 서버 호출
+        Map<String, List<Long>> request = Map.of("userId", professorIds);
+        ResultResponse<List<ProGetRes>> response = userClient.getProInfo(request);
+        List<ProGetRes> professorsInfos = response.getResult();
+
+        // 3. Map으로 변환 (userId -> ProGetRes)
+        Map<Long, ProGetRes> proGetResMap = professorsInfos.stream()
+                .collect(Collectors.toMap(professor -> professor.getUserId(), professor -> professor));
+
+        // 4. 각 성적 DTO에 교수명 세팅 + point 세팅
+        for (GetMyCurrentGradeRes item : res) {
+            ProGetRes proGetRes = proGetResMap.get(item.getUserId());
+            if (proGetRes != null) {
+                item.setProfessorName(proGetRes.getUserName());
+            }
+
+            item.setPoint(convertRankToPoint(item.getRank()));
+        }
+        return ResponseEntity.ok(new ResultResponse<>("금학기 성적 조회 성공", res));
     }
 }
 
