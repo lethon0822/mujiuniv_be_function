@@ -1,4 +1,4 @@
-package com.green.muziuniv_be_notuser.app.professor.course.model;
+package com.green.muziuniv_be_notuser.openfeign.course.model;
 
 import lombok.Getter;
 import lombok.Setter;

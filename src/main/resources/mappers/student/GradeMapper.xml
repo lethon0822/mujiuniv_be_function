@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.green.muziuniv_be_notuser.app.student.grade.GradeMapper">
+
+<!--영구 성적 조회-->
+    <select id="getAllPermanentGrade">
+        SELECT
+        se.year,
+        se.semester,
+        c.type,
+        s.grade,
+        c.course_code,
+        c.title,
+        c.credit,
+        s.rank,
+        c.user_id
+
+        FROM enrollment e
+        JOIN course c
+        ON e.course_id = c.course_id
+        JOIN score s
+        ON e.enrollment_id = s.enrollment_id
+        JOIN semester se
+        ON se.semester_id = c.semester_id
+
+        WHERE e.user_id = #{userId}
+        AND c.semester_id != #{req.semesterId}
+        AND e.status = '수강완료'
+
+        <if test="req.grade != null">
+            AND s.grade = #{req.grade}
+        </if>
+
+
+        <if test="req.semester != null">
+            AND se.semester = #{req.semester}
+        </if>
+    </select>
+
+    <!-- 금학기 성적 조회  -->
+    <select id="getMyCurrentGrade">
+        SELECT
+        c.course_id,
+        c.type,
+        c.user_id,
+        c.course_code,
+        c.title,
+        c.credit,
+        s.rank,
+        s.mid_score,
+        s.fin_score,
+        s.attendance_score,
+        s.other_score,
+        e.ev_score
+
+        FROM enrollment e
+        JOIN course c
+        ON e.course_id = c.course_id
+        JOIN score s
+        ON e.enrollment_id = s.enrollment_id
+
+        WHERE e.user_id = #{userId}
+        AND c.semester_id = #{semesterId}
+
+    </select>
+
+</mapper>
