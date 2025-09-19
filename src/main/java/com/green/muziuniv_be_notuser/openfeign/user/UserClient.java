@@ -17,10 +17,10 @@ import java.util.Map;
 public interface UserClient {
 
     // 교수 정보 가져옴
-    @PostMapping("api/user/list")
+    @PostMapping("/api/user/list")
     ResultResponse<List<ProGetRes>> getProInfo(@RequestBody Map<String, List<Long>> request);
 
     // 교수 학과 가져옴
-    @GetMapping("api/user/dept")
-    ResultResponse<String> getProDeptCode(@RequestParam("id")Long userId);
+    @GetMapping("/api/user/dept")
+    ResultResponse<String> getProDeptCode(@RequestParam("user_id")Long userId);
 }
