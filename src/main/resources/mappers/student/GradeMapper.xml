@@ -61,7 +61,6 @@
 
         WHERE e.user_id = #{userId}
         AND c.semester_id = #{semesterId}
-        AND e.status = '수강완료'
 
     </select>
 
