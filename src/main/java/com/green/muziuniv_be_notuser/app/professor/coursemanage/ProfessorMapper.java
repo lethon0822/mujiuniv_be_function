@@ -4,6 +4,7 @@ package com.green.muziuniv_be_notuser.app.professor.coursemanage;
 
 import com.green.muziuniv_be_notuser.app.professor.coursemanage.model.*;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -18,13 +19,16 @@ public interface ProfessorMapper {
     // 강의 계획서 수정
     int modify(ProfessorPutReq req);
 
-    List<CourseStudentGetReq> findStudentsByUserId(int courseId);
+    List<CourseStudentGetRes> findStudentsByUserId(int courseId);
+
 
     //학과조회
     String findDeptNameByUserId(int userId);
 
     //강의평가 조회
     List<ProfessorSurveyCheckRes> findSurveyByCourseId(int courseId);
+    //자기강의만 삭제
+    int deleteCourse(@Param("courseId") int courseId, @Param("userId") Long userId);
 
     //강의평가 학생용
     //int updateReview(LecturesEvaluationDto dto);

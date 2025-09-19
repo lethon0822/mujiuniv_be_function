@@ -11,5 +11,6 @@ public class CourseStudentGetReq {
     private String email;
     private String phone;
     private int grade;
+    private int userId;
     private int enrollmentId;
 }
