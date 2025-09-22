@@ -48,6 +48,11 @@ public class CourseService {
 
         // req에 따른 courseList 조회
         List<CourseFilterRes> courseList = courseMapper.findCoursesByFilter(req);
+        // courseList가 비었다면 유저 서버 호출 하지 않고 빈 리스트 반환
+        if (courseList.isEmpty()) {
+            return Collections.emptyList();
+        }
+
 
         // 강의 리스트에서 교수 Id (userId)만 추출
         List<Long> professorIds = courseList.stream()
