@@ -51,6 +51,7 @@
             <foreach collection="professorIds" item="id" open="(" close=")" separator=",">
                 #{id}
             </foreach>
+            AND c.type LIKE '전공%'
         </if>
     </select>
 
