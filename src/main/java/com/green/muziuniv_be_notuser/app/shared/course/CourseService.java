@@ -71,7 +71,13 @@ public class CourseService {
             ProGetRes proGetRes = proGetResMap.get(course.getUserId());
             if (proGetRes != null) {
                 course.setProfessorName(proGetRes.getUserName());
-                course.setDeptName(proGetRes.getDeptName());
+
+                if (course.getGrade() != 0) {  // 학년이 0이면 학과를 교양학부로
+                    course.setDeptName(proGetRes.getDeptName());
+                } else {
+                    course.setDeptName("교양학부");
+                }
+
             }
         }
 
