@@ -1,11 +1,15 @@
 package com.green.muziuniv_be_notuser.app.professor.score;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.green.muziuniv_be_notuser.app.professor.score.model.ScorePostReq;
 import com.green.muziuniv_be_notuser.app.professor.score.model.ScorePutReq;
 import com.green.muziuniv_be_notuser.app.professor.score.model.ScoreRes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/professor/course/grade")
@@ -15,30 +19,60 @@ public class ScoreController {
     private final ScoreService scoreService;
 
     /* -------------------------------
-       성적 기입 (POST) - 중복 방지 방식
-       → 이미 있으면 에러 발생
-    -------------------------------- */
+      성적 기입 (POST) - 단일 or 복수 모두 지원
+   -------------------------------- */
     @PostMapping
-    public ResponseEntity<ScoreRes> saveScore(@RequestBody ScorePostReq req) {
-        return ResponseEntity.ok(scoreService.saveScore(req));
-    }
-
-    /* -------------------------------
-       성적 기입 (POST) - 자동 수정 방식
-       → 이미 있으면 수정, 없으면 등록
-       (엔드포인트 분리: /save-or-update)
-    -------------------------------- */
-    @PostMapping("/save-or-update")
-    public ResponseEntity<ScoreRes> saveOrUpdateScore(@RequestBody ScorePostReq req) {
-        return ResponseEntity.ok(scoreService.saveOrUpdateScore(req));
+    public ResponseEntity<?> saveScore(@RequestBody Object body) {
+        if (body instanceof java.util.List<?>) {
+            // 배열(JSON Array) → 여러 개 저장
+            List<?> list = (List<?>) body;
+            List<ScoreRes> result = list.stream()
+                    .filter(item -> item instanceof Map) // JSON object 체크
+                    .map(item -> {
+                        Map<String, Object> map = (Map<String, Object>) item;
+                        ScorePostReq req = new ScorePostReq(
+                                Long.valueOf(map.get("enrollmentId").toString()),
+                                (int) map.get("midScore"),
+                                (int) map.get("finScore"),
+                                (int) map.get("attendanceScore"),
+                                (int) map.get("otherScore")
+                        );
+                        return scoreService.saveOrUpdateScore(req);
+                    })
+                    .toList();
+            return ResponseEntity.ok(result);
+        } else {
+            // 단일 객체 → 한 명 저장
+            ScorePostReq req = new ObjectMapper().convertValue(body, ScorePostReq.class);
+            return ResponseEntity.ok(scoreService.saveOrUpdateScore(req));
+        }
     }
 
     /* -------------------------------
        성적 수정 (PUT)
-       → 반드시 기존 데이터가 있어야 수정 가능
     -------------------------------- */
     @PutMapping
-    public ResponseEntity<ScoreRes> updateScore(@RequestBody ScorePutReq req) {
-        return ResponseEntity.ok(scoreService.updateScore(req));
+    public ResponseEntity<?> updateScore(@RequestBody Object body) {
+        if (body instanceof java.util.List<?>) {
+            List<?> list = (List<?>) body;
+            List<ScoreRes> result = list.stream()
+                    .filter(item -> item instanceof Map)
+                    .map(item -> {
+                        Map<String, Object> map = (Map<String, Object>) item;
+                        ScorePutReq req = new ScorePutReq(
+                                Long.valueOf(map.get("enrollmentId").toString()),
+                                (int) map.get("midScore"),
+                                (int) map.get("finScore"),
+                                (int) map.get("attendanceScore"),
+                                (int) map.get("otherScore")
+                        );
+                        return scoreService.updateScore(req);
+                    })
+                    .toList();
+            return ResponseEntity.ok(result);
+        } else {
+            ScorePutReq req = new ObjectMapper().convertValue(body, ScorePutReq.class);
+            return ResponseEntity.ok(scoreService.updateScore(req));
+        }
     }
 }
