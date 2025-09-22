@@ -20,7 +20,7 @@ public class ProfessorService {
     private final ProfessorMapper professorMapper;
     private final UserClient userClient;
 
-    public int saveCourse(ProfessorPostReq req) {
+    public void saveCourse(ProfessorPostReq req) {
         //Random random = new Random();
         ResultResponse<String> response = userClient.getProDeptCode(req.getUserId());
         String courseCode = response.getResult();
@@ -30,9 +30,9 @@ public class ProfessorService {
         for(int i = 0; i <4; i++){
             courseCode += (int)(Math.random()*10);
         }
-        req.setCourseCode(courseCode);
+        //req.setCourseCode(courseCode);
 
-        return professorMapper.saveCourse(req);
+
     }
 
     // 내 강의 목록 조회
