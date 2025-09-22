@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CourseEvaluationController {
     private final CourseEvaluationService courseEvaluationService;
 
-    // 강의평가를 할 수 있다. (학생)
+    // 금학기 수강한 강의에 대한 강의평가를 할 수 있다. (학생)
     @PutMapping
     public ResponseEntity<?> courseEvaluation(@AuthenticationPrincipal SignedUser signedUser, @RequestBody CourseEvaluationReq req) {
         Long userId = signedUser.signedUserId;

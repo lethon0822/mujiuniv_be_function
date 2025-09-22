@@ -7,6 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class GetMyCurrentGradeRes {
+    private Long enrollmentId; // 금학기 강의평가 req용으로 쓰기 위함
     private Long courseId;
     private String type;
     private Long userId;

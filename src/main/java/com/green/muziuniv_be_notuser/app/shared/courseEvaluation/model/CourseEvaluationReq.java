@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CourseEvaluationReq {
-    private int enrollmentId;
+    private Long enrollmentId;
     private String review;
     private int evScore;
 }
