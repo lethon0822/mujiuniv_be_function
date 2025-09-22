@@ -40,6 +40,7 @@
     <!-- 금학기 성적 조회  -->
     <select id="getMyCurrentGrade">
         SELECT
+        e.enrollment_id,
         c.course_id,
         c.type,
         c.user_id,
