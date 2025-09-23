@@ -1,19 +1,16 @@
 package com.green.muziuniv_be_notuser.app.student.grade;
 
-import com.green.muziuniv_be_notuser.app.student.enrollment.model.GetMyCurrentEnrollmentsCoursesRes;
 import com.green.muziuniv_be_notuser.app.student.grade.model.GetAllPermanentGradeReq;
 import com.green.muziuniv_be_notuser.app.student.grade.model.GetAllPermanentGradeRes;
 import com.green.muziuniv_be_notuser.app.student.grade.model.GetMyCurrentGradeRes;
 import com.green.muziuniv_be_notuser.configuration.model.ResultResponse;
-import com.green.muziuniv_be_notuser.configuration.model.SignedUser;
 import com.green.muziuniv_be_notuser.openfeign.user.UserClient;
-import com.green.muziuniv_be_notuser.openfeign.user.model.ProGetRes;
+import com.green.muziuniv_be_notuser.openfeign.user.model.UserInfoDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -54,16 +51,14 @@ public class GradeService {
             // req 세팅
             Map<String, List<Long>> request = Map.of("userId", List.of(item.getUserId()));
             // 유저 서버 호출
-            ResultResponse<List<ProGetRes>> response = userClient.getProInfo(request);
-            List<ProGetRes> professorsInfos = response.getResult();
+            ResultResponse<Map<Long, UserInfoDto>> response = userClient.getUserInfo(request);
+            Map<Long, UserInfoDto> proGetResMap = response.getResult();
 
-            Map<Long, ProGetRes> proGetResMap = professorsInfos.stream()
-                    .collect(Collectors.toMap(professor -> professor.getUserId(), professor -> professor));
             // 기존의 강의 데이터에 교수 정보 주입
             for (GetAllPermanentGradeRes grade : res) {
-                ProGetRes proGetRes = proGetResMap.get(grade.getUserId());
-                if (proGetRes != null) {
-                    grade.setProfessorName(proGetRes.getUserName());
+                UserInfoDto userInfoDto = proGetResMap.get(grade.getUserId());
+                if (userInfoDto != null) {
+                    grade.setProfessorName(userInfoDto.getUserName());
                 }
 
             }
@@ -87,18 +82,15 @@ public class GradeService {
 
         // 2. 유저 서버 호출
         Map<String, List<Long>> request = Map.of("userId", professorIds);
-        ResultResponse<List<ProGetRes>> response = userClient.getProInfo(request);
-        List<ProGetRes> professorsInfos = response.getResult();
+        ResultResponse<Map<Long, UserInfoDto>> response = userClient.getUserInfo(request);
+        Map<Long, UserInfoDto> proGetResMap = response.getResult();
 
-        // 3. Map으로 변환 (userId -> ProGetRes)
-        Map<Long, ProGetRes> proGetResMap = professorsInfos.stream()
-                .collect(Collectors.toMap(professor -> professor.getUserId(), professor -> professor));
 
         // 4. 각 성적 DTO에 교수명 세팅 + point 세팅
         for (GetMyCurrentGradeRes item : res) {
-            ProGetRes proGetRes = proGetResMap.get(item.getUserId());
-            if (proGetRes != null) {
-                item.setProfessorName(proGetRes.getUserName());
+            UserInfoDto userInfoDto = proGetResMap.get(item.getUserId());
+            if (userInfoDto != null) {
+                item.setProfessorName(userInfoDto.getUserName());
             }
 
             item.setPoint(convertRankToPoint(item.getRank()));

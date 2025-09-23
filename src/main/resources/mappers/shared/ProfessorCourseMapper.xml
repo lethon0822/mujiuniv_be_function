@@ -5,7 +5,7 @@
 
     <!-- 내가 등록한 강의목록 조회  -->
     <select id="findByUserId">
-        SELECT course_code, c.course_id, classroom, type, s.semester, c.time, c.title, c.credit, c.max_std, c.status, c.grade, c.rem_std,
+        SELECT c.user_id, course_code, c.course_id, classroom, type, s.semester, c.time, c.title, c.credit, c.max_std, c.status, c.grade, c.rem_std,
         (
         SELECT COUNT(*)
         FROM enrollment e

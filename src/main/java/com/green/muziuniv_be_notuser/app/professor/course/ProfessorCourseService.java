@@ -29,6 +29,7 @@ public class ProfessorCourseService {
     private final ProfessorCourseMapper professorCourseMapper;
     private final CourseUserClient courseUserClient;
     private final UserClient userClient;
+    private final List list;
 
     // 강의 등록
     public void saveCourse(ProfessorPostReq req) {
@@ -78,13 +79,14 @@ public class ProfessorCourseService {
 
         return course;
     }
-        // TODO: 교수 학과 가져오기 문제임
+
+    // TODO: 교수 학과 가져오기 문제임
     // 내 강의 목록 조회
     public List<ProfessorGetRes> findMyCourse(ProfessorGetReq req) {
         // 1. notuser DB에서 강의 목록 가져오기
         List<ProfessorGetRes> courses = professorCourseMapper.findByUserId(req);
-
-        if (courses.isEmpty()) return courses;
+        if (courses.isEmpty()){ return null ;}
+        Set<Long> userInfo = courses.stream().map(item -> item.getUserId()).collect(Collectors.toSet());
 
         // 2. 교수 학과 가져오기 (단일)
         ResultResponse<String> deptRes = userClient.getProDeptCode(req.getUserId());

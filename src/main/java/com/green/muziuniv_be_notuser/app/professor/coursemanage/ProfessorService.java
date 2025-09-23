@@ -5,7 +5,7 @@ package com.green.muziuniv_be_notuser.app.professor.coursemanage;
 import com.green.muziuniv_be_notuser.app.professor.coursemanage.model.*;
 import com.green.muziuniv_be_notuser.configuration.model.ResultResponse;
 import com.green.muziuniv_be_notuser.openfeign.user.UserClient;
-import com.green.muziuniv_be_notuser.openfeign.user.model.ProGetRes;
+import com.green.muziuniv_be_notuser.openfeign.user.model.UserInfoDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -73,22 +73,18 @@ public class ProfessorService {
                         .toList()
         );
 
-        ResultResponse<List<ProGetRes>> response = userClient.getProInfo(req);
-        List<ProGetRes> users = response.getResult();
+        ResultResponse<Map<Long, UserInfoDto>> response = userClient.getUserInfo(req);
+        if(response.getResult().isEmpty()){return null;}
 
+        Map<Long, UserInfoDto> result = response.getResult();
         // 3. userClient에서 받아온 데이터 merge
         for (CourseStudentGetRes e : enrollments) {
-            ProGetRes user = users.stream()
-                    .filter(u -> u.getUserId().equals((long) e.getUserId()))
-                    .findFirst()
-                    .orElse(null);
-
+            UserInfoDto user = result.get(e.getUserId());
             if (user != null) {
                 e.setUserName(user.getUserName());
                 e.setDeptName(user.getDeptName());
             }
         }
-
         return enrollments;
     }
     //학과 조회
