@@ -51,8 +51,7 @@ public class ScoreService {
         return new ScoreRes(
                 saved.getScoreId(),
                 saved.getEnrollment().getEnrollmentId(),
-                saved.getRank(),
-                saved.getGrade()
+                saved.getRank()
         );
     }
 
@@ -80,15 +79,17 @@ public class ScoreService {
         score.setAttendanceScore(req.getAttendanceScore());
         score.setOtherScore(req.getOtherScore());
         score.setRank(rank);
-        score.setGrade(grade);
+//        score.setGrade(grade);
 
         Score saved = scoreRepository.save(score);
+
+        enrollment.setStatus("수강완료");
+        enrollmentRepository.save(enrollment);
 
         return new ScoreRes(
                 saved.getScoreId(),
                 saved.getEnrollment().getEnrollmentId(),
-                saved.getRank(),
-                saved.getGrade()
+                saved.getRank()
         );
     }
 
@@ -118,8 +119,7 @@ public class ScoreService {
         return new ScoreRes(
                 updated.getScoreId(),
                 updated.getEnrollment().getEnrollmentId(),
-                updated.getRank(),
-                updated.getGrade()
+                updated.getRank()
         );
     }
 
