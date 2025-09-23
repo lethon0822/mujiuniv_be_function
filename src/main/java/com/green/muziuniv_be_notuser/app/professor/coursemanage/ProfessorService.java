@@ -5,7 +5,7 @@ package com.green.muziuniv_be_notuser.app.professor.coursemanage;
 import com.green.muziuniv_be_notuser.app.professor.coursemanage.model.*;
 import com.green.muziuniv_be_notuser.configuration.model.ResultResponse;
 import com.green.muziuniv_be_notuser.openfeign.user.UserClient;
-import com.green.muziuniv_be_notuser.openfeign.user.model.ProGetRes;
+import com.green.muziuniv_be_notuser.openfeign.user.model.UserInfoDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ public class ProfessorService {
     private final ProfessorMapper professorMapper;
     private final UserClient userClient;
 
-    public int saveCourse(ProfessorPostReq req) {
+    public void saveCourse(ProfessorPostReq req) {
         //Random random = new Random();
         ResultResponse<String> response = userClient.getProDeptCode(req.getUserId());
         String courseCode = response.getResult();
@@ -30,9 +30,9 @@ public class ProfessorService {
         for(int i = 0; i <4; i++){
             courseCode += (int)(Math.random()*10);
         }
-        req.setCourseCode(courseCode);
+        //req.setCourseCode(courseCode);
 
-        return professorMapper.saveCourse(req);
+
     }
 
     // 내 강의 목록 조회
@@ -73,22 +73,18 @@ public class ProfessorService {
                         .toList()
         );
 
-        ResultResponse<List<ProGetRes>> response = userClient.getProInfo(req);
-        List<ProGetRes> users = response.getResult();
+        ResultResponse<Map<Long, UserInfoDto>> response = userClient.getUserInfo(req);
+        if(response.getResult().isEmpty()){return null;}
 
+        Map<Long, UserInfoDto> result = response.getResult();
         // 3. userClient에서 받아온 데이터 merge
         for (CourseStudentGetRes e : enrollments) {
-            ProGetRes user = users.stream()
-                    .filter(u -> u.getUserId().equals((long) e.getUserId()))
-                    .findFirst()
-                    .orElse(null);
-
+            UserInfoDto user = result.get(e.getUserId());
             if (user != null) {
                 e.setUserName(user.getUserName());
                 e.setDeptName(user.getDeptName());
             }
         }
-
         return enrollments;
     }
     //학과 조회

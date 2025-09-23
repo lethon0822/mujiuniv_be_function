@@ -18,7 +18,7 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/professor")
+@RequestMapping("/professor/aaa")
 public class ProfessorController {
     private final ProfessorService professorService;
 
@@ -29,9 +29,9 @@ public class ProfessorController {
             @RequestBody ProfessorPostReq req) {
 
         req.setUserId(signedUser.signedUserId);
-        int result = professorService.saveCourse(req);
+        professorService.saveCourse(req);
 
-        return new ResultResponse<>("강의 등록 성공", result);
+        return new ResultResponse<>("강의 등록 성공",null);
     }
 
     // 내가 등록한 강의 목록 조회

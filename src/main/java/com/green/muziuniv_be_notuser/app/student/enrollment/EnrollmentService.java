@@ -6,7 +6,7 @@ import com.green.muziuniv_be_notuser.configuration.model.ResultResponse;
 import com.green.muziuniv_be_notuser.entity.course.Course;
 import com.green.muziuniv_be_notuser.entity.enrollment.Enrollment;
 import com.green.muziuniv_be_notuser.openfeign.user.UserClient;
-import com.green.muziuniv_be_notuser.openfeign.user.model.ProGetRes;
+import com.green.muziuniv_be_notuser.openfeign.user.model.UserInfoDto;
 import com.green.muziuniv_be_notuser.app.student.enrollment.exception.EnrollmentException;
 import com.green.muziuniv_be_notuser.app.student.enrollment.model.EnrollmentReq;
 import com.green.muziuniv_be_notuser.app.student.enrollment.model.EnrollmentRes;
@@ -89,13 +89,13 @@ public class EnrollmentService {
         Map<String, List<Long>> request = Map.of("userId", List.of(res.getUserId()));
 
         // 유저 서버 호출
-        ResultResponse<List<ProGetRes>> response = userClient.getProInfo(request);
+        ResultResponse<List<UserInfoDto>> response = userClient.getUserInfo(request);
 
         // 매핑
         if(!response.getResult().isEmpty()){
-            ProGetRes proGetRes = response.getResult().get(0);
-            res.setProfessorName(proGetRes.getUserName());
-            res.setDeptName(proGetRes.getDeptName());
+            UserInfoDto userInfoDto = response.getResult().get(0);
+            res.setProfessorName(userInfoDto.getUserName());
+            res.setDeptName(userInfoDto.getDeptName());
         }
 
         return ResponseEntity.ok(new ResultResponse<>("수강 신청 성공", res));
@@ -122,18 +122,18 @@ public class EnrollmentService {
         request.put("userId", professorIds);
 
         // 유저 서버 호출
-        ResultResponse<List<ProGetRes>> response = userClient.getProInfo(request);
-        List<ProGetRes> professorsInfos = response.getResult();
+        ResultResponse<List<UserInfoDto>> response = userClient.getUserInfo(request);
+        List<UserInfoDto> professorsInfos = response.getResult();
 
-        Map<Long, ProGetRes> proGetResMap = professorsInfos.stream()
+        Map<Long, UserInfoDto> proGetResMap = professorsInfos.stream()
                 .collect(Collectors.toMap(professor -> professor.getUserId(), professor -> professor));
 
         // 기존의 강의 데이터에 교수, 학과 정보 주입
         for (GetMyCurrentEnrollmentsCoursesRes course : courseList) {
-            ProGetRes proGetRes = proGetResMap.get(course.getUserId());
-            if (proGetRes != null) {
-                course.setProfessorName(proGetRes.getUserName());
-                course.setDeptName(proGetRes.getDeptName());
+            UserInfoDto userInfoDto = proGetResMap.get(course.getUserId());
+            if (userInfoDto != null) {
+                course.setProfessorName(userInfoDto.getUserName());
+                course.setDeptName(userInfoDto.getDeptName());
             }
 
         }
