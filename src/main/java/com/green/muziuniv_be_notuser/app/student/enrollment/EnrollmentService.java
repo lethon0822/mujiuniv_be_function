@@ -15,7 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
+
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -27,6 +27,9 @@ public class EnrollmentService {
     private final EnrollmentRepository enrollmentRepository;
     private final CourseRepository courseRepository;
     private final UserClient userClient;
+
+    // 수강 신청 가능한 강의 조회
+
 
     // 수강 신청 ( + 중복, 잔여 인원 예외 처리 )
     @Transactional
@@ -86,11 +89,11 @@ public class EnrollmentService {
         Map<String, List<Long>> request = Map.of("userId", List.of(res.getUserId()));
 
         // 유저 서버 호출
-        ResultResponse<List<UserInfoDto>> response = userClient.getUserInfo(request);
+        ResultResponse<Map<Long, UserInfoDto>> response = userClient.getUserInfo(request);
 
         // 매핑
-        if(!response.getResult().isEmpty()){
-            UserInfoDto userInfoDto = response.getResult().get(0);
+        UserInfoDto userInfoDto = response.getResult().get(res.getUserId());
+        if (userInfoDto != null) {
             res.setProfessorName(userInfoDto.getUserName());
             res.setDeptName(userInfoDto.getDeptName());
         }
@@ -115,25 +118,21 @@ public class EnrollmentService {
                 .collect(Collectors.toList()); //stream을 다시 list로 바꿈.
 
         // 요청용 Map 생성
-        Map<String, List<Long>> request = new HashMap<>();
-        request.put("userId", professorIds);
+        Map<String, List<Long>> request = Map.of("userId", professorIds);
 
         // 유저 서버 호출
-        ResultResponse<List<UserInfoDto>> response = userClient.getUserInfo(request);
-        List<UserInfoDto> professorsInfos = response.getResult();
+                ResultResponse<Map<Long, UserInfoDto>> response = userClient.getUserInfo(request);
+                Map<Long, UserInfoDto> proGetResMap = response.getResult();
 
-        Map<Long, UserInfoDto> proGetResMap = professorsInfos.stream()
-                .collect(Collectors.toMap(professor -> professor.getUserId(), professor -> professor));
+        // 기존 강의 데이터에 교수, 학과 정보 주입
+                for (GetMyCurrentEnrollmentsCoursesRes course : courseList) {
+                    UserInfoDto userInfoDto = proGetResMap.get(course.getUserId());
+                    if (userInfoDto != null) {
+                        course.setProfessorName(userInfoDto.getUserName());
+                        course.setDeptName(userInfoDto.getDeptName());
+                    }
+                }
 
-        // 기존의 강의 데이터에 교수, 학과 정보 주입
-        for (GetMyCurrentEnrollmentsCoursesRes course : courseList) {
-            UserInfoDto userInfoDto = proGetResMap.get(course.getUserId());
-            if (userInfoDto != null) {
-                course.setProfessorName(userInfoDto.getUserName());
-                course.setDeptName(userInfoDto.getDeptName());
-            }
-
-        }
         return ResponseEntity.ok(courseList);
     }
 
