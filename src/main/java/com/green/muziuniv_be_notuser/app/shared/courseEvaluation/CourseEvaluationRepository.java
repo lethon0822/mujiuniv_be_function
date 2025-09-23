@@ -13,10 +13,8 @@ public interface CourseEvaluationRepository extends JpaRepository<Enrollment,Lon
     @Transactional
     @Query("UPDATE Enrollment e " +
             "SET e.review = :review, " +
-            "e.evScore = :evScore, " +
-            "e.status = '수강완료' " +
+            "e.evScore = :evScore " +
             "WHERE e.enrollmentId = :enrollmentId " +
-            "AND e.userId = :userId " +
-            "AND e.status = '수강중' ")
+            "AND e.userId = :userId " )
     int updateEvaluation(Long userId, Long enrollmentId, String review, Integer evScore);
 }
