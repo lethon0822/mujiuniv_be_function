@@ -1,40 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.green.muziuniv_be_notuser.app.professor.coursemanage.ProfessorMapper">
+<mapper namespace="com.green.muziuniv_be_notuser.app.professor.course.ProfessorCourseMapper">
 
-    <!-- 강의 등록  -->
-    <insert id="saveCourse">
-        INSERT INTO course
-        SET user_id= #{userId}
-        ,classroom = #{classroom}
-        ,course_code = #{courseCode}
-        ,semester_id = #{semesterId}
-        ,type = #{type}
-        ,time = #{time}
-        ,title = #{title}
-        ,credit = #{credit}
-        ,week_plan = #{weekPlan}
-        ,text_book = #{textBook}
-        ,goal = #{goal}
-        ,max_std = #{maxStd}
-        ,rem_std = #{maxStd}
-        ,grade = #{grade}
-        ,status = '처리중'
-        ,created_at = NOW()
-
-    </insert>
 
     <!-- 내가 등록한 강의목록 조회  -->
     <select id="findByUserId">
-        SELECT c.course_id, c.user_id, c.course_code, c.classroom,
-        c.type, c.time, c.title, c.credit, c.max_std,
-        c.rem_std, c.status, c.grade,
-        s.semester_id, s.year, s.semester,
-        (SELECT COUNT(*) FROM enrollment e WHERE e.course_id = c.course_id) AS courseStudent
+        SELECT c.user_id, course_code, c.course_id, classroom, type, s.semester, c.time, c.title, c.credit, c.max_std, c.status, c.grade, c.rem_std,
+        (
+        SELECT COUNT(*)
+        FROM enrollment e
+        WHERE e.course_id = c.course_id
+        ) AS courseStudent
         FROM course c
         JOIN semester s ON s.semester_id = c.semester_id
         WHERE c.user_id = #{userId}
-        ORDER BY c.course_id DESC
+        <if test="sid != null and sid != ''">
+            AND s.semester_id = #{sid}
+        </if>
+        <if test="(sid == null or sid == '')and (year != null and year !='')">
+            AND s.year = #{year}
+            And s.semester = #{semester}
+        </if>
+        ORDER BY c.course_id DESC;
     </select>
 
 

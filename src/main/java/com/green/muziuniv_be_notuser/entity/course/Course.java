@@ -13,7 +13,12 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-@ToString
+@Table(
+        name = "course",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uk_course_code_semester_id", columnNames = {"course_code", "semester_id"})
+        }
+)
 public class Course extends CreatedAt {
 
     @Id
@@ -66,9 +71,7 @@ public class Course extends CreatedAt {
     @Column(unique = true, nullable = false, length = 20)
     private String courseCode;
 
-    public Course(Long courseId){
-        this.courseId = courseId;
-    }
+
 
 
 

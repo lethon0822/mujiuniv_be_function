@@ -6,6 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ProfessorGetRes {
+    private Long userId;
     private String courseCode;
     private int courseId;
     private String deptName;
@@ -20,4 +21,6 @@ public class ProfessorGetRes {
     private String status;
     private int grade;
     private int courseStudent;
+    private String userName;
+
 }

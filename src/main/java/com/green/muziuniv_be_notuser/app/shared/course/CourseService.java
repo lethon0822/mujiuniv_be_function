@@ -5,11 +5,12 @@ import com.green.muziuniv_be_notuser.configuration.model.ResultResponse;
 import com.green.muziuniv_be_notuser.entity.course.Course;
 import com.green.muziuniv_be_notuser.openfeign.department.DepartmentClient;
 import com.green.muziuniv_be_notuser.openfeign.department.model.DepartmentHeadNameRes;
-import com.green.muziuniv_be_notuser.openfeign.user.model.ProGetRes;
+
 import com.green.muziuniv_be_notuser.openfeign.user.UserClient;
 import com.green.muziuniv_be_notuser.app.shared.course.model.CourseDetailRes;
 import com.green.muziuniv_be_notuser.app.shared.course.model.CourseFilterReq;
 import com.green.muziuniv_be_notuser.app.shared.course.model.CourseFilterRes;
+import com.green.muziuniv_be_notuser.openfeign.user.model.UserInfoDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -65,20 +66,17 @@ public class CourseService {
         request.put("userId", professorIds);
 
         // 유저 서버 호출
-        ResultResponse<List<ProGetRes>> response = userClient.getProInfo(request);
-        List<ProGetRes> professorsInfos = response.getResult();
-
-        Map<Long, ProGetRes> proGetResMap = professorsInfos.stream()
-                .collect(Collectors.toMap(professor -> professor.getUserId(), professor -> professor));
+        ResultResponse<Map<Long, UserInfoDto>> proInfo = userClient.getUserInfo(request);
+        Map<Long, UserInfoDto> proGetResMap = proInfo.getResult();
 
         // 기존의 강의 데이터에 교수, 학과 정보 주입
         for (CourseFilterRes course : courseList) {
-            ProGetRes proGetRes = proGetResMap.get(course.getUserId());
-            if (proGetRes != null) {
-                course.setProfessorName(proGetRes.getUserName());
+            UserInfoDto userInfoDto = proGetResMap.get(course.getUserId());
+            if (userInfoDto != null) {
+                course.setProfessorName(userInfoDto.getUserName());
 
                 if (course.getGrade() != 0) {  // 학년이 0이면 학과를 교양학부로
-                    course.setDeptName(proGetRes.getDeptName());
+                    course.setDeptName(userInfoDto.getDeptName());
                 } else {
                     course.setDeptName("교양학부");
                 }
@@ -99,11 +97,8 @@ public class CourseService {
         Map<String, List<Long>> request = new HashMap<>();
         request.put("userId", list);
 
-        ResultResponse<List<ProGetRes>> proInfo = userClient.getProInfo(request);
-        List<ProGetRes> professorsInfo = proInfo.getResult();
-
-        Map<Long, ProGetRes> proGetResMap = professorsInfo.stream()
-                .collect(Collectors.toMap(professor -> professor.getUserId(), professor -> professor));
+        ResultResponse<Map<Long, UserInfoDto>> proInfo = userClient.getUserInfo(request);
+        Map<Long, UserInfoDto> proMap = proInfo.getResult();
 
         CourseDetailRes result = CourseDetailRes.builder()
                 .courseId(course.getCourseId())
@@ -117,8 +112,8 @@ public class CourseService {
                 .textBook(course.getTextBook())
                 .goal(course.getGoal())
                 .maxStd(course.getMaxStd())
-                .userName(proGetResMap.get(course.getUserId().getUserId()).getUserName())
-                .deptName(proGetResMap.get(course.getUserId().getUserId()).getDeptName())
+                .userName(proMap.get(course.getUserId().getUserId()).getUserName())
+                .deptName(proMap.get(course.getUserId().getUserId()).getDeptName())
                 .grade(course.getGrade())
                 .build();
         return result;
