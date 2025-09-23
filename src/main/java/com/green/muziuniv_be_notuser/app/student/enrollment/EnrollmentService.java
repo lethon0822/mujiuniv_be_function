@@ -28,6 +28,9 @@ public class EnrollmentService {
     private final CourseRepository courseRepository;
     private final UserClient userClient;
 
+    // 수강 신청 가능한 강의 조회
+
+
     // 수강 신청 ( + 중복, 잔여 인원 예외 처리 )
     @Transactional
     public ResponseEntity<?> enrollment(EnrollmentReq req) {
