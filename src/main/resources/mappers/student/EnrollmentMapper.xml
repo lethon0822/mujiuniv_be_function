@@ -25,12 +25,11 @@
         LEFT JOIN enrollment e
         ON e.course_id = c.course_id
         AND e.user_id = #{userId}
+        AND (e.status IS NULL OR e.status NOT IN ('수강완료'))
         WHERE s.year = #{year}
+        AND s.semester = #{semester}
         AND c.status = '승인'
 
-        <if test="semester != null and semester != ''">
-            AND s.semester = #{semester}
-        </if>
 
         <!-- 전공 ( 전공 선택, 전공 필수 ), 교양 ( 교양 선택, 교양 필수 )-->
         <if test="type != null and type != ''">

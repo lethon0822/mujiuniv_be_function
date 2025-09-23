@@ -1,8 +1,14 @@
 package com.green.muziuniv_be_notuser.app.student.enrollment.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 
+@Getter
+@Setter
 public class EnrollmentFilterReq {
+    private Long userId;
     private Integer year;
     private Integer semester;
     private String type;

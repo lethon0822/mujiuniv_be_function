@@ -1,23 +1,23 @@
 package com.green.muziuniv_be_notuser.app.student.enrollment;
 
 import com.green.muziuniv_be_notuser.app.shared.course.CourseRepository;
-import com.green.muziuniv_be_notuser.app.student.enrollment.model.GetMyCurrentEnrollmentsCoursesRes;
+import com.green.muziuniv_be_notuser.app.shared.course.model.CourseFilterRes;
+import com.green.muziuniv_be_notuser.app.student.enrollment.model.*;
 import com.green.muziuniv_be_notuser.configuration.model.ResultResponse;
 import com.green.muziuniv_be_notuser.entity.course.Course;
 import com.green.muziuniv_be_notuser.entity.enrollment.Enrollment;
+import com.green.muziuniv_be_notuser.openfeign.department.DepartmentClient;
+import com.green.muziuniv_be_notuser.openfeign.department.model.DepartmentHeadNameRes;
 import com.green.muziuniv_be_notuser.openfeign.user.UserClient;
 import com.green.muziuniv_be_notuser.openfeign.user.model.UserInfoDto;
 import com.green.muziuniv_be_notuser.app.student.enrollment.exception.EnrollmentException;
-import com.green.muziuniv_be_notuser.app.student.enrollment.model.EnrollmentReq;
-import com.green.muziuniv_be_notuser.app.student.enrollment.model.EnrollmentRes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,8 +27,62 @@ public class EnrollmentService {
     private final EnrollmentRepository enrollmentRepository;
     private final CourseRepository courseRepository;
     private final UserClient userClient;
+    private final DepartmentClient departmentClient;
 
     // 수강 신청 가능한 강의 조회
+    public List<EnrollmentFilterRes> getAvailableEnrollmentsCourses(EnrollmentFilterReq req){
+        // req에 학과 조건이 있는 경우
+        if(req.getDeptId() != null) {
+            // 1. 유저 서비스 호출해서 해당 학과의 교수 리스트를 가져옴.
+            ResultResponse<List<DepartmentHeadNameRes>> deptProfessors = departmentClient.findDeptHeadList(req.getDeptId());
+            // 2. 교수의 userId 리스트만 추출
+            List<Long> professorIds = deptProfessors.getResult().stream()
+                    .map(d -> d.getUserId())
+                    .collect(Collectors.toList());
+            // 만약 해당 학과의 교수들이 개설한 강의가 하나도 없는 경우
+            if (professorIds.isEmpty()) {
+                return Collections.emptyList();
+            }
+            // 3.EnrollmentFilterReq req 객체에 교수 리스트 세팅 (Mapper에서 in 조건으로 사용)
+            req.setProfessorIds(professorIds);
+        }
+        // 4. req에 따른 courseList 조회
+        List<EnrollmentFilterRes> courseList = enrollmentMapper.getAvailableEnrollmentsCourses(req);
+        // courseList가 빈 리스트라면 유저 서버를 호출하지 말고 빈 리스트 그대로 반환
+        if(courseList.isEmpty()){
+            return Collections.emptyList();
+        }
+        // 5. 강의 리스트에서 교수 Id (userId)만 추출 ( 현재 교수명, 학과명이 비어있으므로 )
+        List<Long> professorIds = courseList.stream()
+                .map(course -> course.getUserId())
+                .distinct()
+                .collect(Collectors.toList());
+
+        // 6. 요청용 Map 생성
+        Map<String, List<Long>> request = new HashMap<>();
+        request.put("userId", professorIds);
+
+        // 유저 서버 호출
+        ResultResponse<Map<Long, UserInfoDto>> proInfo = userClient.getUserInfo(request);
+        Map<Long, UserInfoDto> proGetResMap = proInfo.getResult();
+
+        // 기존의 강의 데이터에 교수, 학과 정보 주입
+        for (EnrollmentFilterRes course : courseList) {
+            UserInfoDto userInfoDto = proGetResMap.get(course.getUserId());
+            if (userInfoDto != null) {
+                course.setProfessorName(userInfoDto.getUserName());
+
+                if (course.getGrade() != 0) {  // 학년이 0이면 학과를 교양학부로
+                    course.setDeptName(userInfoDto.getDeptName());
+                } else {
+                    course.setDeptName("교양학부");
+                }
+
+            }
+        }
+
+        return courseList;
+    }
 
 
     // 수강 신청 ( + 중복, 잔여 인원 예외 처리 )

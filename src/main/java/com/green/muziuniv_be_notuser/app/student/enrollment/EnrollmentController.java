@@ -1,6 +1,9 @@
 package com.green.muziuniv_be_notuser.app.student.enrollment;
 
+import com.green.muziuniv_be_notuser.app.student.enrollment.model.EnrollmentFilterReq;
+import com.green.muziuniv_be_notuser.app.student.enrollment.model.EnrollmentFilterRes;
 import com.green.muziuniv_be_notuser.app.student.enrollment.model.EnrollmentReq;
+import com.green.muziuniv_be_notuser.app.student.enrollment.model.EnrollmentRes;
 import com.green.muziuniv_be_notuser.configuration.model.ResultResponse;
 import com.green.muziuniv_be_notuser.configuration.model.SignedUser;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,11 +12,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/student/enrollment")
 public class EnrollmentController {
     private final EnrollmentService enrollmentService;
+
+    // 수강 신청 가능한 강의 목록 조회 ( 원래는 강의 조회 페이지에서 땡겨썻는데 그렇게 하니 문제 개많아서 추가함 )
+    @GetMapping
+    public ResponseEntity<?> getAvailableEnrollmentsCourses(@AuthenticationPrincipal SignedUser signedUser,@ModelAttribute EnrollmentFilterReq req){
+        Long userId = signedUser.signedUserId;
+        req.setUserId(userId);
+        List<EnrollmentFilterRes> courseList = enrollmentService.getAvailableEnrollmentsCourses(req);
+        return ResponseEntity.ok(courseList);
+    }
 
     // 수강 신청
     @PostMapping
