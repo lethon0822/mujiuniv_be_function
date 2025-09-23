@@ -42,9 +42,11 @@ public class Course extends CreatedAt {
     private String time;
 
     @Column(nullable = false, length = 20)
+    @Builder.Default
     private Integer remStd = 0;
 
     @Column(nullable = false, length = 20)
+    @Builder.Default
     private String status = "처리중";
 
     @Column(nullable = false, length = 30)

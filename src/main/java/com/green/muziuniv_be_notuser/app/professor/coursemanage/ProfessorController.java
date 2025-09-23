@@ -22,29 +22,29 @@ import java.util.Map;
 public class ProfessorController {
     private final ProfessorService professorService;
 
-    // 강의 등록
-    @PostMapping("/course")
-    public ResultResponse<Integer> saveCourse(
-            @AuthenticationPrincipal SignedUser signedUser,
-            @RequestBody ProfessorPostReq req) {
-
-        req.setUserId(signedUser.signedUserId);
-        professorService.saveCourse(req);
-
-        return new ResultResponse<>("강의 등록 성공",null);
-    }
-
-    // 내가 등록한 강의 목록 조회
-    @GetMapping("/course")
-    public ResultResponse<List<ProfessorGetRes>> findMyCourse(
-            @AuthenticationPrincipal SignedUser signedUser,
-            @ModelAttribute ProfessorGetReq req) {
-
-        req.setUserId(signedUser.signedUserId);
-        List<ProfessorGetRes> result = professorService.findMyCourse(req);
-
-        return new ResultResponse<>("내 강의 목록 조회 성공", result);
-    }
+//    // 강의 등록
+//    @PostMapping("/course")
+//    public ResultResponse<Integer> saveCourse(
+//            @AuthenticationPrincipal SignedUser signedUser,
+//            @RequestBody ProfessorPostReq req) {
+//
+//        req.setUserId(signedUser.signedUserId);
+//        professorService.saveCourse(req);
+//
+//        return new ResultResponse<>("강의 등록 성공",null);
+//    }
+//
+//    // 내가 등록한 강의 목록 조회
+//    @GetMapping("/course")
+//    public ResultResponse<List<ProfessorGetRes>> findMyCourse(
+//            @AuthenticationPrincipal SignedUser signedUser,
+//            @ModelAttribute ProfessorGetReq req) {
+//
+//        req.setUserId(signedUser.signedUserId);
+//        List<ProfessorGetRes> result = professorService.findMyCourse(req);
+//
+//        return new ResultResponse<>("내 강의 목록 조회 성공", result);
+//    }
 
     // 강의별 학생 리스트 조회
     @GetMapping("/student")

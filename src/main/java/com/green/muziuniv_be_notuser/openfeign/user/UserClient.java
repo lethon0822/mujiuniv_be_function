@@ -21,6 +21,6 @@ public interface UserClient {
     ResultResponse<Map<Long, UserInfoDto>> getUserInfo(@RequestBody Map<String, List<Long>> request);
 
     // 교수 학과 가져옴
-    @GetMapping("/api/user/dept")
-    ResultResponse<String> getProDeptCode(@RequestParam("user_id")Long userId);
+    @GetMapping("/api/user/dept/code")
+    String getProDeptCode(@RequestParam("user_id")Long userId);
 }

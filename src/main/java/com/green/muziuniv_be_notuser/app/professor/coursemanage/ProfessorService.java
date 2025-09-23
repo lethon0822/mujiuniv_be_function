@@ -20,39 +20,39 @@ public class ProfessorService {
     private final ProfessorMapper professorMapper;
     private final UserClient userClient;
 
-    public void saveCourse(ProfessorPostReq req) {
-        //Random random = new Random();
-        ResultResponse<String> response = userClient.getProDeptCode(req.getUserId());
-        String courseCode = response.getResult();
-//        for(int i = 0; i<3; i++){
-//            courseCode += (char)(random.nextInt(26)+65);
+//    public void saveCourse(ProfessorPostReq req) {
+//        //Random random = new Random();
+//        ResultResponse<String> response = userClient.getProDeptCode(req.getUserId());
+//        String courseCode = response.getResult();
+////        for(int i = 0; i<3; i++){
+////            courseCode += (char)(random.nextInt(26)+65);
+////        }
+//        for(int i = 0; i <4; i++){
+//            courseCode += (int)(Math.random()*10);
 //        }
-        for(int i = 0; i <4; i++){
-            courseCode += (int)(Math.random()*10);
-        }
-        //req.setCourseCode(courseCode);
+//        //req.setCourseCode(courseCode);
+//
+//
+//    }
 
-
-    }
-
-    // 내 강의 목록 조회
-    public List<ProfessorGetRes> findMyCourse(ProfessorGetReq req) {
-        // 1. notuser DB에서 강의 목록 가져오기
-        List<ProfessorGetRes> courses = professorMapper.findByUserId(req);
-
-        if (courses.isEmpty()) return courses;
-
-        // 2. 교수 학과 가져오기 (단일)
-        ResultResponse<String> deptRes = userClient.getProDeptCode(req.getUserId());
-        String deptName = deptRes.getResult();
-
-        // 3. 각 강의 DTO에 학과명 채워넣기
-        for (ProfessorGetRes course : courses) {
-            course.setDeptName(deptName);
-        }
-
-        return courses;
-    }
+//    // 내 강의 목록 조회
+//    public List<ProfessorGetRes> findMyCourse(ProfessorGetReq req) {
+//        // 1. notuser DB에서 강의 목록 가져오기
+//        List<ProfessorGetRes> courses = professorMapper.findByUserId(req);
+//
+//        if (courses.isEmpty()) return courses;
+//
+//        // 2. 교수 학과 가져오기 (단일)
+//        ResultResponse<String> deptRes = userClient.getUserInfo(req.getUserId());
+//        String deptName = deptRes.getResult();
+//
+//        // 3. 각 강의 DTO에 학과명 채워넣기
+//        for (ProfessorGetRes course : courses) {
+//            course.setDeptName(deptName);
+//        }
+//
+//        return courses;
+//    }
 
     // 강의 계획서 수정
     public int modify(ProfessorPutReq req) {

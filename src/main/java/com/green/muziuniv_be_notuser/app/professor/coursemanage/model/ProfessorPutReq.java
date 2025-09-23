@@ -5,16 +5,16 @@ import lombok.Getter;
 @Getter
 
 public class ProfessorPutReq {
-    private int courseId;
+    private Long courseId;
     private String classroom;
     private String type;
-    private int semester;
+    private Long semesterId;
     private String time;
     private String title;
-    private int credit;
+    private Long credit;
     private String weekPlan;
     private String textBook;
     private String goal;
-    private int maxStd;
+    private Integer maxStd;
     private int grade;
 }
