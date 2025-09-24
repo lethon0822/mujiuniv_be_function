@@ -14,4 +14,5 @@ public class ScoreRes {
     private Long enrollmentId; // 수강신청 ID (fk)
     private String rank; // 등급 (A+, A, B+, ...)
     private int gradeYear; // 학년
+
 }
