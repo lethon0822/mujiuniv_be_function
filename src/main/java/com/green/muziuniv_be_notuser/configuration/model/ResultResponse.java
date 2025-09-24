@@ -10,4 +10,5 @@ import lombok.ToString;
 public class ResultResponse<T> {
     private String message;
     private T result;
+
 }

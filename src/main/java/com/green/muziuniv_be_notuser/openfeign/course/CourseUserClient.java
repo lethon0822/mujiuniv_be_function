@@ -14,5 +14,7 @@ public interface CourseUserClient {
     // user-service에서 userId 리스트로 학생 정보 한 번에 조회
     @PostMapping("/list")
     ResultResponse<List<UserResDto>> getUsersByIds(@RequestBody Map<String, List<Long>> userIds);
+
 }
+
 
