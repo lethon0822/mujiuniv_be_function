@@ -20,7 +20,7 @@ public class ScheduleCreateReq {
     private LocalDateTime startDatetime;
     @NotNull
     private LocalDateTime endDatetime;
-    @NotBlank @Size(max = 255)
+    @Size(max = 255)
     private String description;
 
 
