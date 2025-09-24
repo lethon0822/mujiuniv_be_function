@@ -9,6 +9,6 @@ public class UserResDto {
     private Long userId; // 학생 ID
     private String loginId;
     private String userName; // 이름
-    private int gradeYear; // 학년
+    private Integer gradeYear; // 학년
     private String deptName; // 학과명
 }

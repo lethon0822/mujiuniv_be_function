@@ -4,10 +4,16 @@ import com.green.muziuniv_be_notuser.app.professor.score.model.ScorePostReq;
 import com.green.muziuniv_be_notuser.app.professor.score.model.ScorePutReq;
 import com.green.muziuniv_be_notuser.app.professor.score.model.ScoreRes;
 import com.green.muziuniv_be_notuser.app.student.enrollment.EnrollmentRepository;
+import com.green.muziuniv_be_notuser.configuration.model.ResultResponse;
 import com.green.muziuniv_be_notuser.entity.enrollment.Enrollment;
 import com.green.muziuniv_be_notuser.entity.score.Score;
+import com.green.muziuniv_be_notuser.openfeign.course.CourseUserClient;
+import com.green.muziuniv_be_notuser.openfeign.course.model.UserResDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -15,6 +21,7 @@ public class ScoreService {
 
     private final ScoreRepository scoreRepository;
     private final EnrollmentRepository enrollmentRepository;
+    private final CourseUserClient courseUserClient;
 
     /* -------------------------------
        방법 1) 성적 기입 (POST, 중복 방지)
@@ -51,7 +58,8 @@ public class ScoreService {
         return new ScoreRes(
                 saved.getScoreId(),
                 saved.getEnrollment().getEnrollmentId(),
-                saved.getRank()
+                saved.getRank(),
+                saved.getGrade()
         );
     }
 
@@ -63,11 +71,11 @@ public class ScoreService {
         Enrollment enrollment = enrollmentRepository.findById(req.getEnrollmentId())
                 .orElseThrow(() -> new RuntimeException("등록된 수강내역이 없음"));
 
-        int total = req.getMidScore() + req.getFinScore()
+        int rawTotal = req.getMidScore() + req.getFinScore()
                 + req.getAttendanceScore() + req.getOtherScore();
+        double total = rawTotal / 4.0;
 
         String rank = calcRank(total);
-        int grade = calcGrade(rank);
 
         // 이미 존재하면 가져오고, 없으면 새로 생성
         Score score = scoreRepository.findByEnrollment_EnrollmentId(req.getEnrollmentId())
@@ -86,10 +94,17 @@ public class ScoreService {
         enrollment.setStatus("수강완료");
         enrollmentRepository.save(enrollment);
 
+        // user-service 호출해서 학년 가져오기
+        Map<String, List<Long>> request = Map.of("userIds", List.of(enrollment.getUserId()));
+        ResultResponse<List<UserResDto>> response = courseUserClient.getUsersByIds(request);
+
+        UserResDto userInfo = response.getResult().get(0);
+
         return new ScoreRes(
                 saved.getScoreId(),
                 saved.getEnrollment().getEnrollmentId(),
-                saved.getRank()
+                saved.getRank(),
+                userInfo.getGradeYear()
         );
     }
 
@@ -119,14 +134,15 @@ public class ScoreService {
         return new ScoreRes(
                 updated.getScoreId(),
                 updated.getEnrollment().getEnrollmentId(),
-                updated.getRank()
+                updated.getRank(),
+                updated.getGrade()
         );
     }
 
     /* -------------------------------
        등급 계산 로직
     -------------------------------- */
-    private String calcRank(int total) {
+    private String calcRank(double total) {
         if (total >= 95) return "A+";
         else if (total >= 90) return "A";
         else if (total >= 85) return "B+";
