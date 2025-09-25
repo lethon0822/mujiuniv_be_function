@@ -132,7 +132,7 @@ public class ProfessorCourseService {
                             e.getUserId(),
                             user != null ? user.getLoginId() : null,
                             user != null ? user.getUserName() : null,
-                            user != null ? user.getGradeYear() : 0,
+                            (user != null && user.getGradeYear() != null) ? user.getGradeYear() : 0,
                             user != null ? user.getDeptName() : null
                     );
                 })
