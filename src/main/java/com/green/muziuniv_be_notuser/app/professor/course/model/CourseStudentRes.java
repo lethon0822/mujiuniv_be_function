@@ -16,6 +16,6 @@ public class CourseStudentRes {
     private Long userId;           // 학생 PK (loginId 대신 UserId)
     private String loginId;        // 학생 로그인 ID
     private String userName;       // 학생 이름
-    private int gradeYear;         // 학년
+    private Integer gradeYear;         // 학년
     private String departmentName; // 학과명
 }
