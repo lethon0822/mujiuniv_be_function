@@ -29,4 +29,6 @@ public interface ScheduleMapper {
     List<ScheduleRes> selectByMonth(@Param("start") String start,
                                     @Param("end") String end,
                                     @Param("semesterId") Integer semesterId);
+
+
 }

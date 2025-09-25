@@ -33,6 +33,13 @@ public class ApplicationController {
     @PostMapping
     public void createApplication(@Valid @RequestBody AppPostReq req,
                                   @AuthenticationPrincipal SignedUser signedUser) {
+        // fallback 처리
+        if (signedUser != null) {
+            req.setUserId(signedUser.signedUserId);
+        } else if (req.getUserId() == null) {
+            throw new IllegalArgumentException("userId가 필요합니다.");
+        }
+
         applicationService.createApplication(req, signedUser);
     }
 
