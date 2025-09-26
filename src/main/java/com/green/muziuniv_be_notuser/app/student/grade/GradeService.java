@@ -1,5 +1,7 @@
 package com.green.muziuniv_be_notuser.app.student.grade;
 
+import com.green.muziuniv_be_notuser.app.shared.schedule.ScheduleMapper;
+import com.green.muziuniv_be_notuser.app.shared.schedule.ScheduleValidator;
 import com.green.muziuniv_be_notuser.app.student.grade.model.GetAllPermanentGradeReq;
 import com.green.muziuniv_be_notuser.app.student.grade.model.GetAllPermanentGradeRes;
 import com.green.muziuniv_be_notuser.app.student.grade.model.GetMyCurrentGradeRes;
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
 public class GradeService {
     private final GradeMapper gradeMapper;
     private final UserClient userClient;
+    private final ScheduleValidator scheduleValidator;
 
     // 등급으로 평점 set 하는 함수
     private double convertRankToPoint(String rank) {
@@ -67,7 +70,11 @@ public class GradeService {
     }
 
     // 금학기 성적 조회
-    public ResponseEntity<?> getMyCurrentGrades(Long userId, int semesterId) {
+    public ResponseEntity<?> getMyCurrentGrades(Long userId, Long semesterId) {
+        // 0. 성적 조회 기간 체크
+        scheduleValidator.validateOpen(semesterId, "성적조회");
+
+        // 성적 조회 로직 실행
         List<GetMyCurrentGradeRes> res = gradeMapper.getMyCurrentGrade(userId, semesterId);
 
         // res의 교수명 세팅을 위해 유저 서버랑 통신
