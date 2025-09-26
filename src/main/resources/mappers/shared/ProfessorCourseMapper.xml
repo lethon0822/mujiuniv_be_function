@@ -58,6 +58,13 @@
         WHERE course_id = #{courseId}
     </update>
 
+    <select id="findSameCode">
+        SELECT COUNT(course_id)
+        FROM course
+        WHERE semester_id = #{semesterId}
+        AND course_code = #{courseCode}
+    </select>
+
     <!--    아래는 학생 기능 추후 옮겨 놓는다 .-->
 
     <!-- 강의설문지 -->
