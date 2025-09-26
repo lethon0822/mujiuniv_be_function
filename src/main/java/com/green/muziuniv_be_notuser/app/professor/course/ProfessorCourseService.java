@@ -2,6 +2,7 @@ package com.green.muziuniv_be_notuser.app.professor.course;
 
 import com.green.muziuniv_be_notuser.app.professor.course.model.*;
 import com.green.muziuniv_be_notuser.app.shared.course.CourseRepository;
+import com.green.muziuniv_be_notuser.app.shared.schedule.ScheduleValidator;
 import com.green.muziuniv_be_notuser.app.student.enrollment.EnrollmentRepository;
 import com.green.muziuniv_be_notuser.configuration.model.ResultResponse;
 import com.green.muziuniv_be_notuser.entity.UserId;
@@ -26,6 +27,7 @@ public class ProfessorCourseService {
     private final ProfessorCourseMapper professorCourseMapper;
     private final CourseUserClient courseUserClient;
     private final UserClient userClient;
+    private final ScheduleValidator scheduleValidator;
 
 
     // 강의 등록
