@@ -1,8 +1,8 @@
 package com.green.muziuniv_be_notuser.app.professor.course;
 
-import com.green.muziuniv_be_notuser.app.professor.coursemanage.model.ProfessorGetReq;
-import com.green.muziuniv_be_notuser.app.professor.coursemanage.model.ProfessorGetRes;
-import com.green.muziuniv_be_notuser.app.professor.coursemanage.model.ProfessorSurveyCheckRes;
+import com.green.muziuniv_be_notuser.app.professor.course.model.ProfessorGetReq;
+import com.green.muziuniv_be_notuser.app.professor.course.model.ProfessorGetRes;
+import com.green.muziuniv_be_notuser.app.professor.course.model.ProfessorSurveyCheckRes;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -16,4 +16,6 @@ public interface ProfessorCourseMapper {
     List<ProfessorSurveyCheckRes> findSurveyByCourseId(int courseId);
 
     int findSameCode(@Param("courseCode") String courseCode, @Param("semesterId") Long semesterId);
+    //강의 삭제
+    int deleteCourse(@Param("courseId") int courseId, @Param("userId") Long userId);
 }

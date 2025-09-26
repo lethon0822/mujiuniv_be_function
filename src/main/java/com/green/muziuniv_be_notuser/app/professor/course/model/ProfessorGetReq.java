@@ -1,4 +1,4 @@
-package com.green.muziuniv_be_notuser.app.professor.coursemanage.model;
+package com.green.muziuniv_be_notuser.app.professor.course.model;
 
 
 import lombok.AllArgsConstructor;

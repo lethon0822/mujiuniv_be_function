@@ -1,6 +1,6 @@
 package com.green.muziuniv_be_notuser.app.professor.course;
 
-import com.green.muziuniv_be_notuser.app.professor.coursemanage.model.*;
+import com.green.muziuniv_be_notuser.app.professor.course.model.*;
 import com.green.muziuniv_be_notuser.app.shared.course.CourseRepository;
 import com.green.muziuniv_be_notuser.app.student.enrollment.EnrollmentRepository;
 import com.green.muziuniv_be_notuser.configuration.model.ResultResponse;
@@ -8,7 +8,6 @@ import com.green.muziuniv_be_notuser.entity.UserId;
 import com.green.muziuniv_be_notuser.entity.course.Course;
 import com.green.muziuniv_be_notuser.entity.semester.Semester;
 import com.green.muziuniv_be_notuser.openfeign.course.CourseUserClient;
-import com.green.muziuniv_be_notuser.app.professor.course.model.CourseStudentRes;
 import com.green.muziuniv_be_notuser.openfeign.course.model.UserResDto;
 import com.green.muziuniv_be_notuser.entity.enrollment.Enrollment;
 import com.green.muziuniv_be_notuser.openfeign.user.UserClient;
@@ -159,13 +158,9 @@ public class ProfessorCourseService {
         Course course = courseRepository.findById(req.getCourseId())
                 .orElseThrow(() -> new RuntimeException("해당 강의가 존재하지 않습니다"));
 
-        Semester semester = Semester.builder()
-                .semesterId(req.getSemesterId())
-                .build();
 
         course.setClassroom(req.getClassroom());
         course.setType(req.getType());
-        course.setSemesterId(semester);
         course.setTime(req.getTime());
         course.setTitle(req.getTitle());
         course.setCredit(req.getCredit());
@@ -176,5 +171,15 @@ public class ProfessorCourseService {
         course.setGrade(req.getGrade());
 
         courseRepository.save(course);
+    }
+
+    //강의 삭제
+    // 자기강의만 삭제
+    public int deleteCourse(int courseId, Long userId) {
+        int result = professorCourseMapper.deleteCourse(courseId, userId);
+        if (result == 0) {
+            throw new RuntimeException("삭제할 권한이 없거나 강의가 존재하지 않습니다.");
+        }
+        return result;
     }
 }

@@ -1,20 +1,24 @@
-package com.green.muziuniv_be_notuser.app.professor.coursemanage.model;
+package com.green.muziuniv_be_notuser.app.professor.course.model;
+
 
 import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 @Getter
-
-public class ProfessorPutReq {
-    private Long courseId;
+@Setter
+@ToString
+public class ProfessorPostReq {
+    private Long userId;
     private String classroom;
-    private String type;
     private Long semesterId;
+    private String type;
     private String time;
     private String title;
     private Long credit;
     private String weekPlan;
     private String textBook;
     private String goal;
-    private Integer maxStd;
+    private int maxStd;
     private int grade;
 }

@@ -2,6 +2,7 @@ package com.green.muziuniv_be_notuser.app.professor.coursemanage;
 
 
 
+import com.green.muziuniv_be_notuser.app.professor.course.model.*;
 import com.green.muziuniv_be_notuser.app.professor.coursemanage.model.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;

@@ -1,7 +1,6 @@
 package com.green.muziuniv_be_notuser.app.professor.course;
 
-import com.green.muziuniv_be_notuser.app.professor.course.model.CourseStudentRes;
-import com.green.muziuniv_be_notuser.app.professor.coursemanage.model.*;
+import com.green.muziuniv_be_notuser.app.professor.course.model.*;
 import com.green.muziuniv_be_notuser.configuration.model.ResultResponse;
 import com.green.muziuniv_be_notuser.configuration.model.SignedUser;
 import lombok.RequiredArgsConstructor;
@@ -56,9 +55,18 @@ public class ProfessorCourseController {
     }
 
     // 강의 계획서 수정
-    @PutMapping("/course")
+    @PutMapping
     public ResultResponse<?> modify(@RequestBody ProfessorPutReq req) {
         professorCourseService.modify(req);
         return new ResultResponse<>("강의 계획서 수정 성공", null);
     }
+
+//    @DeleteMapping("/course/{id}")
+//    public ResultResponse<Integer> deleteCourse(
+//            @PathVariable("id") int courseId,
+//            @AuthenticationPrincipal SignedUser signedUser) {
+//
+//        int result = professorService.deleteCourse(courseId, signedUser.signedUserId);
+//        return new ResultResponse<>("강의 삭제 성공", result);
+//    }
 }

@@ -2,6 +2,8 @@ package com.green.muziuniv_be_notuser.app.professor.coursemanage;
 
 
 
+import com.green.muziuniv_be_notuser.app.professor.course.model.ProfessorPutReq;
+import com.green.muziuniv_be_notuser.app.professor.course.model.ProfessorSurveyCheckRes;
 import com.green.muziuniv_be_notuser.app.professor.coursemanage.model.*;
 import com.green.muziuniv_be_notuser.configuration.model.ResultResponse;
 import com.green.muziuniv_be_notuser.openfeign.user.UserClient;
