@@ -12,6 +12,6 @@ public interface GradeMapper {
     // 영구 성적 조회
     List<GetAllPermanentGradeRes> getAllPermanentGrade(Long userId, GetAllPermanentGradeReq req);
     // 금학기 성적 조회
-    List<GetMyCurrentGradeRes> getMyCurrentGrade(Long userId, int semesterId);
+    List<GetMyCurrentGradeRes> getMyCurrentGrade(Long userId, Long semesterId);
 
 }

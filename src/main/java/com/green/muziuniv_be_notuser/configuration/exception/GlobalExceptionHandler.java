@@ -23,4 +23,10 @@ public class GlobalExceptionHandler {
         // PersistenceException 처리 로직
         return new ResponseEntity<>(new ResultResponse("MyBatis 오류가 발생했습니다.", null), HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    // 학사 일정 검증 실패 시 ScheduleException 처리
+    @ExceptionHandler(ScheduleException.class)
+    public ResponseEntity<?> handleScheduleException(ScheduleException ex){
+        return new ResponseEntity<>(new ResultResponse(ex.getMessage(), null), HttpStatus.BAD_REQUEST);
+    }
 }

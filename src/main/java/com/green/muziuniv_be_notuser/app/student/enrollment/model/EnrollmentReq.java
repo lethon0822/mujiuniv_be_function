@@ -8,5 +8,4 @@ import lombok.Setter;
 public class EnrollmentReq {
     private Long userId;
     private Long courseId;
-
 }

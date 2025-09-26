@@ -12,7 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "schedule") // 명시 추천
+@Table(
+        name = "schedule",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"semester_id", "schedule_type"})
+        }
+)
 @Getter
 @Builder
 @NoArgsConstructor
@@ -35,7 +40,7 @@ public class Schedule extends CreatedAt {
     @JoinColumn(name = "semester_id", nullable = false)
     private Semester semester;
 
-    @Column(nullable = false, length = 20)
+    @Column(name = "schedule_type", nullable = false, length = 20)
     private String scheduleType;
 
     @Embedded

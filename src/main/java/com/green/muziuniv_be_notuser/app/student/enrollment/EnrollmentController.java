@@ -48,15 +48,8 @@ public class EnrollmentController {
     @DeleteMapping("/cancel/{courseId}")
     public ResponseEntity<?> deleteMyEnrollmentCourse(@AuthenticationPrincipal SignedUser signedUser, @PathVariable Long courseId) {
         Long userId = signedUser.signedUserId;
-
-        int result = enrollmentService.deleteMyEnrollmentCourse(userId, courseId);
-
-        if (result > 0) {
-            return ResponseEntity.ok(new ResultResponse<>("수강 신청 취소 완료", result));
-        }
-        else{
-            return ResponseEntity.badRequest().body(new ResultResponse<>("수강 취소 실패. 적절하지 않은 시도", result));
-        }
+        enrollmentService.deleteMyEnrollmentCourse(userId, courseId);
+        return ResponseEntity.ok(new ResultResponse<>("수강 취소 완료", null));
     }
 
 

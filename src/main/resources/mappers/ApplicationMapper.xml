@@ -79,4 +79,9 @@
         VALUES (#{userId}, #{scheduleId}, '처리중', #{reason}, NOW())
     </insert>
 
+    <select id="countByScheduleId">
+        SELECT COUNT(*)
+        FROM application
+        WHERE schedule_id = #{scheduleId}
+    </select>
 </mapper>

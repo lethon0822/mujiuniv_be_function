@@ -130,7 +130,7 @@ public class ProfessorCourseService {
         Map<String, List<Long>> request = new HashMap<>();
         request.put("userId", userIds);
 
-        ResultResponse<List<UserResDto>> response = courseUserClient.getUsersByIds(request);
+        ResultResponse<List<UserResDto>> response = courseUserClient.getUsersByInfo(request);
         List<UserResDto> users = response.getResult();
 
         // 3. userId -> UserResDto 매핑
@@ -146,7 +146,7 @@ public class ProfessorCourseService {
                             e.getUserId(),
                             user != null ? user.getLoginId() : null,
                             user != null ? user.getUserName() : null,
-                            user != null ? user.getGradeYear() : 0,
+                            (user != null && user.getGrade() != null) ? user.getGrade() : 0,
                             user != null ? user.getDeptName() : null
                     );
                 })
