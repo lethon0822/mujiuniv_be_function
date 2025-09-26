@@ -1,7 +1,6 @@
 package com.green.muziuniv_be_notuser.app.student.enrollment;
 
 import com.green.muziuniv_be_notuser.app.shared.course.CourseRepository;
-import com.green.muziuniv_be_notuser.app.shared.course.model.CourseFilterRes;
 import com.green.muziuniv_be_notuser.app.shared.schedule.ScheduleValidator;
 import com.green.muziuniv_be_notuser.app.student.enrollment.model.*;
 import com.green.muziuniv_be_notuser.configuration.model.ResultResponse;
@@ -198,6 +197,11 @@ public class EnrollmentService {
     // 수강 취소
     @Transactional
     public int deleteMyEnrollmentCourse(Long userId, Long courseId) {
+        // 0. 수강 취소 기간 체크 ( 수강 신청 기간에 이루어지는 행위이므로 수강 신청 기간이랑 동일함 )
+        // courseId 기반으로 semesterId 추출. (req에 semesterId를 포함하면 조작해서 수강취소가 가능해지므로 막기 위함)
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new EnrollmentException("존재하지 않는 강의입니다."));
+        Long semesterId = course.getSemesterId().getSemesterId();
+        scheduleValidator.validateOpen(semesterId, "수강신청");
         return enrollmentRepository.deleteMyEnrollmentCourse(userId, courseId);
     }
 

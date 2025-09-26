@@ -31,7 +31,7 @@ public class GradeController {
 
     // 금학기 성적 조회 ( 중간, 기말 점수 등 포함 )
     @GetMapping("/current")
-   public ResponseEntity<?> getMyCurrentGrades(@AuthenticationPrincipal SignedUser signedUser, @RequestParam int semesterId) {
+   public ResponseEntity<?> getMyCurrentGrades(@AuthenticationPrincipal SignedUser signedUser, @RequestParam Long semesterId) {
        Long userId = signedUser.signedUserId;
         gradeService.getMyCurrentGrades(userId, semesterId);
         return gradeService.getMyCurrentGrades(userId, semesterId);
