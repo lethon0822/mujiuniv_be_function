@@ -94,5 +94,16 @@
         DELETE FROM schedule WHERE schedule_id = #{scheduleId}
     </delete>
 
+    <!-- 주어진 학기 + 일정유형(예: '수강신청', '성적조회')의 학사일정이
+         현재 열려 있는지 여부 체크 (열림: 1 / 닫힘: 0)  -->
+    <select id="isScheduleOpenNowBySemesterAndType">
+        SELECT COALESCE((
+        SELECT CASE WHEN NOW() BETWEEN sc.start_datetime AND sc.end_datetime THEN 1 ELSE 0 END
+        FROM schedule sc
+        WHERE sc.semester_id = #{semesterId}
+        AND TRIM(sc.schedule_type) = TRIM(#{scheduleType})
+        ),0)
+    </select>
+
 
 </mapper>
