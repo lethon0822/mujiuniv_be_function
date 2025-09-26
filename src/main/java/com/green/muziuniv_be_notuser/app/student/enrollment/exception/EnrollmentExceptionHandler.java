@@ -20,5 +20,4 @@ public class EnrollmentExceptionHandler {
                 .body(errorRes);
     }
 
-
 }
