@@ -54,7 +54,7 @@ public class ScoreService {
                 saved.getScoreId(),
                 saved.getEnrollment().getEnrollmentId(),
                 saved.getRank(),
-                userInfo.getGradeYear()
+                userInfo.getGrade()
         );
     }
 
@@ -89,7 +89,7 @@ public class ScoreService {
                 saved.getScoreId(),
                 saved.getEnrollment().getEnrollmentId(),
                 saved.getRank(),
-                userInfo.getGradeYear()
+                userInfo.getGrade()
         );
     }
 
@@ -116,7 +116,7 @@ public class ScoreService {
                 updated.getScoreId(),
                 updated.getEnrollment().getEnrollmentId(),
                 updated.getRank(),
-                userInfo.getGradeYear()   // ✅ 수정: 학년 반환
+                userInfo.getGrade()   // ✅ 수정: 학년 반환
         );
     }
 
@@ -158,7 +158,7 @@ public class ScoreService {
     private UserResDto getUserInfo(Long userId) {
         try {
             Map<String, List<Long>> request = Map.of("userIds", List.of(userId));
-            ResultResponse<List<UserResDto>> response = courseUserClient.getUsersByIds(request);
+            ResultResponse<List<UserResDto>> response = courseUserClient.getUsersByInfo(request);
 
             List<UserResDto> users = response.getResult();
             if (users != null && !users.isEmpty()) {
@@ -171,7 +171,7 @@ public class ScoreService {
         UserResDto dto = new UserResDto();
         dto.setUserId(userId);
         dto.setUserName("unknown");
-        dto.setGradeYear(0);
+        dto.setGrade(0);
         dto.setLoginId(null);
         dto.setDeptName(null);
         return dto;
