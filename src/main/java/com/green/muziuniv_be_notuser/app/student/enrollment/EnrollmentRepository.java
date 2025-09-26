@@ -19,6 +19,14 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
     @Query("SELECT c.remStd FROM Course c WHERE c.courseId= :courseId")
     Integer checkRemainingSeats(Long courseId);
 
+    // 총 신청 학점 확인 (18학점 이하 여부)
+    @Query("SELECT COALESCE(SUM(e.course.credit), 0) " +
+    "FROM Enrollment e " +
+    "WHERE e.userId = :userId "+
+    "AND e.course.semesterId.semesterId = :semesterId " +
+    "AND e.status = '수강중'")
+    int getCurrentTotalCredits(Long userId, Long semesterId);
+
     // 수강 신청 성공시 잔여 인원 감소
     @Modifying
     @Query("UPDATE Course c SET c.remStd = c.remStd-1 WHERE c.courseId= :courseId")

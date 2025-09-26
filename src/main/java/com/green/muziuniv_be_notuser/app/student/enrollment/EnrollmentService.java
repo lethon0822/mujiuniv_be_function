@@ -86,7 +86,7 @@ public class EnrollmentService {
     }
 
 
-    // 수강 신청 ( + 중복, 잔여 인원 예외 처리 )
+    // 수강 신청 ( + 중복, 잔여 인원, 최대 학점 초과 예외 처리 )
     @Transactional
     public ResponseEntity<?> enrollment(EnrollmentReq req) {
 
@@ -110,7 +110,14 @@ public class EnrollmentService {
             throw new EnrollmentException("수강신청 실패! 잔여 인원이 없습니다.");
         }
 
+        // + 학점 초과 체크 (18학점 제한)
+        int currentCredits = enrollmentRepository.getCurrentTotalCredits(userId, semesterId);
+        if(currentCredits + course.getCredit() > 18){
+            throw new EnrollmentException("수강신청 실패! 최대 18학점을 초과할 수 없습니다.");
+        }
+
         // 3. 수강 신청 시도
+
         // 승인 강의만 신청 가능
         if(!"승인".equals(course.getStatus())) {
             throw new EnrollmentException("수강신청 실패! 승인된 강의만 신청할 수 있습니다.");
@@ -196,13 +203,18 @@ public class EnrollmentService {
 
     // 수강 취소
     @Transactional
-    public int deleteMyEnrollmentCourse(Long userId, Long courseId) {
+    public void deleteMyEnrollmentCourse(Long userId, Long courseId) {
         // 0. 수강 취소 기간 체크 ( 수강 신청 기간에 이루어지는 행위이므로 수강 신청 기간이랑 동일함 )
         // courseId 기반으로 semesterId 추출. (req에 semesterId를 포함하면 조작해서 수강취소가 가능해지므로 막기 위함)
         Course course = courseRepository.findById(courseId).orElseThrow(() -> new EnrollmentException("존재하지 않는 강의입니다."));
         Long semesterId = course.getSemesterId().getSemesterId();
         scheduleValidator.validateOpen(semesterId, "수강신청");
-        return enrollmentRepository.deleteMyEnrollmentCourse(userId, courseId);
+
+        // 수강 취소 시도
+        int deleted = enrollmentRepository.deleteMyEnrollmentCourse(userId, courseId);
+        if (deleted == 0) {
+            throw new EnrollmentException("수강 취소 실패! 이미 취소되었거나 신청 내역이 없습니다.");
+        }
     }
 
 }
