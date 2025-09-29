@@ -23,13 +23,16 @@ public interface ScheduleMapper {
 
     int deleteSchedule(@Param("scheduleId") Integer scheduleId);
 
-    ScheduleRes selectBySemesterAndType(@Param("semesterId") Integer semesterId,
-                                        @Param("scheduleType") String scheduleType);
+    ScheduleRes selectBySemesterAndType(
+            @Param("semesterId") Integer semesterId,
+            @Param("scheduleType") String scheduleType
+    );
 
-    List<ScheduleRes> selectByMonth(@Param("start") String start,
-                                    @Param("end") String end,
-                                    @Param("semesterId") Integer semesterId);
-
+    List<ScheduleRes> selectByMonth(
+            @Param("start") String start,
+            @Param("end") String end,
+            @Param("semesterId") Integer semesterId
+    );
     // 주어진 학기 ID와 일정 유형에 대해 현재 시간이 일정 기간(start_datetime ~ end_datetime)에 포함되는지 확인
     Integer isScheduleOpenNowBySemesterAndType(
             @Param("semesterId") Long semesterId,

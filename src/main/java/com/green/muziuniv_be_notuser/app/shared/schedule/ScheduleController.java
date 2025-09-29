@@ -31,6 +31,14 @@ public class ScheduleController {
         return scheduleService.listByMonth(ym, semesterId);
     }
 
+    @GetMapping("/by-semester-and-type")
+    public ScheduleRes getBySemesterAndType(
+            @RequestParam Integer semesterId,
+            @RequestParam String scheduleType
+    ) {
+        return scheduleService.getBySemesterAndType(semesterId, scheduleType);
+    }
+
     @GetMapping("/for")
     public ScheduleRes getFor(
             @RequestParam Integer semesterId,

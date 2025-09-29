@@ -60,6 +60,11 @@ public class ScheduleService {
     }
 
     @Transactional
+    public ScheduleRes getBySemesterAndType(Integer semesterId, String scheduleType) {
+        return scheduleMapper.selectBySemesterAndType(semesterId, scheduleType);
+    }
+
+    @Transactional
     public void delete(Integer scheduleId) {
         log.info("삭제 시도 scheduleId={}", scheduleId);
 
