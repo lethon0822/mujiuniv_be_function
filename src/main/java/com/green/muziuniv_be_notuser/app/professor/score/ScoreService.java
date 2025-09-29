@@ -27,13 +27,13 @@ public class ScoreService {
        방법 1) 성적 기입 (POST, 중복 방지)
     -------------------------------- */
     public ScoreRes saveScore(ScorePostReq req) {
-        scoreRepository.findByEnrollment_EnrollmentId(req.getEnrollmentId())
+        Enrollment enrollment = enrollmentRepository.findById(req.getEnrollmentId())
+                .orElseThrow(() -> new RuntimeException("등록된 수강내역이 없음"));
+
+        scoreRepository.findByEnrollment(enrollment)
                 .ifPresent(s -> {
                     throw new RuntimeException("이미 성적이 등록된 수강입니다. 수정 기능을 사용하세요.");
                 });
-
-        Enrollment enrollment = enrollmentRepository.findById(req.getEnrollmentId())
-                .orElseThrow(() -> new RuntimeException("등록된 수강내역이 없음"));
 
         double total = calcTotal(req);
         String rank = calcRank(total);

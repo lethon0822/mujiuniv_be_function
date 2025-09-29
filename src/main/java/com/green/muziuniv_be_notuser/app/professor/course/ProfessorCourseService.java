@@ -1,12 +1,14 @@
 package com.green.muziuniv_be_notuser.app.professor.course;
 
 import com.green.muziuniv_be_notuser.app.professor.course.model.*;
+import com.green.muziuniv_be_notuser.app.professor.score.ScoreRepository;
 import com.green.muziuniv_be_notuser.app.shared.course.CourseRepository;
 import com.green.muziuniv_be_notuser.app.shared.schedule.ScheduleValidator;
 import com.green.muziuniv_be_notuser.app.student.enrollment.EnrollmentRepository;
 import com.green.muziuniv_be_notuser.configuration.model.ResultResponse;
 import com.green.muziuniv_be_notuser.entity.UserId;
 import com.green.muziuniv_be_notuser.entity.course.Course;
+import com.green.muziuniv_be_notuser.entity.score.Score;
 import com.green.muziuniv_be_notuser.entity.semester.Semester;
 import com.green.muziuniv_be_notuser.openfeign.course.CourseUserClient;
 import com.green.muziuniv_be_notuser.openfeign.course.model.UserResDto;
@@ -28,6 +30,7 @@ public class ProfessorCourseService {
     private final CourseUserClient courseUserClient;
     private final UserClient userClient;
     private final ScheduleValidator scheduleValidator;
+    private final ScoreRepository scoreRepository;
 
 
     // 강의 등록
@@ -144,16 +147,26 @@ public class ProfessorCourseService {
         return enrollments.stream()
                 .map(e -> {
                     UserResDto user = userMap.get(e.getUserId());
+
+                    // Score 조회
+                    Score score = scoreRepository.findByEnrollment(e).orElse(null);
+
                     return new CourseStudentRes(
                             e.getEnrollmentId(),
                             e.getUserId(),
                             user != null ? user.getLoginId() : null,
                             user != null ? user.getUserName() : null,
                             (user != null && user.getGrade() != null) ? user.getGrade() : 0,
-                            user != null ? user.getDeptName() : null
+                            user != null ? user.getDeptName() : null,
+
+                            score != null ? score.getMidScore() : 0,
+                            score != null ? score.getFinScore() : 0,
+                            score != null ? score.getAttendanceScore() : 0,
+                            score != null ? score.getOtherScore() : 0
                     );
                 })
                 .toList();
+
     }
 
     //강의 계획서 수정
