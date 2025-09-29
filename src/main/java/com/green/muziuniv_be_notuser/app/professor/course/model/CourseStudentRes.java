@@ -18,4 +18,9 @@ public class CourseStudentRes {
     private String userName;       // 학생 이름
     private Integer gradeYear;         // 학년
     private String departmentName; // 학과명
+
+    private Integer midterm;        // 중간고사 점수
+    private Integer finalExam;      // 기말고사 점수
+    private Integer attendanceEval; // 출결 점수
+    private Integer etcScore;       // 기타 점수
 }
