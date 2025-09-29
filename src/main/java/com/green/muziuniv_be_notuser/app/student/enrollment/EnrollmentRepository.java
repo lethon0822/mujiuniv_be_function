@@ -39,7 +39,7 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
 
     // 수강 신청 취소시 잔여 인원 증가
     @Modifying
-    @Query("UPDATE Course c SET c.remStd = c.remStd-1 WHERE c.courseId= :courseId")
+    @Query("UPDATE Course c SET c.remStd = c.remStd+1 WHERE c.courseId= :courseId")
     void increaseRemainingSeats(Long courseId);
 
     List<Enrollment> findByCourse_CourseId(Long courseId);
