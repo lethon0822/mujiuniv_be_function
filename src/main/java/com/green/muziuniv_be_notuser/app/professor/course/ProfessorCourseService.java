@@ -32,6 +32,7 @@ public class ProfessorCourseService {
 
     // 강의 등록
     public void saveCourse(ProfessorPostReq req) {
+        scheduleValidator.validateOpen(req.getSemesterId(),"강의개설");
         try {
             boolean saved = false;
             do {
