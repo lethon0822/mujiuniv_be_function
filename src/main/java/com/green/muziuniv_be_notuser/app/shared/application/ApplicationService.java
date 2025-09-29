@@ -61,9 +61,16 @@ public class ApplicationService {
         return applicationMapper.selectMyApplications(userId);
     }
 
-    /** 신청 취소 (처리중인 건만) */
     @Transactional
-    public boolean cancelApplication(Long appId, Long userId) {
-        return applicationMapper.cancelIfPending(appId, userId) > 0;
+    public void deleteApplication(Long userId, Long appId) {
+        int deleted = applicationMapper.deleteApplication(appId, userId);
+        if (deleted == 0) {
+            throw new IllegalStateException("삭제할 수 없거나 이미 삭제된 신청입니다.");
+        }
     }
+    /** 신청 취소 (처리중인 건만) */
+//    @Transactional
+//    public boolean cancelApplication(Long appId, Long userId) {
+//        return applicationMapper.cancelIfPending(appId, userId) > 0;
+//    }
 }

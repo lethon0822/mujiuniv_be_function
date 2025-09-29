@@ -51,13 +51,19 @@
     </select>
 
     <!-- 처리중 → 취소 -->
-    <update id="cancelIfPending">
-        UPDATE application
-        SET status = '취소'
+<!--    <update id="cancelIfPending">-->
+<!--        UPDATE application-->
+<!--        SET status = '취소'-->
+<!--        WHERE app_id = #{appId}-->
+<!--        AND user_id = #{userId}-->
+<!--        AND status = '처리중'-->
+<!--    </update>-->
+
+    <delete id="deleteApplication">
+        DELETE FROM application
         WHERE app_id = #{appId}
         AND user_id = #{userId}
-        AND status = '처리중'
-    </update>
+    </delete>
 
     <!-- scheduleId로 학기 조회 -->
     <select id="findSemesterIdByScheduleId">
