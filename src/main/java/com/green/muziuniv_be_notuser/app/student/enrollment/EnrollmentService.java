@@ -215,6 +215,9 @@ public class EnrollmentService {
         if (deleted == 0) {
             throw new EnrollmentException("수강 취소 실패! 이미 취소되었거나 신청 내역이 없습니다.");
         }
+
+        // 잔여 인원 복구
+        enrollmentRepository.increaseRemainingSeats(courseId);
     }
 
 }
