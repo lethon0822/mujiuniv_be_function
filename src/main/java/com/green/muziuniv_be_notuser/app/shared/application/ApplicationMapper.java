@@ -20,7 +20,11 @@ public interface ApplicationMapper {
 
     List<ApplicationListRow> selectMyApplications(@Param("userId") Integer userId);
 
-    int cancelIfPending(@Param("appId") Long appId, @Param("userId") Long userId);
+
+    int deleteApplication(@Param("appId") Long appId,
+                          @Param("userId") Long userId);
+
+//    int cancelIfPending(@Param("appId") Long appId, @Param("userId") Long userId);
 
     // 학기 조회
     Integer findSemesterIdByScheduleId(@Param("scheduleId") Integer scheduleId);

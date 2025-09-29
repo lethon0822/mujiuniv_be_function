@@ -49,10 +49,15 @@ public class ApplicationController {
         return applicationService.getMyApplications(userId);
     }
 
-    /** 신청 취소 */
-    @PutMapping("/cancel/{appId}")
-    public boolean cancelApplication(@PathVariable Long appId,
-                                     @AuthenticationPrincipal SignedUser signedUser) {
-        return applicationService.cancelApplication(appId, signedUser.signedUserId);
+    @DeleteMapping("/{appId}")
+    public void deleteApplication(@PathVariable Long appId,
+                                  @RequestParam Long userId) {
+        applicationService.deleteApplication(userId, appId);
     }
+    /** 신청 취소 */
+//    @PutMapping("/cancel/{appId}")
+//    public boolean cancelApplication(@PathVariable Long appId,
+//                                     @AuthenticationPrincipal SignedUser signedUser) {
+//        return applicationService.cancelApplication(appId, signedUser.signedUserId);
+//    }
 }
