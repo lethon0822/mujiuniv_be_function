@@ -100,7 +100,19 @@ public class GradeService {
                 item.setProfessorName(userInfoDto.getUserName());
             }
 
-            item.setPoint(convertRankToPoint(item.getRank()));
+            // 강의 평가 여부 체크 -> evScore == 0 이면 성적 가리기
+            if(item.getEvScore()== 0){
+                item.setRank(null);
+                item.setMidScore(null);
+                item.setFinScore(null);
+                item.setAttendanceScore(null);
+                item.setOtherScore(null);
+                item.setPoint(null);
+            }else{
+                item.setPoint(convertRankToPoint(item.getRank()));
+            }
+
+
         }
         return ResponseEntity.ok(new ResultResponse<>("금학기 성적 조회 성공", res));
     }
