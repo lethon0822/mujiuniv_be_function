@@ -105,5 +105,11 @@
         ),0)
     </select>
 
+    <select id="findStartDate">
+        SELECT start_datetime, end_datetime
+        FROM schedule sc
+        WHERE schedule_type = #{scheduleType}
+    </select>
+
 
 </mapper>

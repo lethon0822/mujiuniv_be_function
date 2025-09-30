@@ -1,12 +1,15 @@
 package com.green.muziuniv_be_notuser.app.shared.schedule;
 
+import com.green.muziuniv_be_notuser.app.shared.schedule.model.DateRes;
 import com.green.muziuniv_be_notuser.app.shared.schedule.model.ScheduleCreateReq;
 import com.green.muziuniv_be_notuser.app.shared.schedule.model.ScheduleRes;
 import com.green.muziuniv_be_notuser.app.shared.schedule.model.ScheduleUpdateReq;
+import com.green.muziuniv_be_notuser.configuration.model.ResultResponse;
 import com.green.muziuniv_be_notuser.configuration.model.SignedUser;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -62,5 +65,12 @@ public class ScheduleController {
     @DeleteMapping("/{scheduleId}")
     public void delete(@PathVariable Integer scheduleId) {
         scheduleService.delete(scheduleId);
+    }
+
+    //프론트 기능 막아두기 위해서 start datetime을 가져온다
+    @GetMapping("/date")
+    public ResponseEntity<?> findStartDate(@RequestParam String type){
+        DateRes result =scheduleService.findStartDate(type);
+     return ResponseEntity.ok(result);
     }
 }

@@ -1,5 +1,6 @@
 package com.green.muziuniv_be_notuser.app.shared.schedule;
 
+import com.green.muziuniv_be_notuser.app.shared.schedule.model.DateRes;
 import com.green.muziuniv_be_notuser.app.shared.schedule.model.ScheduleCreateReq;
 import com.green.muziuniv_be_notuser.app.shared.schedule.model.ScheduleRes;
 import com.green.muziuniv_be_notuser.app.shared.schedule.model.ScheduleUpdateReq;
@@ -38,6 +39,8 @@ public interface ScheduleMapper {
             @Param("semesterId") Long semesterId,
             @Param("scheduleType") String scheduleType
     );
+
+    DateRes findStartDate(String scheduleType);
 
 
 }
