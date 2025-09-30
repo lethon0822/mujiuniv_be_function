@@ -3,11 +3,11 @@ constants:
     directory: /home/download   # ??? ??
 
   open-feign:
-    user: RAINBOW-ACADEMIC-USER #유저 서버 이름
+    user: mujiuniv-user #유저 서버 이름
 
 spring:
   application:
-    name: rainbow-academic-function
+    name: mujiuniv-function
 
   datasource:
     # log4jdbc ?? ???? DriverSpy + jdbc:log4jdbc: ?? ??
