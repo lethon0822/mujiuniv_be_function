@@ -1,5 +1,7 @@
 package com.green.muziuniv_be_notuser.app.professor.course;
 
+import com.green.muziuniv_be_notuser.app.professor.attendance.AttendanceService;
+import com.green.muziuniv_be_notuser.app.professor.attendance.model.AttendanceSummaryRes;
 import com.green.muziuniv_be_notuser.app.professor.course.model.*;
 import com.green.muziuniv_be_notuser.app.professor.score.ScoreRepository;
 import com.green.muziuniv_be_notuser.app.shared.course.CourseRepository;
@@ -31,6 +33,7 @@ public class ProfessorCourseService {
     private final UserClient userClient;
     private final ScheduleValidator scheduleValidator;
     private final ScoreRepository scoreRepository;
+    private final AttendanceService attendanceService;
 
 
     // 강의 등록
@@ -151,6 +154,9 @@ public class ProfessorCourseService {
                     // Score 조회
                     Score score = scoreRepository.findByEnrollment(e).orElse(null);
 
+                    // Attendance 집계 조회
+                    AttendanceSummaryRes summary = attendanceService.getAttendanceSummary(e.getEnrollmentId());
+
                     return new CourseStudentRes(
                             e.getEnrollmentId(),
                             e.getUserId(),
@@ -162,7 +168,12 @@ public class ProfessorCourseService {
                             score != null ? score.getMidScore() : 0,
                             score != null ? score.getFinScore() : 0,
                             score != null ? score.getAttendanceScore() : 0,
-                            score != null ? score.getOtherScore() : 0
+                            score != null ? score.getOtherScore() : 0,
+
+                            // ✅ 새로 추가된 부분
+                            summary.getAttended(),
+                            summary.getAbsent()
+
                     );
                 })
                 .toList();
