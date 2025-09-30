@@ -22,4 +22,5 @@ public class CourseFilterRes {
     private int remStd; //잔여 인원
     private String professorName; // 담당 교수 이름
     private String deptName; // 개설학과
+
 }
