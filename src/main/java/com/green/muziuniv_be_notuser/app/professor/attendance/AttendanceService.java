@@ -1,5 +1,6 @@
 package com.green.muziuniv_be_notuser.app.professor.attendance;
 
+import com.green.muziuniv_be_notuser.app.professor.attendance.model.AttendanceSummaryRes;
 import com.green.muziuniv_be_notuser.entity.attendance.Attendance;
 import com.green.muziuniv_be_notuser.entity.attendance.AttendanceIds;
 import com.green.muziuniv_be_notuser.app.professor.attendance.model.AttendanceReq;
@@ -44,6 +45,25 @@ public class AttendanceService {
                 saved.getAttendanceIds().getEnrollmentId(),
                 saved.getStatus(),
                 saved.getNote()
+        );
+    }
+    public AttendanceSummaryRes getAttendanceSummary(Long enrollmentId) {
+        int totalWeeks = 15; // 한 학기 주차 수
+        int maxScore = 20;   // 출결점수 만점
+
+        int attended = attendanceRepository.countByEnrollment_EnrollmentIdAndStatus(enrollmentId, "출석");
+        int late = attendanceRepository.countByEnrollment_EnrollmentIdAndStatus(enrollmentId, "지각");
+        int excused = attendanceRepository.countByEnrollment_EnrollmentIdAndStatus(enrollmentId, "공결");
+
+        // 지각 3회 = 결석 1회
+        int absent = (totalWeeks - attended - excused) + (late / 3);
+
+        double attendanceScore = ((double) attended / totalWeeks) * maxScore;
+
+        return new AttendanceSummaryRes(
+                attended,
+                absent,
+                Math.round(attendanceScore * 10) / 10.0
         );
     }
 }
