@@ -27,7 +27,11 @@ public class Application extends CreatedAt {
     private UserId userId;
 
     @ManyToOne
-    @JoinColumn(name = "schedule_id", nullable = false)
+    @JoinColumn(
+            name = "schedule_id",
+            nullable = false,
+            foreignKey = @ForeignKey(name = "fk_application_schedule") // ✅ FK 이름 고정
+    )
     private Schedule schedule;
 
     @Column(nullable = false)

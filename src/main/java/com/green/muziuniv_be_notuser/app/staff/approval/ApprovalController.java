@@ -1,5 +1,7 @@
 package com.green.muziuniv_be_notuser.app.staff.approval;
 
+
+
 import com.green.muziuniv_be_notuser.app.staff.approval.model.ApprovalAppGetReq;
 import com.green.muziuniv_be_notuser.app.staff.approval.model.ApprovalAppGetRes;
 import com.green.muziuniv_be_notuser.app.staff.approval.model.ApprovalPatchReq;
@@ -9,24 +11,27 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
-@RestController
-@RequestMapping("/staff/approval")
+
 @RequiredArgsConstructor
+@RequestMapping("/staff/approval")
+@RestController
+@Slf4j
 public class ApprovalController {
-
     private final ApprovalService approvalService;
-
+    // 신청서 목록
     @GetMapping
-    public ResponseEntity<?> applicationList(@ModelAttribute ApprovalAppGetReq req) {
-        List<ApprovalAppGetRes> result = approvalService.applicationList(req);
-        return ResponseEntity.ok(result);
+    public ResponseEntity<List<ApprovalAppGetRes>> list(@ModelAttribute ApprovalAppGetReq req) {
+        return ResponseEntity.ok(approvalService.getApplications(req));
     }
 
+    // 승인/거부
     @PatchMapping
-    public ResponseEntity<?> decideApplication(@RequestBody ApprovalPatchReq req){
-        String result = approvalService.modifyStatus(req);
-        return ResponseEntity.ok(Map.of("message", result));
+    public ResponseEntity<String> decide(@RequestBody ApprovalPatchReq req) {
+        log.info("승인 요청: appId={}, userId={}, status={}, scheduleType={}",
+                req.getAppId(), req.getUserId(), req.getStatus(), req.getScheduleType());
+
+        String result = approvalService.decideApplication(req);
+        return ResponseEntity.ok(result);
     }
 }

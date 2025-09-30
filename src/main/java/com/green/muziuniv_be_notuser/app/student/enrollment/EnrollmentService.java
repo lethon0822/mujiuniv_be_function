@@ -1,23 +1,23 @@
 package com.green.muziuniv_be_notuser.app.student.enrollment;
 
 import com.green.muziuniv_be_notuser.app.shared.course.CourseRepository;
-import com.green.muziuniv_be_notuser.app.student.enrollment.model.GetMyCurrentEnrollmentsCoursesRes;
+import com.green.muziuniv_be_notuser.app.shared.schedule.ScheduleValidator;
+import com.green.muziuniv_be_notuser.app.student.enrollment.model.*;
 import com.green.muziuniv_be_notuser.configuration.model.ResultResponse;
 import com.green.muziuniv_be_notuser.entity.course.Course;
 import com.green.muziuniv_be_notuser.entity.enrollment.Enrollment;
+import com.green.muziuniv_be_notuser.openfeign.department.DepartmentClient;
+import com.green.muziuniv_be_notuser.openfeign.department.model.DepartmentHeadNameRes;
 import com.green.muziuniv_be_notuser.openfeign.user.UserClient;
-import com.green.muziuniv_be_notuser.openfeign.user.model.ProGetRes;
+import com.green.muziuniv_be_notuser.openfeign.user.model.UserInfoDto;
 import com.green.muziuniv_be_notuser.app.student.enrollment.exception.EnrollmentException;
-import com.green.muziuniv_be_notuser.app.student.enrollment.model.EnrollmentReq;
-import com.green.muziuniv_be_notuser.app.student.enrollment.model.EnrollmentRes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,14 +27,77 @@ public class EnrollmentService {
     private final EnrollmentRepository enrollmentRepository;
     private final CourseRepository courseRepository;
     private final UserClient userClient;
+    private final DepartmentClient departmentClient;
+    private final ScheduleValidator scheduleValidator;
 
-    // 수강 신청 ( + 중복, 잔여 인원 예외 처리 )
+    // 수강 신청 가능한 강의 조회
+    public List<EnrollmentFilterRes> getAvailableEnrollmentsCourses(EnrollmentFilterReq req){
+        // req에 학과 조건이 있는 경우
+        if(req.getDeptId() != null) {
+            // 1. 유저 서비스 호출해서 해당 학과의 교수 리스트를 가져옴.
+            ResultResponse<List<DepartmentHeadNameRes>> deptProfessors = departmentClient.findDeptHeadList(req.getDeptId());
+            // 2. 교수의 userId 리스트만 추출
+            List<Long> professorIds = deptProfessors.getResult().stream()
+                    .map(d -> d.getUserId())
+                    .collect(Collectors.toList());
+            // 만약 해당 학과의 교수들이 개설한 강의가 하나도 없는 경우
+            if (professorIds.isEmpty()) {
+                return Collections.emptyList();
+            }
+            // 3.EnrollmentFilterReq req 객체에 교수 리스트 세팅 (Mapper에서 in 조건으로 사용)
+            req.setProfessorIds(professorIds);
+        }
+        // 4. req에 따른 courseList 조회
+        List<EnrollmentFilterRes> courseList = enrollmentMapper.getAvailableEnrollmentsCourses(req);
+        // courseList가 빈 리스트라면 유저 서버를 호출하지 말고 빈 리스트 그대로 반환
+        if(courseList.isEmpty()){
+            return Collections.emptyList();
+        }
+        // 5. 강의 리스트에서 교수 Id (userId)만 추출 ( 현재 교수명, 학과명이 비어있으므로 )
+        List<Long> professorIds = courseList.stream()
+                .map(course -> course.getUserId())
+                .distinct()
+                .collect(Collectors.toList());
+
+        // 6. 요청용 Map 생성
+        Map<String, List<Long>> request = new HashMap<>();
+        request.put("userId", professorIds);
+
+        // 유저 서버 호출
+        ResultResponse<Map<Long, UserInfoDto>> proInfo = userClient.getUserInfo(request);
+        Map<Long, UserInfoDto> proGetResMap = proInfo.getResult();
+
+        // 기존의 강의 데이터에 교수, 학과 정보 주입
+        for (EnrollmentFilterRes course : courseList) {
+            UserInfoDto userInfoDto = proGetResMap.get(course.getUserId());
+            if (userInfoDto != null) {
+                course.setProfessorName(userInfoDto.getUserName());
+
+                if (course.getGrade() != 0) {  // 학년이 0이면 학과를 교양학부로
+                    course.setDeptName(userInfoDto.getDeptName());
+                } else {
+                    course.setDeptName("교양학부");
+                }
+
+            }
+        }
+
+        return courseList;
+    }
+
+
+    // 수강 신청 ( + 중복, 잔여 인원, 최대 학점 초과 예외 처리 )
     @Transactional
     public ResponseEntity<?> enrollment(EnrollmentReq req) {
 
-        //JPA는 DTO를 통째로 못받고 엔티티 필드 단위로 줘야함.
         Long userId = req.getUserId();
         Long courseId = req.getCourseId();
+
+        // 0. 수강신청 기간 체크
+        // courseId 기반으로 semesterId 추출. (req에 semesterId를 포함하면 조작해서 수강신청이 가능하므로 막기 위함)
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new EnrollmentException("존재하지 않는 강의입니다."));
+        Long semesterId = course.getSemesterId().getSemesterId();
+        scheduleValidator.validateOpen(semesterId, "수강신청");
 
         // 1. 중복 수강신청 여부 체크
         if(enrollmentRepository.existsByUserIdAndCourse_CourseId(userId, courseId)) {
@@ -47,9 +110,14 @@ public class EnrollmentService {
             throw new EnrollmentException("수강신청 실패! 잔여 인원이 없습니다.");
         }
 
+        // + 학점 초과 체크 (18학점 제한)
+        int currentCredits = enrollmentRepository.getCurrentTotalCredits(userId, semesterId);
+        if(currentCredits + course.getCredit() > 18){
+            throw new EnrollmentException("수강신청 실패! 최대 18학점을 초과할 수 없습니다.");
+        }
+
         // 3. 수강 신청 시도
-        // course를 jpa가 관리하는 영속 객체로 만들어줘야함.
-        Course course = courseRepository.getReferenceById(courseId);
+
         // 승인 강의만 신청 가능
         if(!"승인".equals(course.getStatus())) {
             throw new EnrollmentException("수강신청 실패! 승인된 강의만 신청할 수 있습니다.");
@@ -86,13 +154,13 @@ public class EnrollmentService {
         Map<String, List<Long>> request = Map.of("userId", List.of(res.getUserId()));
 
         // 유저 서버 호출
-        ResultResponse<List<ProGetRes>> response = userClient.getProInfo(request);
+        ResultResponse<Map<Long, UserInfoDto>> response = userClient.getUserInfo(request);
 
         // 매핑
-        if(!response.getResult().isEmpty()){
-            ProGetRes proGetRes = response.getResult().get(0);
-            res.setProfessorName(proGetRes.getUserName());
-            res.setDeptName(proGetRes.getDeptName());
+        UserInfoDto userInfoDto = response.getResult().get(res.getUserId());
+        if (userInfoDto != null) {
+            res.setProfessorName(userInfoDto.getUserName());
+            res.setDeptName(userInfoDto.getDeptName());
         }
 
         return ResponseEntity.ok(new ResultResponse<>("수강 신청 성공", res));
@@ -115,32 +183,41 @@ public class EnrollmentService {
                 .collect(Collectors.toList()); //stream을 다시 list로 바꿈.
 
         // 요청용 Map 생성
-        Map<String, List<Long>> request = new HashMap<>();
-        request.put("userId", professorIds);
+        Map<String, List<Long>> request = Map.of("userId", professorIds);
 
         // 유저 서버 호출
-        ResultResponse<List<ProGetRes>> response = userClient.getProInfo(request);
-        List<ProGetRes> professorsInfos = response.getResult();
+                ResultResponse<Map<Long, UserInfoDto>> response = userClient.getUserInfo(request);
+                Map<Long, UserInfoDto> proGetResMap = response.getResult();
 
-        Map<Long, ProGetRes> proGetResMap = professorsInfos.stream()
-                .collect(Collectors.toMap(professor -> professor.getUserId(), professor -> professor));
+        // 기존 강의 데이터에 교수, 학과 정보 주입
+                for (GetMyCurrentEnrollmentsCoursesRes course : courseList) {
+                    UserInfoDto userInfoDto = proGetResMap.get(course.getUserId());
+                    if (userInfoDto != null) {
+                        course.setProfessorName(userInfoDto.getUserName());
+                        course.setDeptName(userInfoDto.getDeptName());
+                    }
+                }
 
-        // 기존의 강의 데이터에 교수, 학과 정보 주입
-        for (GetMyCurrentEnrollmentsCoursesRes course : courseList) {
-            ProGetRes proGetRes = proGetResMap.get(course.getUserId());
-            if (proGetRes != null) {
-                course.setProfessorName(proGetRes.getUserName());
-                course.setDeptName(proGetRes.getDeptName());
-            }
-
-        }
         return ResponseEntity.ok(courseList);
     }
 
     // 수강 취소
     @Transactional
-    public int deleteMyEnrollmentCourse(Long userId, Long courseId) {
-        return enrollmentRepository.deleteMyEnrollmentCourse(userId, courseId);
+    public void deleteMyEnrollmentCourse(Long userId, Long courseId) {
+        // 0. 수강 취소 기간 체크 ( 수강 신청 기간에 이루어지는 행위이므로 수강 신청 기간이랑 동일함 )
+        // courseId 기반으로 semesterId 추출. (req에 semesterId를 포함하면 조작해서 수강취소가 가능해지므로 막기 위함)
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new EnrollmentException("존재하지 않는 강의입니다."));
+        Long semesterId = course.getSemesterId().getSemesterId();
+        scheduleValidator.validateOpen(semesterId, "수강신청");
+
+        // 수강 취소 시도
+        int deleted = enrollmentRepository.deleteMyEnrollmentCourse(userId, courseId);
+        if (deleted == 0) {
+            throw new EnrollmentException("수강 취소 실패! 이미 취소되었거나 신청 내역이 없습니다.");
+        }
+
+        // 잔여 인원 복구
+        enrollmentRepository.increaseRemainingSeats(courseId);
     }
 
 }

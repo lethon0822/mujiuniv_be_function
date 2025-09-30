@@ -2,20 +2,35 @@ package com.green.muziuniv_be_notuser.entity.schedule;
 
 
 import com.green.muziuniv_be_notuser.entity.CreatedAt;
+import com.green.muziuniv_be_notuser.entity.application.Application;
 import com.green.muziuniv_be_notuser.entity.semester.Semester;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table(name = "schedule") // 명시 추천
+@Table(
+        name = "schedule",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"semester_id", "schedule_type"})
+        }
+)
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class Schedule extends CreatedAt {
+
+    @OneToMany(
+            mappedBy = "schedule",                 // Application의 schedule 필드와 매핑
+            cascade = CascadeType.REMOVE,          // Schedule 삭제 시 Application 같이 삭제
+            orphanRemoval = true                   // 고아 객체 자동 삭제
+    )
+    private List<Application> applications = new ArrayList<>();
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +40,7 @@ public class Schedule extends CreatedAt {
     @JoinColumn(name = "semester_id", nullable = false)
     private Semester semester;
 
-    @Column(nullable = false, length = 20)
+    @Column(name = "schedule_type", nullable = false, length = 20)
     private String scheduleType;
 
     @Embedded

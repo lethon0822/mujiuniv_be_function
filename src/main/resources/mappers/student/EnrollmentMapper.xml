@@ -2,6 +2,59 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.green.muziuniv_be_notuser.app.student.enrollment.EnrollmentMapper">
 
+    <!--수강신청 가능한 모든 과목들을 조회 -->
+    <select id= 'getAvailableEnrollmentsCourses'>
+        SELECT
+        e.status,
+        c.course_id,
+        c.course_code,
+        c.title,
+        c.classroom,
+        c.type,
+        c.grade,
+        s.year,
+        s.semester,
+        c.time,
+        c.credit,
+        c.max_std,
+        c.rem_std,
+        c.user_id
+        FROM course c
+        JOIN semester s
+        ON s.semester_id = c.semester_id
+        LEFT JOIN enrollment e
+        ON e.course_id = c.course_id
+        AND e.user_id = #{userId}
+        WHERE s.year = #{year}
+        AND s.semester = #{semester}
+        AND c.status = '승인'
+        AND (e.status IS NULL OR e.status NOT IN ('수강완료'))
+
+
+        <!-- 전공 ( 전공 선택, 전공 필수 ), 교양 ( 교양 선택, 교양 필수 )-->
+        <if test="type != null and type != ''">
+            AND c.type LIKE CONCAT(#{type}, '%')
+        </if>
+
+        <if test="grade != null and grade != ''">
+            AND c.grade = #{grade}
+        </if>
+
+        <if test="keyword != null and keyword != ''">
+            AND c.title LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+
+        <!-- 학과 필터 조건 -->
+        <if test="professorIds != null and professorIds.size > 0">
+            AND c.user_id IN
+            <foreach collection="professorIds" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+            AND c.type LIKE '전공%'
+        </if>
+
+    </select>
+
     <!--금학기 내가 수강 신청한 모든 과목들을 조회-->
     <select id = "getMyCurrentEnrollmentsCourses">
         SELECT
@@ -27,6 +80,8 @@
         AND s.semester_id = #{semesterId}
         AND e.status = '수강중'
     </select>
+
+
 
 
 
