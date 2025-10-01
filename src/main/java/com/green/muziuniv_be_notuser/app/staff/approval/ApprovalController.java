@@ -5,6 +5,8 @@ package com.green.muziuniv_be_notuser.app.staff.approval;
 import com.green.muziuniv_be_notuser.app.staff.approval.model.ApprovalAppGetReq;
 import com.green.muziuniv_be_notuser.app.staff.approval.model.ApprovalAppGetRes;
 import com.green.muziuniv_be_notuser.app.staff.approval.model.ApprovalPatchReq;
+import com.green.muziuniv_be_notuser.configuration.model.ResultResponse;
+import com.green.muziuniv_be_notuser.openfeign.user.model.UserInfoDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -34,4 +36,5 @@ public class ApprovalController {
         String result = approvalService.decideApplication(req);
         return ResponseEntity.ok(result);
     }
+
 }
