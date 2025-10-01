@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.green.muziuniv_be_notuser.app.student.gpa.GpaMapper">
+    <sql id="rankToScore">
+        CASE
+            WHEN s.rank = 'A+' THEN 4.5
+            WHEN s.rank = 'A' THEN 4.0
+            WHEN s.rank = 'B+' THEN 3.5
+            WHEN s.rank = 'B' THEN 3.0
+            WHEN s.rank = 'C+' THEN 2.5
+            WHEN s.rank = 'C' THEN 2.0
+            WHEN s.rank = 'D+' THEN 1.5
+            WHEN s.rank = 'D' THEN 1.0
+            ELSE 0.0  -- F 또는 NULL일 경우
+        END
+    </sql>
+
     <select id="getMyGpa">
         SELECT
         se.semester_id,
@@ -8,18 +22,26 @@
         se.semester,
         SUM(c.credit) AS total_credit,
         ROUND(
+            SUM((<include refid="rankToScore"/>)* c.credit
+                ) / SUM(c.credit) ,2) AS gpa,
+
+        ROUND(
             SUM(CASE
-                    WHEN s.rank = 'A+' THEN 4.5
-                    WHEN s.rank = 'A' THEN 4.0
-                    WHEN s.rank = 'B+' THEN 3.5
-                    WHEN s.rank = 'B' THEN 3.0
-                    WHEN s.rank = 'C+' THEN 2.5
-                    WHEN s.rank = 'C' THEN 2.0
-                    WHEN s.rank = 'D+' THEN 1.5
-                    WHEN s.rank = 'D' THEN 1.0
-                    ELSE 0.0  -- F 또는 NULL일 경우
-                 END * c.credit
-                ) / SUM(c.credit) ,2) AS gpa
+                    WHEN c.type IN ('전공필수', '전공선택') THEN
+                        (<include refid="rankToScore"/> ) * c.credit
+                    ELSE 0
+                 END
+         ) / NULLIF(
+             SUM(
+                CASE
+                    WHEN c.type IN ('전공필수', '전공선택') THEN c.credit
+                    ELSE 0
+                END
+            ), 0
+         ), 2
+        ) AS majorGpa
+
+
         FROM score s
         JOIN enrollment e
         ON s.enrollment_id = e.enrollment_id
