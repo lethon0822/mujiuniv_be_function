@@ -1,31 +1,33 @@
 package com.green.muziuniv_be_notuser.app.notice;
 
 
-import com.green.muziuniv_be_notuser.app.notice.model.NoticeGetRes;
-import com.green.muziuniv_be_notuser.app.notice.model.NoticePostReq;
-import com.green.muziuniv_be_notuser.app.notice.model.NoticePutReq;
-import com.green.muziuniv_be_notuser.entity.notice.Notice;
+import com.green.muziuniv_be_notuser.app.notice.model.*;
 import org.apache.ibatis.annotations.Mapper;
-import com.green.muziuniv_be_notuser.app.notice.model.NoticeGetReq;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
 @Mapper
 public interface NoticeMapper {
-   List<Notice> findAll();
-   Notice findById(int noticeId);
 
-    List<NoticeGetRes> selectNoticeByContent(String searchText);
 
-    int insertNoticeByStaff(NoticePostReq req);
 
-    List<NoticeGetRes> selectNoticeByTitleORContent(String searchText);
 
-    List<NoticeGetRes> selectNoticeByTitle(String searchText);
 
-    NoticeGetRes selectNoticeById(int noticeId);
 
-    int updateNoticeByNoticeId(NoticePutReq req);
 
-    int deleteNoticeByNoticeId(int noticeId);
+    List<NoticeSearchGetRes> searchNoticeByKeyword(@Param("keyword") String keyword);
+
+    List<NoticeSearchGetRes> searchNotice();
+
+    List<NoticeGetRes> searchNoticeTitle();
+
+    List<NoticeGetRes> searchNoticeContent();
+
+
+    NoticeGetRes searchSearch(@Param("noticeId") Long noticeId);
+
+    boolean updateNotice(NoticeUpdateReq req);
+
+    int deleteNotice(Long noticeId);
 }

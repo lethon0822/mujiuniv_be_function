@@ -1,12 +1,8 @@
 package com.green.muziuniv_be_notuser.app.notice;
 
-import com.green.muziuniv_be_notuser.app.notice.model.NoticeGetRes;
-import com.green.muziuniv_be_notuser.app.notice.model.NoticePostReq;
-import com.green.muziuniv_be_notuser.app.notice.model.NoticePutReq;
+import com.green.muziuniv_be_notuser.app.notice.model.*;
 import com.green.muziuniv_be_notuser.entity.notice.Notice;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,34 +12,54 @@ import java.util.List;
 @RequiredArgsConstructor
 public class NoticeService {
     private final NoticeMapper noticeMapper;
-
-    public int insertNoticeByStaff (NoticePostReq req){
-        return noticeMapper.insertNoticeByStaff(req);
+    private final NoticeRepository noticeRepository;
+    public void insertNoticeByStaff (NoticePostReq req){
+       Notice notice = Notice.builder()
+               .noticeTitle(req.getNoticeTitle())
+               .noticeContent(req.getNoticeContent())
+               .build();
+       noticeRepository.save(notice);
     }
 
-    public List<NoticeGetRes> selectNoticeByTitleORContent (String searchText){
-        return noticeMapper.selectNoticeByTitleORContent(searchText);
+    //공지사항검색 제목+내용, 키워드 필터링
+    public List<NoticeSearchGetRes> searchNotice() {
+        return noticeMapper.searchNotice();
     }
 
-    public List<NoticeGetRes> selectNoticeByTitle(String searchText){
-        return noticeMapper.selectNoticeByTitle(searchText);
+    public List<NoticeSearchGetRes> searchNoticeByKeyword(String keyword) {
+        return noticeMapper.searchNoticeByKeyword(keyword);
     }
 
-    public List<NoticeGetRes> selectNoticeByContent(String searchText){
-        return noticeMapper.selectNoticeByContent(searchText);
+    //공지사항검색 제목만 (됨)
+    public List<NoticeGetRes> searchNoticeTitle(){
+        return noticeMapper.searchNoticeTitle();
+    }
+    // 공지사항검색 내용만 (됨)
+//    public List<NoticeGetRes> searchNoticeContent(){
+//        return noticeMapper.searchNoticeContent();
+//    }
+
+
+    //자세히보기
+
+    public NoticeGetRes searchSearch(Long noticeId) {
+        return noticeMapper.searchSearch(noticeId);
     }
 
-    public NoticeGetRes selectNoticeById(int noticeId){
-        return noticeMapper.selectNoticeById(noticeId);
+    //수정하기
+
+
+    public boolean updateNotice(NoticeUpdateReq req) {
+        return noticeMapper.updateNotice(req);
     }
 
-    public int updateNoticeByNoticeId(NoticePutReq req){
-        return noticeMapper.updateNoticeByNoticeId(req);
-    }
+   //공지삭제
+   public int deleteNotice(Long noticeId) {
+       return noticeMapper.deleteNotice(noticeId);
+   }
 
-    public int deleteNoticeByNoticeId(int noticeId){
-        return noticeMapper.deleteNoticeByNoticeId(noticeId);
-    }
+
+
 
 
 }
