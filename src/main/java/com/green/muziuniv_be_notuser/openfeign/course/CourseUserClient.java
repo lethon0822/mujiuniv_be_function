@@ -9,12 +9,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.List;
 import java.util.Map;
 
-@FeignClient(name = "RAINBOW-ACADEMIC-USER", path = "/api/user")
+@FeignClient(name = "MUJIUNIV-USER", path = "/api/user")
 public interface CourseUserClient {
-    // user-service에서 userId 리스트로 학생 정보 한 번에 조회
     @PostMapping("/student")
     ResultResponse<List<UserResDto>> getUsersByInfo(@RequestBody Map<String, List<Long>> userIds);
-
 }
 
 
