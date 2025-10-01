@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Map;
 
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -25,59 +24,77 @@ public class ApprovalService {
      */
     @Transactional(readOnly = true)
     public List<ApprovalAppGetRes> getApplications(ApprovalAppGetReq req) {
-        // 1) notuser DB에서 application 목록 가져오기
         List<ApprovalAppGetRes> apps = approvalMapper.selectApplications(req);
         if (apps.isEmpty()) {
             return apps;
         }
 
-        // 2) userId 리스트 뽑아서 user-service 호출
         List<Long> userIds = apps.stream()
                 .map(ApprovalAppGetRes::getUserId)
                 .distinct()
                 .toList();
 
-        // ✅ key 이름 "userId" 로 맞추기
         Map<String, List<Long>> request = Map.of("userId", userIds);
         ResultResponse<Map<Long, UserInfoDto>> response = userClient.getUserInfo(request);
 
-        // ✅ null-safe
         Map<Long, UserInfoDto> userInfoMap =
                 response != null && response.getResult() != null
                         ? response.getResult()
                         : Map.of();
 
-        // 3) userName, deptName 매핑
         apps.forEach(app -> {
             UserInfoDto info = userInfoMap.get(app.getUserId());
             if (info != null) {
                 app.setUserName(info.getUserName());
                 app.setDeptName(info.getDeptName());
-
             }
         });
 
         return apps;
     }
 
-    /**
-     * 신청 승인/거부 처리
-     */
     @Transactional
     public String decideApplication(ApprovalPatchReq req) {
+        // 현재 유저 정보 조회
+        ResultResponse<UserInfoDto> userRes = userClient.getUserById(req.getUserId());
+        UserInfoDto userInfo = userRes.getResult();
+
+        if (userInfo == null) {
+            throw new RuntimeException("사용자 정보를 찾을 수 없습니다.");
+        }
+
+        Integer currentStatus = userInfo.getStatus(); // 1 = 재학/재직, 0 = 휴학/휴직
+        log.info("현재 status(0/1) = {}, 요청 타입 = {}", currentStatus, req.getScheduleType());
+
+        // Validation
+        if ("승인".equals(req.getStatus())) {
+            switch (req.getScheduleType()) {
+                case "휴학신청", "휴직신청" -> {
+                    if (currentStatus == 0) {
+                        throw new IllegalStateException("이미 휴학/휴직 상태입니다. 신청 불가");
+                    }
+                }
+                case "복학신청", "복직신청" -> {
+                    if (currentStatus == 1) {
+                        throw new IllegalStateException("이미 재학/재직 상태입니다. 신청 불가");
+                    }
+                }
+                default -> throw new RuntimeException("알 수 없는 scheduleType: " + req.getScheduleType());
+            }
+        }
+
+
         // 1. application 상태 업데이트
         int updated = approvalMapper.updateApplicationStatus(req.getAppId(), req.getStatus());
         if (updated != 1) {
             throw new RuntimeException("신청서 상태 업데이트 실패");
         }
 
-        // 2. 승인일 때 user-service 학적/재직 상태 변경
+        // 2. 승인 시 user-service 상태 업데이트
         if ("승인".equals(req.getStatus())) {
-            String newStatus = switch (req.getScheduleType()) {
-                case "휴학신청" -> "휴학";
-                case "복학신청" -> "재학";
-                case "휴직신청" -> "휴직";
-                case "복직신청" -> "재직";
+            Integer newStatus = switch (req.getScheduleType()) {
+                case "휴학신청", "휴직신청" -> 0; // 휴학/휴직 → 0
+                case "복학신청", "복직신청" -> 1; // 복학/복직 → 1
                 default -> throw new RuntimeException("알 수 없는 scheduleType");
             };
 
