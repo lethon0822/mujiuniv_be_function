@@ -11,4 +11,5 @@ public class GpaRes {
     private Integer semester;
     private Long totalCredit;
     private double gpa;
+    private double majorGpa;
 }
