@@ -23,4 +23,8 @@ public class CourseStudentRes {
     private Integer finalExam;      // 기말고사 점수
     private Integer attendanceEval; // 출결 점수
     private Integer etcScore;       // 기타 점수
+
+    private Integer attendanceDays; // 출석일수
+    private Integer absentDays;     // 결석일수
+
 }
