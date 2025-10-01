@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class ApprovalAppGetReq {
-    private int year;
-    private int semester;
+    private Integer year;
+    private Integer semester;
     private String scheduleType;
 }

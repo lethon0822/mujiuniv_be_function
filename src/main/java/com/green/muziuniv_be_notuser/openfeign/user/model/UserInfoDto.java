@@ -7,4 +7,5 @@ public class UserInfoDto {
     private Long userId;
     private String userName;
     private String deptName;
+    private Integer status;  // "재학", "휴학", "졸업", "휴직", "재직"
 }

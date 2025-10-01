@@ -1,33 +1,57 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.green.muziuniv_be_notuser.app.notice.NoticeMapper">
-     <insert id="insertNotice">
-      INSERT INTO notice (notice_id, created_at, update_at, notice_title, notice_content)
-         VALUES (#{noticeId}, #{createdAt}, #{updateAt}, #{noticeTitle}, #{noticeContent})
 
-     </insert>
+
+
 
      <select id="selectNotice">
-      SELECT notice_id, created_at, update_at, notice_title, notice_content
+      SELECT *
          FROM notice
-         ORDER BY created_at DESC;
+         ORDER BY notice_id DESC;
 
     </select>
 
-    <update id="updateNotice">
-        UPDATE notice SET
 
-        created_at =  #{createdAt},
-        update_at = #{updateAt},
-        notice_title =  #{noticeTitle},
-        notice_content =  #{noticeContent},
+    <!-- 제목 내용 검색 키워드-->
+
+    <select id="searchNotice" >
+        SELECT notice_id, notice_content, notice_title
+        FROM notice
+        ORDER BY notice_id DESC;
+
+    </select>
+
+    <select id="searchNoticeByKeyword" >
+        SELECT notice_id, notice_content, notice_title
+        FROM notice
+        WHERE notice_title LIKE CONCAT('%', #{keyword}, '%')
+    </select>
+
+
+
+<!--    자세히 검색-->
+    <select id="searchSearch">
+        SELECT *
+        FROM notice
         WHERE notice_id = #{noticeId}
 
+    </select>
+
+<!--    수정-->
+    <update id="updateNotice">
+        UPDATE notice
+        SET
+        notice_title = #{noticeTitle},
+        notice_content = #{noticeContent},
+        updated_at = NOW()
+        WHERE notice_id = #{noticeId}
     </update>
 
-    <delete id="deleteNotice">
-        delete from notice
-        where notice_id = #{noticeId}
+<!--  삭제-->
+    <delete id="deleteNotice" >
+        DELETE from notice
+        WHERE notice_id = #{noticeId}
     </delete>
 
 
