@@ -2,12 +2,7 @@ package com.green.muziuniv_be_notuser.app.staff.approval;
 
 
 
-import com.green.muziuniv_be_notuser.app.staff.approval.model.ApprovalAppGetReq;
-import com.green.muziuniv_be_notuser.app.staff.approval.model.ApprovalAppGetRes;
-import com.green.muziuniv_be_notuser.app.staff.approval.model.ApprovalPatchReq;
-import com.green.muziuniv_be_notuser.app.staff.approval.model.ApprovalCoursePatchReq;
-import com.green.muziuniv_be_notuser.app.staff.approval.model.ApprovalCoursePatchRes;
-import com.green.muziuniv_be_notuser.app.staff.approval.model.CoursePendingRes;
+import com.green.muziuniv_be_notuser.app.staff.approval.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -44,8 +39,9 @@ public class ApprovalController {
 
     // 처리중 강의조회
     @GetMapping("/course")
-    public ResponseEntity<List<CoursePendingRes>> getPendingCourses() {
-        return ResponseEntity.ok(approvalService.getPendingCourses());
+    public ResponseEntity<?> getPendingCourses(@ModelAttribute CoursePendingReq req) {
+        List<CoursePendingRes> result = approvalService.getPendingCourses(req);
+        return ResponseEntity.ok(result);
     }
 
     //   강의 승인 or 거부
