@@ -27,16 +27,16 @@ public class ScoreService {
     private final AttendanceService attendanceService; // ✅ 출결 요약 가져오기용
 
     /* -------------------------------
-       출결점수 계산 메소드 (출석일수 50 기준)
-    -------------------------------- */
+     출결점수 계산 메소드 (출석일수 50 기준)
+  -------------------------------- */
     private int calculateAttendanceScore(int absent) {
-        if (absent <= 5) return 100;
+        if (absent <= 5) return 100;   // 결석 5까지는 만점
         else if (absent <= 9) return 90;
         else if (absent <= 13) return 80;
         else if (absent <= 17) return 70;
         else if (absent <= 21) return 60;
         else if (absent <= 25) return 50;
-        else return 0;
+        else return 0;  // 26 이상이면 0점
     }
 
     /* -------------------------------
@@ -51,7 +51,7 @@ public class ScoreService {
                     throw new RuntimeException("이미 성적이 등록된 수강입니다. 수정 기능을 사용하세요.");
                 });
 
-        // ✅ 출결점수 자동계산
+        // ✅ 출결요약 가져오기
         AttendanceSummaryRes summary = attendanceService.getAttendanceSummary(req.getEnrollmentId());
         int attendanceScore = calculateAttendanceScore(summary.getAbsent());
 
@@ -80,7 +80,9 @@ public class ScoreService {
                 saved.getAttendanceScore(),
                 saved.getOtherScore(),
                 total,
-                calcGpa(rank)
+                calcGpa(rank),
+                summary.getAttended(),   // ✅ 출석일수
+                summary.getAbsent()      // ✅ 결석일수
         );
     }
 
@@ -124,7 +126,9 @@ public class ScoreService {
                 saved.getAttendanceScore(),
                 saved.getOtherScore(),
                 total,
-                calcGpa(rank)
+                calcGpa(rank),
+                summary.getAttended(),   // ✅ 출석일수
+                summary.getAbsent()      // ✅ 결석일수
         );
     }
 
@@ -160,7 +164,9 @@ public class ScoreService {
                 updated.getAttendanceScore(),
                 updated.getOtherScore(),
                 total,
-                calcGpa(rank)
+                calcGpa(rank),
+                summary.getAttended(),   // ✅ 출석일수
+                summary.getAbsent()      // ✅ 결석일수
         );
     }
 
@@ -198,12 +204,12 @@ public class ScoreService {
             case "C+" -> 2.5;
             case "C"  -> 2.0;
             case "D"  -> 1.0;
-            default   -> 0.0;
+            default   -> 0.0; // F
         };
     }
 
     /* -------------------------------
-       user-service 호출
+       user-service 호출해서 학년 가져오기
     -------------------------------- */
     private UserResDto getUserInfo(Long userId) {
         try {
@@ -221,6 +227,8 @@ public class ScoreService {
         dto.setUserId(userId);
         dto.setUserName("unknown");
         dto.setGrade(0);
+        dto.setLoginId(null);
+        dto.setDeptName(null);
         return dto;
     }
 
@@ -234,6 +242,11 @@ public class ScoreService {
                 .map(e -> {
                     Score score = scoreRepository.findByEnrollment(e).orElse(null);
                     UserResDto userInfo = getUserInfo(e.getUserId());
+
+                    // ✅ 출결 요약 추가
+                    AttendanceSummaryRes summary = attendanceService.getAttendanceSummary(e.getEnrollmentId());
+                    int attendanceDays = summary.getAttended();
+                    int absentDays = summary.getAbsent();
 
                     if (score != null) {
                         double total = calcTotal(
@@ -253,7 +266,9 @@ public class ScoreService {
                                 score.getAttendanceScore(),
                                 score.getOtherScore(),
                                 total,
-                                calcGpa(score.getRank())
+                                calcGpa(score.getRank()),
+                                attendanceDays,   // ✅ 출석일수
+                                absentDays        // ✅ 결석일수
                         );
                     } else {
                         return new ScoreRes(
@@ -263,10 +278,13 @@ public class ScoreService {
                                 userInfo.getGrade(),
                                 0,0,0,0,
                                 0.0,
-                                0.0
+                                0.0,
+                                attendanceDays,   // ✅ 출석일수
+                                absentDays        // ✅ 결석일수
                         );
                     }
                 })
                 .toList();
     }
 }
+
