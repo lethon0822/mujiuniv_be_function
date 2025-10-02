@@ -51,5 +51,6 @@
         ON c.semester_id = se.semester_id
         WHERE e.user_id = #{userId}
         GROUP BY se.semester_id, se.`year`, se.semester
+        ORDER BY se.`year` ASC, se.semester ASC
     </select>
 </mapper>
