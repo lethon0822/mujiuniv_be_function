@@ -24,7 +24,7 @@ public class ScoreService {
     private final CourseUserClient courseUserClient;
 
     /* -------------------------------
-       방법 1) 성적 기입 (POST, 중복 방지)
+       성적 기입 (POST, 중복 방지)
     -------------------------------- */
     public ScoreRes saveScore(ScorePostReq req) {
         Enrollment enrollment = enrollmentRepository.findById(req.getEnrollmentId())
@@ -54,12 +54,18 @@ public class ScoreService {
                 saved.getScoreId(),
                 saved.getEnrollment().getEnrollmentId(),
                 saved.getRank(),
-                userInfo.getGrade()
+                userInfo.getGrade(),
+                saved.getMidScore(),
+                saved.getFinScore(),
+                saved.getAttendanceScore(),
+                saved.getOtherScore(),
+                total,
+                calcGpa(rank)
         );
     }
 
     /* -------------------------------
-       방법 2) 성적 기입 (POST, 자동 수정)
+       성적 기입 (POST, 자동 수정)
     -------------------------------- */
     public ScoreRes saveOrUpdateScore(ScorePostReq req) {
         Enrollment enrollment = enrollmentRepository.findById(req.getEnrollmentId())
@@ -89,7 +95,13 @@ public class ScoreService {
                 saved.getScoreId(),
                 saved.getEnrollment().getEnrollmentId(),
                 saved.getRank(),
-                userInfo.getGrade()
+                userInfo.getGrade(),
+                saved.getMidScore(),
+                saved.getFinScore(),
+                saved.getAttendanceScore(),
+                saved.getOtherScore(),
+                total,
+                calcGpa(rank)
         );
     }
 
@@ -116,7 +128,13 @@ public class ScoreService {
                 updated.getScoreId(),
                 updated.getEnrollment().getEnrollmentId(),
                 updated.getRank(),
-                userInfo.getGrade()   // ✅ 수정: 학년 반환
+                userInfo.getGrade(),
+                updated.getMidScore(),
+                updated.getFinScore(),
+                updated.getAttendanceScore(),
+                updated.getOtherScore(),
+                total,
+                calcGpa(rank)
         );
     }
 
@@ -153,11 +171,27 @@ public class ScoreService {
     }
 
     /* -------------------------------
+       평점(GPA) 계산 로직
+    -------------------------------- */
+    private double calcGpa(String rank) {
+        return switch (rank) {
+            case "A+" -> 4.5;
+            case "A"  -> 4.0;
+            case "B+" -> 3.5;
+            case "B"  -> 3.0;
+            case "C+" -> 2.5;
+            case "C"  -> 2.0;
+            case "D"  -> 1.0;
+            default   -> 0.0; // F
+        };
+    }
+
+    /* -------------------------------
        user-service 호출해서 학년 가져오기
     -------------------------------- */
     private UserResDto getUserInfo(Long userId) {
         try {
-            Map<String, List<Long>> request = Map.of("userIds", List.of(userId));
+            Map<String, List<Long>> request = Map.of("userId", List.of(userId));
             ResultResponse<List<UserResDto>> response = courseUserClient.getUsersByInfo(request);
 
             List<UserResDto> users = response.getResult();
@@ -167,7 +201,7 @@ public class ScoreService {
         } catch (Exception e) {
             System.err.println(" user-service 호출 실패: " + e.getMessage());
         }
-        // fallback: 기본값 반환 (학년=0)
+        // fallback: 기본값 반환
         UserResDto dto = new UserResDto();
         dto.setUserId(userId);
         dto.setUserName("unknown");
@@ -176,5 +210,48 @@ public class ScoreService {
         dto.setDeptName(null);
         return dto;
     }
-}
 
+    /* -------------------------------
+       특정 강의 전체 성적 조회
+    -------------------------------- */
+    public List<ScoreRes> getScoresByCourse(Long courseId) {
+        List<Enrollment> enrollments = enrollmentRepository.findByCourse_CourseId(courseId);
+
+        return enrollments.stream()
+                .map(e -> {
+                    Score score = scoreRepository.findByEnrollment(e).orElse(null);
+                    UserResDto userInfo = getUserInfo(e.getUserId());
+
+                    if (score != null) {
+                        double total = (score.getMidScore()
+                                + score.getFinScore()
+                                + score.getAttendanceScore()
+                                + score.getOtherScore()) / 4.0;
+
+                        return new ScoreRes(
+                                score.getScoreId(),
+                                e.getEnrollmentId(),
+                                score.getRank(),
+                                userInfo.getGrade(),
+                                score.getMidScore(),
+                                score.getFinScore(),
+                                score.getAttendanceScore(),
+                                score.getOtherScore(),
+                                total,
+                                calcGpa(score.getRank())
+                        );
+                    } else {
+                        return new ScoreRes(
+                                null,
+                                e.getEnrollmentId(),
+                                "미등록",
+                                userInfo.getGrade(),
+                                0,0,0,0,
+                                0.0,
+                                0.0
+                        );
+                    }
+                })
+                .toList();
+    }
+}
