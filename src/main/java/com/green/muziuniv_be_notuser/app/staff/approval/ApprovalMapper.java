@@ -4,6 +4,8 @@ package com.green.muziuniv_be_notuser.app.staff.approval;
 
 import com.green.muziuniv_be_notuser.app.staff.approval.model.ApprovalAppGetReq;
 import com.green.muziuniv_be_notuser.app.staff.approval.model.ApprovalAppGetRes;
+import com.green.muziuniv_be_notuser.app.staff.approval.model.CoursePendingReq;
+import com.green.muziuniv_be_notuser.app.staff.approval.model.CoursePendingRes;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -15,4 +17,6 @@ public interface ApprovalMapper {
 
     int updateApplicationStatus(@Param("appId") Long appId,
                                 @Param("status") String status);
+
+    List<CoursePendingRes> findCoursesByStatus(CoursePendingReq req);
 }
