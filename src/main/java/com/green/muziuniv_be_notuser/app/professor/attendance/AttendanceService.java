@@ -25,7 +25,7 @@ public class AttendanceService {
         var enrollment = enrollmentRepository.findById(req.getEnrollmentId())
                 .orElseThrow(() -> new RuntimeException("등록된 수강내역이 없음"));
 
-        // ✅ 프론트에서 오는 날짜에 T00:00:00 방지
+        //  프론트에서 오는 날짜에 T00:00:00 방지
         String dateStr = req.getAttendDate().split("T")[0];
         LocalDate date = LocalDate.parse(dateStr);
 
@@ -33,10 +33,10 @@ public class AttendanceService {
         ids.setAttendDate(date);
         ids.setEnrollmentId(req.getEnrollmentId());
 
-        // ✅ 기존 출결 조회
+        //  기존 출결 조회
         Attendance attendance = attendanceRepository.findById(ids).orElse(null);
 
-        // ✅ 없으면 새로 INSERT
+        //  없으면 새로 INSERT
         if (attendance == null) {
             attendance = new Attendance();
             attendance.setAttendanceIds(ids);
@@ -44,7 +44,7 @@ public class AttendanceService {
             attendance.setCreatedAt(LocalDateTime.now()); // INSERT 때 필수
         }
 
-        // ✅ 항상 갱신
+        //  항상 갱신
         attendance.setStatus(req.getStatus());
         attendance.setNote(req.getNote());
         attendance.setUpdatedAt(LocalDateTime.now());
@@ -59,11 +59,11 @@ public class AttendanceService {
         );
     }
 
-    /* ✅ 출결 요약 조회 (성적 계산용) */
+    /*  출결 요약 조회 (성적 계산용) */
     public AttendanceSummaryRes getAttendanceSummary(Long enrollmentId) {
-        int totalDays = attendanceRepository.countByEnrollment_EnrollmentId(enrollmentId);
+        int totalDays = 50; // ✅ 수업일수 고정
         int attended = attendanceRepository.countByEnrollment_EnrollmentIdAndStatus(enrollmentId, "출석");
-        int absent = attendanceRepository.countByEnrollment_EnrollmentIdAndStatus(enrollmentId, "결석");
+        int absent = totalDays - attended; // ✅ 자동 계산
 
         double attendanceEval;
         if (absent <= 5) attendanceEval = 100;
