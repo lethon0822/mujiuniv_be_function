@@ -29,20 +29,24 @@ public class Attendance {
     @Column(length = 100)
     private String note;
 
-    @Column(name = "created_at", nullable = false)
+    // 최초 생성 시간 (INSERT 시 한 번만 값 세팅, 이후 변경 X)
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    // 수정 시간 (UPDATE 시마다 갱신됨)
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    // INSERT 직전 실행 → 생성/수정 시간 자동 세팅
+    // INSERT 직전 실행
     @PrePersist
     public void onCreate() {
-        this.createdAt = LocalDateTime.now();
+        if (this.createdAt == null) {
+            this.createdAt = LocalDateTime.now(); // null 방지
+        }
         this.updatedAt = LocalDateTime.now();
     }
 
-    // UPDATE 직전 실행 → 수정 시간 갱신
+    // UPDATE 직전 실행
     @PreUpdate
     public void onUpdate() {
         this.updatedAt = LocalDateTime.now();
