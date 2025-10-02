@@ -45,7 +45,7 @@ public class ProfessorCourseController {
     public ResultResponse<?> checkSurvey(
             @RequestParam("id") int courseId) {
         List<ProfessorSurveyCheckRes> result = professorCourseService.checkSurvey(courseId);
-        return new ResultResponse<>(result.isEmpty() ?"등록된 강의평가가 없습니다" : "강의평 내용", result);
+        return new ResultResponse<>(result.isEmpty() ? "등록된 강의평가가 없습니다" : "강의평 내용", result);
     }
 
     // 강의별 학생 리스트 조회

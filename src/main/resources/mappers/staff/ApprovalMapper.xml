@@ -18,7 +18,10 @@
         JOIN schedule sc ON a.schedule_id = sc.schedule_id
         JOIN semester sm ON sc.semester_id = sm.semester_id
         WHERE sm.year = #{year}
-        AND sm.semester = #{semester}
+        <if test="semester != null">
+            AND sm.semester = #{semester}
+        </if>
+
         <if test="scheduleType != null and scheduleType != ''">
             AND sc.schedule_type = #{scheduleType}
         </if>

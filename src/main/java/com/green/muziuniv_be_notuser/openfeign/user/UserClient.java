@@ -17,13 +17,23 @@ public interface UserClient {
     @PostMapping("/api/user/list")
     ResultResponse<Map<Long, UserInfoDto>> getUserInfo(@RequestBody Map<String, List<Long>> request);
 
+    // 단일 유저 정보 조회 (학적 상태 확인용)
+    @GetMapping("/api/user/{userId}")
+    ResultResponse<UserInfoDto> getUserById(@PathVariable("userId") Long userId);
+
+    @PutMapping("/status")
+    void updateStatus(@RequestParam Long userId, @RequestParam String status);
+
     // 교수 학과 가져옴
     @GetMapping("/api/user/dept/code")
     String getProDeptCode(@RequestParam("user_id")Long userId);
 
-
     // 학적/재직 상태 변경
-    @PatchMapping("/api/user/status")
+    @PutMapping("/api/user/status")
     void updateStatus(@RequestParam("userId") Long userId,
-                      @RequestParam("status") String status);
+                      @RequestParam("status") Integer status);
+
+
+
+
 }
