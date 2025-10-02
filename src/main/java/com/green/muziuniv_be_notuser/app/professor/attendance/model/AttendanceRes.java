@@ -10,4 +10,6 @@ public class AttendanceRes {
     private Long enrollmentId;
     private String status;
     private String note;
+
+
 }
