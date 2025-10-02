@@ -5,8 +5,9 @@ package com.green.muziuniv_be_notuser.app.staff.approval;
 import com.green.muziuniv_be_notuser.app.staff.approval.model.ApprovalAppGetReq;
 import com.green.muziuniv_be_notuser.app.staff.approval.model.ApprovalAppGetRes;
 import com.green.muziuniv_be_notuser.app.staff.approval.model.ApprovalPatchReq;
-import com.green.muziuniv_be_notuser.configuration.model.ResultResponse;
-import com.green.muziuniv_be_notuser.openfeign.user.model.UserInfoDto;
+import com.green.muziuniv_be_notuser.app.staff.approval.model.ApprovalCoursePatchReq;
+import com.green.muziuniv_be_notuser.app.staff.approval.model.ApprovalCoursePatchRes;
+import com.green.muziuniv_be_notuser.app.staff.approval.model.CoursePendingRes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +16,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 
-@RequiredArgsConstructor
-@RequestMapping("/staff/approval")
 @RestController
+@RequestMapping("/staff/approval")
+@RequiredArgsConstructor
 @Slf4j
 public class ApprovalController {
     private final ApprovalService approvalService;
@@ -36,5 +37,20 @@ public class ApprovalController {
         String result = approvalService.decideApplication(req);
         return ResponseEntity.ok(result);
     }
+    @GetMapping("/test")
+    public ResponseEntity<?> test(){
+        return ResponseEntity.ok("통신되냐?");
+    }
 
+    // 처리중 강의조회
+    @GetMapping("/course")
+    public ResponseEntity<List<CoursePendingRes>> getPendingCourses() {
+        return ResponseEntity.ok(approvalService.getPendingCourses());
+    }
+
+    //   강의 승인 or 거부
+    @PatchMapping("/course")
+    public ResponseEntity<?> updateCourseStatus(@RequestBody ApprovalCoursePatchReq approvalCoursePatchReq) {
+        return ResponseEntity.ok(approvalService.updateCourseStatus(approvalCoursePatchReq));
+    }
 }

@@ -53,6 +53,7 @@
             </foreach>
             AND c.type LIKE '전공%'
         </if>
+        ORDER BY c.title
     </select>
 
 </mapper>
