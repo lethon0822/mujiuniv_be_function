@@ -63,6 +63,7 @@
 
         WHERE e.user_id = #{userId}
         AND c.semester_id = #{semesterId}
+        ORDER BY c.title
 
     </select>
 
