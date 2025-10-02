@@ -1,6 +1,7 @@
 package com.green.muziuniv_be_notuser.app.shared.schedule;
 
 import com.green.muziuniv_be_notuser.app.shared.application.ApplicationMapper;
+import com.green.muziuniv_be_notuser.app.shared.schedule.model.DateRes;
 import com.green.muziuniv_be_notuser.app.shared.schedule.model.ScheduleCreateReq;
 import com.green.muziuniv_be_notuser.app.shared.schedule.model.ScheduleRes;
 import com.green.muziuniv_be_notuser.app.shared.schedule.model.ScheduleUpdateReq;
@@ -81,5 +82,10 @@ public class ScheduleService {
         if (deleted == 0) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "삭제할 일정이 없습니다. id=" + scheduleId);
         }
+    }
+
+    public DateRes findStartDate(String type){
+        String replaceType = type.replace(" ","");
+        return scheduleMapper.findStartDate(replaceType);
     }
 }

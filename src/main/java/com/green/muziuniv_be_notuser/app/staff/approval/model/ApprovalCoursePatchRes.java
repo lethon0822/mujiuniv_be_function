@@ -1,4 +1,4 @@
-package com.green.muziuniv_be_notuser.app.staff.model;
+package com.green.muziuniv_be_notuser.app.staff.approval.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
