@@ -1,17 +1,13 @@
-# Build stage
-FROM node:20.14.0 AS build-stage
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-RUN npm run build
+FROM amazoncorretto:21-alpine
 
-# Production stage
-FROM nginx:stable-alpine
+WORKDIR /deploy
 
-# Add our custom nginx config
-COPY default.conf /etc/nginx/conf.d/
+COPY build/libs/app-0.0.1-SNAPSHOT.jar app.jar
 
-COPY --from=build-stage /app/dist /etc/nginx/html
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+RUN apk add tzdata && ln -snf /usr/share/zoneinfo/Asia/Seoul /etc/localtime
+
+ENV TZ=Asia/Seoul
+
+CMD ["java", "-jar", "-Duser.timezone=Asia/Seoul", "/deploy/app.jar", "--spring.profiles.active=prod"]
+
+EXPOSE 8080
