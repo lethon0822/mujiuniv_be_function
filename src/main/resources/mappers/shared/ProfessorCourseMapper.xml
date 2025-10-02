@@ -39,6 +39,7 @@
         SELECT review, ev_score
         FROM enrollment
         WHERE course_id = #{courseId}
+        AND ev_score != 0
     </select>
 
 

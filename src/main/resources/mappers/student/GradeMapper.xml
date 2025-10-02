@@ -35,7 +35,7 @@
         <if test="req.semester != null">
             AND se.semester = #{req.semester}
         </if>
-        ORDER BY se.year DESC, se.semester ASC
+        ORDER BY se.year DESC, se.semester, c.title
     </select>
 
     <!-- 금학기 성적 조회  -->
@@ -63,6 +63,7 @@
 
         WHERE e.user_id = #{userId}
         AND c.semester_id = #{semesterId}
+        ORDER BY c.title
 
     </select>
 
