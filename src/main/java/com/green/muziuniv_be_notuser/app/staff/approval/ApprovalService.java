@@ -103,24 +103,8 @@ public class ApprovalService {
     // 강의 신청 처리 관련------------------------
 
     // 처리중 강의만 DTO 변환해서 반환
-    public List<CoursePendingRes> getPendingCourses() {
-        List<CoursePendingRes> courseList= courseRepository.findByStatus("처리중")
-                                                            .stream()
-                                                            .map(c ->  CoursePendingRes.builder()
-                                                                    .courseId(c.getCourseId())
-                                                                    .title(c.getTitle())
-                                                                    .classroom(c.getClassroom())
-                                                                    .status(c.getStatus())
-                                                                    .courseCode(c.getCourseCode())
-                                                                    .time(c.getTime())
-                                                                    .credit(c.getCredit())
-                                                                    .maxStd(c.getMaxStd())
-                                                                    .type(c.getType())
-                                                                    .userId(c.getUserId().getUserId())
-                                                                    .grade(c.getGrade())
-                                                                    .build()
-                                                            )
-                                                            .collect(Collectors.toList());
+    public List<CoursePendingRes> getPendingCourses(CoursePendingReq req) {
+        List<CoursePendingRes> courseList= approvalMapper.findCoursesByStatus(req);
          //중복 제거
         Set<Long> userList = courseList.stream()
                 .map(c -> c.getUserId())
