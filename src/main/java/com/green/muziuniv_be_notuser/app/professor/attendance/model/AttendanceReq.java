@@ -3,6 +3,8 @@ package com.green.muziuniv_be_notuser.app.professor.attendance.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 public class AttendanceReq {

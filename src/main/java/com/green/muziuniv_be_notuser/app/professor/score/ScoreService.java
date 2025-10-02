@@ -1,5 +1,7 @@
 package com.green.muziuniv_be_notuser.app.professor.score;
 
+import com.green.muziuniv_be_notuser.app.professor.attendance.AttendanceService;
+import com.green.muziuniv_be_notuser.app.professor.attendance.model.AttendanceSummaryRes;
 import com.green.muziuniv_be_notuser.app.professor.score.model.ScorePostReq;
 import com.green.muziuniv_be_notuser.app.professor.score.model.ScorePutReq;
 import com.green.muziuniv_be_notuser.app.professor.score.model.ScoreRes;
@@ -22,6 +24,20 @@ public class ScoreService {
     private final ScoreRepository scoreRepository;
     private final EnrollmentRepository enrollmentRepository;
     private final CourseUserClient courseUserClient;
+    private final AttendanceService attendanceService; // ✅ 출결 요약 가져오기용
+
+    /* -------------------------------
+       출결점수 계산 메소드 (출석일수 50 기준)
+    -------------------------------- */
+    private int calculateAttendanceScore(int absent) {
+        if (absent <= 5) return 100;
+        else if (absent <= 9) return 90;
+        else if (absent <= 13) return 80;
+        else if (absent <= 17) return 70;
+        else if (absent <= 21) return 60;
+        else if (absent <= 25) return 50;
+        else return 0;
+    }
 
     /* -------------------------------
        성적 기입 (POST, 중복 방지)
@@ -35,14 +51,18 @@ public class ScoreService {
                     throw new RuntimeException("이미 성적이 등록된 수강입니다. 수정 기능을 사용하세요.");
                 });
 
-        double total = calcTotal(req);
+        // ✅ 출결점수 자동계산
+        AttendanceSummaryRes summary = attendanceService.getAttendanceSummary(req.getEnrollmentId());
+        int attendanceScore = calculateAttendanceScore(summary.getAbsent());
+
+        double total = calcTotal(req.getMidScore(), req.getFinScore(), attendanceScore, req.getOtherScore());
         String rank = calcRank(total);
 
         Score score = Score.builder()
                 .enrollment(enrollment)
                 .midScore(req.getMidScore())
                 .finScore(req.getFinScore())
-                .attendanceScore(req.getAttendanceScore())
+                .attendanceScore(attendanceScore)
                 .otherScore(req.getOtherScore())
                 .rank(rank)
                 .build();
@@ -71,7 +91,10 @@ public class ScoreService {
         Enrollment enrollment = enrollmentRepository.findById(req.getEnrollmentId())
                 .orElseThrow(() -> new RuntimeException("등록된 수강내역이 없음"));
 
-        double total = calcTotal(req);
+        AttendanceSummaryRes summary = attendanceService.getAttendanceSummary(req.getEnrollmentId());
+        int attendanceScore = calculateAttendanceScore(summary.getAbsent());
+
+        double total = calcTotal(req.getMidScore(), req.getFinScore(), attendanceScore, req.getOtherScore());
         String rank = calcRank(total);
 
         Score score = scoreRepository.findByEnrollment_EnrollmentId(req.getEnrollmentId())
@@ -80,7 +103,7 @@ public class ScoreService {
         score.setEnrollment(enrollment);
         score.setMidScore(req.getMidScore());
         score.setFinScore(req.getFinScore());
-        score.setAttendanceScore(req.getAttendanceScore());
+        score.setAttendanceScore(attendanceScore); // ✅ 자동 반영
         score.setOtherScore(req.getOtherScore());
         score.setRank(rank);
 
@@ -112,12 +135,15 @@ public class ScoreService {
         Score score = scoreRepository.findByEnrollment_EnrollmentId(req.getEnrollmentId())
                 .orElseThrow(() -> new RuntimeException("해당 수강의 성적이 존재하지 않음"));
 
-        double total = calcTotal(req);
+        AttendanceSummaryRes summary = attendanceService.getAttendanceSummary(req.getEnrollmentId());
+        int attendanceScore = calculateAttendanceScore(summary.getAbsent());
+
+        double total = calcTotal(req.getMidScore(), req.getFinScore(), attendanceScore, req.getOtherScore());
         String rank = calcRank(total);
 
         score.setMidScore(req.getMidScore());
         score.setFinScore(req.getFinScore());
-        score.setAttendanceScore(req.getAttendanceScore());
+        score.setAttendanceScore(attendanceScore); // ✅ 자동 반영
         score.setOtherScore(req.getOtherScore());
         score.setRank(rank);
 
@@ -139,20 +165,10 @@ public class ScoreService {
     }
 
     /* -------------------------------
-       점수 합산 → 평균(100점 만점 기준)
+       점수 합산 (100점 만점 기준)
     -------------------------------- */
-    private double calcTotal(ScorePostReq req) {
-        return (req.getMidScore()
-                + req.getFinScore()
-                + req.getAttendanceScore()
-                + req.getOtherScore()) / 4.0;
-    }
-
-    private double calcTotal(ScorePutReq req) {
-        return (req.getMidScore()
-                + req.getFinScore()
-                + req.getAttendanceScore()
-                + req.getOtherScore()) / 4.0;
+    private double calcTotal(int mid, int fin, int attendance, int other) {
+        return (mid + fin + attendance + other) / 4.0;
     }
 
     /* -------------------------------
@@ -182,12 +198,12 @@ public class ScoreService {
             case "C+" -> 2.5;
             case "C"  -> 2.0;
             case "D"  -> 1.0;
-            default   -> 0.0; // F
+            default   -> 0.0;
         };
     }
 
     /* -------------------------------
-       user-service 호출해서 학년 가져오기
+       user-service 호출
     -------------------------------- */
     private UserResDto getUserInfo(Long userId) {
         try {
@@ -201,13 +217,10 @@ public class ScoreService {
         } catch (Exception e) {
             System.err.println(" user-service 호출 실패: " + e.getMessage());
         }
-        // fallback: 기본값 반환
         UserResDto dto = new UserResDto();
         dto.setUserId(userId);
         dto.setUserName("unknown");
         dto.setGrade(0);
-        dto.setLoginId(null);
-        dto.setDeptName(null);
         return dto;
     }
 
@@ -223,10 +236,12 @@ public class ScoreService {
                     UserResDto userInfo = getUserInfo(e.getUserId());
 
                     if (score != null) {
-                        double total = (score.getMidScore()
-                                + score.getFinScore()
-                                + score.getAttendanceScore()
-                                + score.getOtherScore()) / 4.0;
+                        double total = calcTotal(
+                                score.getMidScore(),
+                                score.getFinScore(),
+                                score.getAttendanceScore(),
+                                score.getOtherScore()
+                        );
 
                         return new ScoreRes(
                                 score.getScoreId(),
