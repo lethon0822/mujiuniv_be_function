@@ -1,16 +1,18 @@
 package com.green.muziuniv_be_notuser.app.professor.attendance;
 
 import com.green.muziuniv_be_notuser.app.professor.attendance.model.AttendanceSummaryRes;
-import com.green.muziuniv_be_notuser.entity.attendance.Attendance;
-import com.green.muziuniv_be_notuser.entity.attendance.AttendanceIds;
 import com.green.muziuniv_be_notuser.app.professor.attendance.model.AttendanceReq;
 import com.green.muziuniv_be_notuser.app.professor.attendance.model.AttendanceRes;
+import com.green.muziuniv_be_notuser.entity.attendance.Attendance;
+import com.green.muziuniv_be_notuser.entity.attendance.AttendanceIds;
 import com.green.muziuniv_be_notuser.app.student.enrollment.EnrollmentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -63,7 +65,6 @@ public class AttendanceService {
         int attended = attendanceRepository.countByEnrollment_EnrollmentIdAndStatus(enrollmentId, "출석");
         int absent = attendanceRepository.countByEnrollment_EnrollmentIdAndStatus(enrollmentId, "결석");
 
-        // ❗ 출결 점수 규칙: 결석 0~5 → 100점, 6~9 → 90점, 10~13 → 80점 ...
         double attendanceEval;
         if (absent <= 5) attendanceEval = 100;
         else if (absent <= 9) attendanceEval = 90;
@@ -74,5 +75,22 @@ public class AttendanceService {
         else attendanceEval = 0;
 
         return new AttendanceSummaryRes(attended, absent, attendanceEval);
+    }
+
+    /* ✅ 강의별 특정 날짜 출결 조회 */
+    public List<AttendanceRes> getAttendanceByDate(Long courseId, String attendDate) {
+        LocalDate date = LocalDate.parse(attendDate); // "2025-10-02" → LocalDate 변환
+
+        List<Attendance> list = attendanceRepository
+                .findByEnrollment_Course_CourseIdAndAttendanceIds_AttendDate(courseId, date);
+
+        return list.stream()
+                .map(att -> new AttendanceRes(
+                        att.getAttendanceIds().getAttendDate().toString(),
+                        att.getAttendanceIds().getEnrollmentId(),
+                        att.getStatus(),
+                        att.getNote()
+                ))
+                .collect(Collectors.toList());
     }
 }
