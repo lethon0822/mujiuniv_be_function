@@ -11,7 +11,7 @@ spring:
 
   datasource:
     # log4jdbc ?? ???? DriverSpy + jdbc:log4jdbc: ?? ??
-    url: jdbc:log4jdbc:mariadb://192.168.0.39/final_project_not_user?useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:log4jdbc:mariadb://112.222.157.157:5013/final_project_not_user?useUnicode=true&characterEncoding=UTF-8
 
     username: green3
     password: figma502

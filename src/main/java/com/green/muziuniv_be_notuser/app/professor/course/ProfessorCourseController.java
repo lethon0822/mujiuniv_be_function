@@ -21,8 +21,7 @@ public class ProfessorCourseController {
     public ResultResponse<?> saveCourse(
             @AuthenticationPrincipal SignedUser signedUser,
             @RequestBody ProfessorPostReq req) {
-
-        req.setUserId(signedUser.signedUserId);
+       req.setUserId(signedUser.signedUserId);
        professorCourseService.saveCourse(req);
 
         return new ResultResponse<>("강의 등록 성공", null);
