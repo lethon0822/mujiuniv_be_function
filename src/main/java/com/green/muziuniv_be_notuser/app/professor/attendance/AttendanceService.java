@@ -61,21 +61,25 @@ public class AttendanceService {
 
     /*  출결 요약 조회 (성적 계산용) */
     public AttendanceSummaryRes getAttendanceSummary(Long enrollmentId) {
-        int totalDays = 50; // ✅ 수업일수 고정
+        int totalDays = 50; // 수업일수 고정
         int attended = attendanceRepository.countByEnrollment_EnrollmentIdAndStatus(enrollmentId, "출석");
-        int absent = totalDays - attended; // ✅ 자동 계산
+        int absent = attendanceRepository.countByEnrollment_EnrollmentIdAndStatus(enrollmentId, "결석");
 
         double attendanceEval;
         if (absent <= 5) attendanceEval = 100;
-        else if (absent <= 9) attendanceEval = 90;
-        else if (absent <= 13) attendanceEval = 80;
-        else if (absent <= 17) attendanceEval = 70;
-        else if (absent <= 21) attendanceEval = 60;
-        else if (absent <= 25) attendanceEval = 50;
-        else attendanceEval = 0;
+        else if (absent <= 10) attendanceEval = 90;
+        else if (absent <= 15) attendanceEval = 80;
+        else if (absent <= 20) attendanceEval = 70;
+        else if (absent <= 25) attendanceEval = 60;
 
-        return new AttendanceSummaryRes(attended, absent, attendanceEval);
+        else attendanceEval = 50;
+
+        // ✅ 출석/결석 순서 교체
+        return new AttendanceSummaryRes(absent, attended, attendanceEval);
+
     }
+
+
 
     /* ✅ 강의별 특정 날짜 출결 조회 */
     public List<AttendanceRes> getAttendanceByDate(Long courseId, String attendDate) {
