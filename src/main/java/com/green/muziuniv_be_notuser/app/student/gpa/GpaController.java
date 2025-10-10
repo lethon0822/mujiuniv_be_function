@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -21,9 +22,9 @@ public class GpaController {
     private final GpaService gpaService;
 
     @GetMapping
-    public ResponseEntity<?> getGpa(@AuthenticationPrincipal SignedUser signedUser) {
+    public ResponseEntity<?> getGpa(@AuthenticationPrincipal SignedUser signedUser, @RequestParam Long semesterId) {
         Long userId = signedUser.signedUserId;
-        List<GpaRes> res = gpaService.getMyGpa(userId);
+        List<GpaRes> res = gpaService.getMyGpa(userId, semesterId);
         return ResponseEntity.ok(new ResultResponse<>("평점 조회 성공", res));
     }
 }
