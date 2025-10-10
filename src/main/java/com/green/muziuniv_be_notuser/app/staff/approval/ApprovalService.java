@@ -80,11 +80,10 @@ public class ApprovalService {
 
         // 2. 승인일 때 user-service 학적/재직 상태 변경
         if ("승인".equals(req.getStatus())) {
-            String newStatus = switch (req.getScheduleType()) {
-                case "휴학신청" -> "휴학";
-                case "복학신청" -> "재학";
-                case "휴직신청" -> "휴직";
-                case "복직신청" -> "재직";
+            Integer newStatus = switch (req.getScheduleType()) {
+                case "휴학신청","휴직신청" -> 0;
+                case "복학신청","복직신청" -> 1;
+
                 default -> throw new RuntimeException("알 수 없는 scheduleType");
             };
 
