@@ -10,30 +10,24 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-@FeignClient(name = "${constants.open-feign.user}", contextId = "userClient", configuration = FeignConfiguration.class)
+@FeignClient(name = "${constants.open-feign.user}", contextId = "userClient", configuration = FeignConfiguration.class, path = "/api/user")
 public interface UserClient {
 
     // 여러유저 정보 가져옴
-    @PostMapping("/api/user/list")
+    @PostMapping("/list")
     ResultResponse<Map<Long, UserInfoDto>> getUserInfo(@RequestBody Map<String, List<Long>> request);
 
     // 단일 유저 정보 조회 (학적 상태 확인용)
-    @GetMapping("/api/user/{userId}")
+    @GetMapping("/{userId}")
     ResultResponse<UserInfoDto> getUserById(@PathVariable("userId") Long userId);
 
-    @PutMapping("/status")
-    void updateStatus(@RequestParam Long userId, @RequestParam String status);
-
     // 교수 학과 가져옴
-    @GetMapping("/api/user/dept/code")
+    @GetMapping("/dept/code")
     String getProDeptCode(@RequestParam("user_id")Long userId);
 
     // 학적/재직 상태 변경
-    @PutMapping("/api/user/status")
+    @PutMapping("/status")
     void updateStatus(@RequestParam("userId") Long userId,
                       @RequestParam("status") Integer status);
-
-
-
 
 }
