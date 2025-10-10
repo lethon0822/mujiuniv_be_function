@@ -5,10 +5,11 @@ package com.green.muziuniv_be_notuser.app.staff.approval.model;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
-@Builder
+@ToString
 public class CoursePendingRes {
     private Long userId;
     private Long courseId; // 강의 ID
