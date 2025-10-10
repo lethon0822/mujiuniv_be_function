@@ -22,4 +22,7 @@ public class ScoreRes {
 
     private double total;          // 총점 (평균 계산 결과)
     private double gpa;            // 평점 (4.5 만점 기준)
+
+    private int attendanceDays;    // ✅ 출석일수
+    private int absentDays;          // ✅ 결석일수
 }
