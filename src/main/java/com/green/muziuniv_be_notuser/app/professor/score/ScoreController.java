@@ -26,16 +26,18 @@ public class ScoreController {
         if (body instanceof java.util.List<?>) {
             // 배열(JSON Array) → 여러 개 저장
             List<?> list = (List<?>) body;
+
             List<ScoreRes> result = list.stream()
                     .filter(item -> item instanceof Map) // JSON object 체크
                     .map(item -> {
                         Map<String, Object> map = (Map<String, Object>) item;
                         ScorePostReq req = new ScorePostReq(
                                 Long.valueOf(map.get("enrollmentId").toString()),
-                                (int) map.get("midScore"),
-                                (int) map.get("finScore"),
-                                (int) map.get("attendanceScore"),
-                                (int) map.get("otherScore")
+                                ((Number) map.get("midScore")).intValue(),
+                                ((Number) map.get("finScore")).intValue(),
+                                ((Number) map.get("attendanceScore")).intValue(),
+                                ((Number) map.get("otherScore")).intValue(),
+                                ((Number) map.get("gradeYear")).intValue()
                         );
                         return scoreService.saveOrUpdateScore(req);
                     })
@@ -64,7 +66,8 @@ public class ScoreController {
                                 (int) map.get("midScore"),
                                 (int) map.get("finScore"),
                                 (int) map.get("attendanceScore"),
-                                (int) map.get("otherScore")
+                                (int) map.get("otherScore"),
+                                (int) map.get("grade")
                         );
                         return scoreService.updateScore(req);
                     })
@@ -75,7 +78,6 @@ public class ScoreController {
             return ResponseEntity.ok(scoreService.updateScore(req));
         }
     }
-
     /* -------------------------------
      성적 조회 (GET)
      /professor/course/{courseId}/grade
