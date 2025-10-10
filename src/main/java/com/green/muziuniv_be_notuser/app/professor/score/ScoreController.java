@@ -66,7 +66,8 @@ public class ScoreController {
                                 (int) map.get("midScore"),
                                 (int) map.get("finScore"),
                                 (int) map.get("attendanceScore"),
-                                (int) map.get("otherScore")
+                                (int) map.get("otherScore"),
+                                (int) map.get("grade")
                         );
                         return scoreService.updateScore(req);
                     })
