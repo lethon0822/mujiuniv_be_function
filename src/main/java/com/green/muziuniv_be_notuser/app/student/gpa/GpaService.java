@@ -13,7 +13,7 @@ import java.util.List;
 public class GpaService {
     private final GpaMapper gpaMapper;
 
-    public List<GpaRes> getMyGpa(Long userId){
-        return gpaMapper.getMyGpa(userId);
+    public List<GpaRes> getMyGpa(Long userId,  Long semesterId) {
+        return gpaMapper.getMyGpa(userId, semesterId);
     }
 }
