@@ -27,8 +27,12 @@ public class Score extends UpdatedAt {
 
     @Column(name = "fin_score")
     private int finScore;
+
     @Column(name = "attendance_score")
     private int attendanceScore;
+
+    @Column(name = "attendance_days")
+    private int attendanceDays;
 
     @Column(name = "other_score")
     private int otherScore;
