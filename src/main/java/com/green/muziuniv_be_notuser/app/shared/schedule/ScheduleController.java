@@ -65,7 +65,7 @@ public class ScheduleController {
         scheduleService.delete(scheduleId);
     }
 
-    //프론트 기능 막아두기 위해서 start datetime을 가져온다
+    //프론트 기능 진입을 막아두기 위함
     @PostMapping("/date")
     public ResponseEntity<?> findStartDate(@RequestBody CheckScheduleDateReq req){
         scheduleValidator.validateOpen(req.getSemesterId(), req.getType());

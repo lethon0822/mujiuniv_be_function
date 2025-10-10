@@ -103,7 +103,10 @@ public class ApprovalService {
 
     // 처리중 강의만 DTO 변환해서 반환
     public List<CoursePendingRes> getPendingCourses(CoursePendingReq req) {
-        List<CoursePendingRes> courseList= approvalMapper.findCoursesByStatus(req);
+        List<CoursePendingRes> courseList = approvalMapper.findCoursesByStatus(req);
+        if(courseList.isEmpty()){
+            return null;
+        }
          //중복 제거
         Set<Long> userList = courseList.stream()
                 .map(c -> c.getUserId())
@@ -122,10 +125,10 @@ public class ApprovalService {
             if (userInfoDto != null) {
                 course.setProfessorName(userInfoDto.getUserName());
 
-                if (course.getGrade() != 0) {  // 학년이 0이면 학과를 교양학부로
-                    course.setDeptName(userInfoDto.getDeptName());
-                } else {
+                if (course.getGrade() == 0 || course.getType().contains("교양") ) {  // 학년이 0이거나 타입에 교양이 포함되면 학과를 교양학부로
                     course.setDeptName("교양학부");
+                } else {
+                    course.setDeptName(userInfoDto.getDeptName());
                 }
 
             }
