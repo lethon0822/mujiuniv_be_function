@@ -73,7 +73,7 @@ public class EnrollmentService {
             if (userInfoDto != null) {
                 course.setProfessorName(userInfoDto.getUserName());
 
-                if (course.getGrade() == 0 || course.getType().contains("교양") ) {  // 학년이 0이면 학과를 교양학부로
+                if (course.getGrade() == 0 || course.getType().contains("교양") ) {  // 학년이 0이거나 타입에 교양이 포함되면 학과를 교양학부로
                     course.setDeptName("교양학부");
                 } else {
                     course.setDeptName(userInfoDto.getDeptName());
