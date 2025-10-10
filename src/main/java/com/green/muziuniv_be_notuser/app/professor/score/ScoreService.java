@@ -65,6 +65,7 @@ public class ScoreService {
                 .attendanceScore(attendanceScore)
                 .otherScore(req.getOtherScore())
                 .rank(rank)
+                .grade(req.getGrade())
                 .build();
 
         Score saved = scoreRepository.save(score);
@@ -108,6 +109,7 @@ public class ScoreService {
         score.setAttendanceScore(attendanceScore); // ✅ 자동 반영
         score.setOtherScore(req.getOtherScore());
         score.setRank(rank);
+        score.setGrade(req.getGrade());
 
         Score saved = scoreRepository.save(score);
 
@@ -150,6 +152,7 @@ public class ScoreService {
         score.setAttendanceScore(attendanceScore); // ✅ 자동 반영
         score.setOtherScore(req.getOtherScore());
         score.setRank(rank);
+        score.setGrade(req.getGrade());
 
         Score updated = scoreRepository.save(score);
         UserResDto userInfo = getUserInfo(score.getEnrollment().getUserId());
