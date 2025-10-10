@@ -16,4 +16,5 @@ public class ScorePutReq {
     private int finScore; // 기말고사 점수
     private int attendanceScore; // 출결 점수
     private int otherScore; // 기타 점수
+    private int grade; // 학년
 }
