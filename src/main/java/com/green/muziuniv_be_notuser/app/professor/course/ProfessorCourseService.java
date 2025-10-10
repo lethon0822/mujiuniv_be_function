@@ -19,6 +19,8 @@ import com.green.muziuniv_be_notuser.openfeign.user.UserClient;
 import com.green.muziuniv_be_notuser.openfeign.user.model.UserInfoDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import com.green.muziuniv_be_notuser.app.professor.attendance.AttendanceService;
+
 
 import java.util.*;
 import java.util.stream.Collectors;
