@@ -35,4 +35,27 @@
         WHERE app_id = #{appId}
     </update>
 
+    <select id="findCoursesByStatus">
+        SELECT
+        c.user_id,
+        c.course_id,
+        c.course_code,
+        c.title,
+        c.classroom,
+        c.type,
+        c.grade,
+        c.time,
+        c.credit,
+        c.max_std
+        FROM course c
+        WHERE c.semester_id = #{sid}
+        AND c.status = '처리중'
+        <if test="type != null and type != ''">
+            AND c.type = #{type}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            AND c.title LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+    </select>
+
 </mapper>

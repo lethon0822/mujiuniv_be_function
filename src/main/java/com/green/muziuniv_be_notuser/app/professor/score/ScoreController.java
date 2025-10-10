@@ -76,7 +76,6 @@ public class ScoreController {
             return ResponseEntity.ok(scoreService.updateScore(req));
         }
     }
-
     /* -------------------------------
      성적 조회 (GET)
      /professor/course/{courseId}/grade
