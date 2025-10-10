@@ -14,8 +14,8 @@ public class GraduationService {
 
     private final GraduationRepository graduationRepository;
 
-    public GraduationCheckRes getMyGraduationDiagnosis(Long userId){
-        List<GraduationCheckDTO> creditList =graduationRepository.getMyGraduationDiagnosis(userId);
+    public GraduationCheckRes getMyGraduationDiagnosis(Long userId, Long semesterId){
+        List<GraduationCheckDTO> creditList =graduationRepository.getMyGraduationDiagnosis(userId, semesterId);
 
         GraduationCheckRes res = new GraduationCheckRes();
 
