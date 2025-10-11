@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.List;
 import java.util.Map;
 
-@FeignClient(name = "MUJIUNIV-USER", path = "/api/user")
+@FeignClient(name = "${constants.open-feign.user}", path = "/api/user")
 public interface CourseUserClient {
     @PostMapping("/student")
     ResultResponse<List<UserResDto>> getUsersByInfo(@RequestBody Map<String, List<Long>> userIds);
