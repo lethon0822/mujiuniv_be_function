@@ -26,7 +26,6 @@ public class ScoreController {
         if (body instanceof java.util.List<?>) {
             // 배열(JSON Array) → 여러 개 저장
             List<?> list = (List<?>) body;
-
             List<ScoreRes> result = list.stream()
                     .filter(item -> item instanceof Map) // JSON object 체크
                     .map(item -> {
@@ -78,6 +77,7 @@ public class ScoreController {
             return ResponseEntity.ok(scoreService.updateScore(req));
         }
     }
+
     /* -------------------------------
      성적 조회 (GET)
      /professor/course/{courseId}/grade
