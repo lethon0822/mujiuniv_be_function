@@ -107,7 +107,7 @@ public class ApprovalService {
     // 처리중 강의만 DTO 변환해서 반환
     public List<CoursePendingRes> getPendingCourses(CoursePendingReq req) {
 
-        if (req.getDeptId() != null) {
+        if (req.getDeptId() != null) { // 수연아 고마워
             // 1. 유저 서비스에 호출해서 해당 학과의 교수 리스트 가져오기
             ResultResponse<List<DepartmentHeadNameRes>> deptProfessors = departmentClient.findDeptHeadList(req.getDeptId());
             // 2. 교수 userId 리스트만 추출
