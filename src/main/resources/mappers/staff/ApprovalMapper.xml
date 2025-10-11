@@ -56,6 +56,13 @@
         <if test="keyword != null and keyword != ''">
             AND c.title LIKE CONCAT('%', #{keyword}, '%')
         </if>
+        <!-- 학과 필터 조건 -->
+        <if test="professorIds != null and professorIds.size > 0">
+            AND c.user_id IN
+            <foreach collection="professorIds" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </if>
     </select>
 
 </mapper>

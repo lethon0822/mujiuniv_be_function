@@ -27,10 +27,8 @@
         ON s.semester_id = c.semester_id
         WHERE s.year = #{year}
         AND c.status = '승인'
+        AND s.semester = #{semester}
 
-        <if test="semester != null and semester != ''">
-            AND s.semester = #{semester}
-        </if>
 
         <!-- 전공 ( 전공 선택, 전공 필수 ), 교양 ( 교양 선택, 교양 필수 )-->
         <if test="type != null and type != ''">
