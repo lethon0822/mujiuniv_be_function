@@ -13,6 +13,7 @@ import java.util.List;
 public class NoticeService {
     private final NoticeMapper noticeMapper;
     private final NoticeRepository noticeRepository;
+
     public void insertNoticeByStaff (NoticePostReq req){
        Notice notice = Notice.builder()
                .noticeTitle(req.getNoticeTitle())
@@ -22,18 +23,18 @@ public class NoticeService {
     }
 
     //공지사항검색 제목+내용, 키워드 필터링
-    public List<NoticeSearchGetRes> searchNotice() {
-        return noticeMapper.searchNotice();
+    public List<NoticeGetRes> selectNotice() {
+        return noticeMapper.selectNotice();
     }
 
-    public List<NoticeSearchGetRes> searchNoticeByKeyword(String keyword) {
-        return noticeMapper.searchNoticeByKeyword(keyword);
+    public List<NoticeGetRes> searchNoticeByKeyword(NoticeGetReq req) {
+        return noticeMapper.searchNoticeByKeyword(req);
     }
 
     //공지사항검색 제목만 (됨)
-    public List<NoticeGetRes> searchNoticeTitle(){
-        return noticeMapper.searchNoticeTitle();
-    }
+//    public List<NoticeGetRes> searchNoticeByKeyword(){
+//        return noticeMapper.searchNoticeByKeyword();
+//    }
     // 공지사항검색 내용만 (됨)
 //    public List<NoticeGetRes> searchNoticeContent(){
 //        return noticeMapper.searchNoticeContent();
@@ -41,15 +42,12 @@ public class NoticeService {
 
 
     //자세히보기
-
     public NoticeGetRes searchSearch(Long noticeId) {
         return noticeMapper.searchSearch(noticeId);
     }
 
     //수정하기
-
-
-    public boolean updateNotice(NoticeUpdateReq req) {
+    public int updateNotice(NoticePutReq req) {
         return noticeMapper.updateNotice(req);
     }
 
@@ -57,9 +55,5 @@ public class NoticeService {
    public int deleteNotice(Long noticeId) {
        return noticeMapper.deleteNotice(noticeId);
    }
-
-
-
-
 
 }

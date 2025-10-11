@@ -13,6 +13,8 @@ public class NoticeGetRes {
     String updatedAt;
     String noticeContent;
     String noticeTitle;
+    Integer isImportant;
+    Integer view;
 }
 
 
