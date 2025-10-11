@@ -58,7 +58,7 @@ public class Course extends CreatedAt {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String weekPlan;
 
-    @Column(length = 30)
+    @Column(length = 100)
     private String textBook;
 
     @Column(nullable = false, length = 225)
