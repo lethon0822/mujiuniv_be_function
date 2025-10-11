@@ -208,6 +208,7 @@ public class ScoreService {
         else if (total >= 80) return "B";
         else if (total >= 75) return "C+";
         else if (total >= 70) return "C";
+        else if (total >= 65) return "D+";
         else if (total >= 60) return "D";
         else return "F";
     }
@@ -223,6 +224,7 @@ public class ScoreService {
             case "B"  -> 3.0;
             case "C+" -> 2.5;
             case "C"  -> 2.0;
+            case "D+" -> 1.5;
             case "D"  -> 1.0;
             default   -> 0.0;
         };
