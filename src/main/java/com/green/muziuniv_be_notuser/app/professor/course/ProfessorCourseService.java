@@ -69,6 +69,7 @@ public class ProfessorCourseService {
                             .textBook(req.getTextBook())
                             .goal(req.getGoal())
                             .maxStd(req.getMaxStd())
+                            .remStd(req.getMaxStd())
                             .grade(req.getGrade())
                             .build();
                     courseRepository.save(course);
