@@ -169,4 +169,12 @@ public class ApprovalService {
 
         return new ApprovalCoursePatchRes(course.getCourseId(), course.getStatus());
     }
+
+    // 처리중인 신청 건(강의개설, 휴복직, 휴복학)카운트
+    public CountApproval countAppWork(int sid){
+        int course = approvalMapper.countCourse(sid);
+        int app = approvalMapper.countApproval(sid);
+        CountApproval result = new CountApproval(course, app);
+        return result;
+    }
 }

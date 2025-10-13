@@ -1,8 +1,6 @@
 package com.green.muziuniv_be_notuser.app.shared.course;
 
-import com.green.muziuniv_be_notuser.app.shared.course.model.CourseDetailRes;
-import com.green.muziuniv_be_notuser.app.shared.course.model.CourseFilterReq;
-import com.green.muziuniv_be_notuser.app.shared.course.model.CourseFilterRes;
+import com.green.muziuniv_be_notuser.app.shared.course.model.*;
 import com.green.muziuniv_be_notuser.configuration.model.SignedUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -30,4 +28,19 @@ public class CourseController {
         CourseDetailRes result = courseService.findCourseDetail(id);
         return ResponseEntity.ok(result);
     }
+
+    //오늘의 강의 조회
+    @GetMapping("/today")
+    public ResponseEntity<?> todayCourseStd(@ModelAttribute TodayCourseReq req,
+                                            @AuthenticationPrincipal SignedUser signedUser ){
+        req.setUserId(signedUser.signedUserId);
+        List<TodayCourseStuRes> result;
+        if(req.getRole().equals("student")){
+            result = courseService.todayCourseStu(req);
+        }else {
+            result = courseService.todayCoursePro(req);
+        }
+        return ResponseEntity.ok(result);
+    }
+
 }

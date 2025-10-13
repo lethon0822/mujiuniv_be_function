@@ -50,7 +50,7 @@ public class Schedule extends CreatedAt {
     })
     private TimeSetting timeSetting;
 
-    @Column(nullable = false, length = 255) // 길이 제한 추천
+    @Column(length = 255) // 길이 제한 추천
     private String description;
 
     // === 도메인 변경 메서드(업데이트용) ===
