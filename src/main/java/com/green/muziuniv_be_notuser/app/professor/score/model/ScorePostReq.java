@@ -17,5 +17,6 @@ public class ScorePostReq {
     private int attendanceScore; // 출결 점수
     private int otherScore; // 기타 점수 (과제, 발표, 프로젝트 등)
     private int grade;
+    private String rank;
 
 }

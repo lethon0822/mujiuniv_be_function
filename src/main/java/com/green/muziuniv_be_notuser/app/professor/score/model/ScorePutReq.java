@@ -17,4 +17,5 @@ public class ScorePutReq {
     private int attendanceScore; // 출결 점수
     private int otherScore; // 기타 점수
     private int grade; // 학년
+    private String rank; // 등급
 }

@@ -56,7 +56,6 @@ public class ScoreService {
         int attendanceScore = calculateAttendanceScore(absent);
 
         double total = calcTotal(req.getMidScore(), req.getFinScore(), attendanceScore, req.getOtherScore());
-        String rank = calcRank(total);
 
         Score score = Score.builder()
                 .enrollment(enrollment)
@@ -65,9 +64,10 @@ public class ScoreService {
                 .attendanceScore(attendanceScore)
                 .attendanceDays(attended) // ✅ 출석일수 저장
                 .otherScore(req.getOtherScore())
-                .rank(rank)
                 .grade(req.getGrade())
                 .build();
+
+        score.setRank(req.getRank());
 
         Score saved = scoreRepository.save(score);
 
@@ -87,7 +87,7 @@ public class ScoreService {
                 saved.getAttendanceScore(),
                 saved.getOtherScore(),
                 total,
-                calcGpa(rank),
+                calcGpa(saved.getRank()),
                 saved.getAttendanceDays(),
                 absent
         );
@@ -106,18 +106,20 @@ public class ScoreService {
         int attendanceScore = calculateAttendanceScore(absent);
 
         double total = calcTotal(req.getMidScore(), req.getFinScore(), attendanceScore, req.getOtherScore());
-        String rank = calcRank(total);
 
         Score score = scoreRepository.findByEnrollment_EnrollmentId(req.getEnrollmentId())
                 .orElse(new Score());
 
+        String rank = (req.getRank() != null && !req.getRank().isEmpty())
+                ? req.getRank()
+                : calcRank(total);
+        score.setRank(rank);
         score.setEnrollment(enrollment);
         score.setMidScore(req.getMidScore());
         score.setFinScore(req.getFinScore());
         score.setAttendanceScore(attendanceScore);
         score.setAttendanceDays(attended); // ✅ 출석일수 반영
         score.setOtherScore(req.getOtherScore());
-        score.setRank(rank);
         score.setGrade(req.getGrade());
 
         Score saved = scoreRepository.save(score);
@@ -139,7 +141,7 @@ public class ScoreService {
                 saved.getAttendanceScore(),
                 saved.getOtherScore(),
                 total,
-                calcGpa(rank),
+                calcGpa(saved.getRank()),
                 saved.getAttendanceDays(),
                 absent
         );
@@ -158,14 +160,16 @@ public class ScoreService {
         int attendanceScore = calculateAttendanceScore(absent);
 
         double total = calcTotal(req.getMidScore(), req.getFinScore(), attendanceScore, req.getOtherScore());
-        String rank = calcRank(total);
+        String rank = (req.getRank() != null && !req.getRank().isEmpty())
+                ? req.getRank()
+                : calcRank(total);
+        score.setRank(rank);
 
         score.setMidScore(req.getMidScore());
         score.setFinScore(req.getFinScore());
         score.setAttendanceScore(attendanceScore);
         score.setAttendanceDays(attended);
         score.setOtherScore(req.getOtherScore());
-        score.setRank(rank);
         score.setGrade(req.getGrade());
 
         Score updated = scoreRepository.save(score);
