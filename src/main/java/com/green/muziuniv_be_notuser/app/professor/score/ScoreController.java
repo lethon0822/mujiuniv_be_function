@@ -36,7 +36,8 @@ public class ScoreController {
                                 ((Number) map.get("finScore")).intValue(),
                                 ((Number) map.get("attendanceScore")).intValue(),
                                 ((Number) map.get("otherScore")).intValue(),
-                                ((Number) map.get("gradeYear")).intValue()
+                                ((Number) map.get("grade")).intValue(),
+                                map.get("rank").toString()
                         );
                         return scoreService.saveOrUpdateScore(req);
                     })
@@ -66,7 +67,8 @@ public class ScoreController {
                                 (int) map.get("finScore"),
                                 (int) map.get("attendanceScore"),
                                 (int) map.get("otherScore"),
-                                (int) map.get("grade")
+                                (int) map.get("grade"),
+                                map.get("rank").toString()
                         );
                         return scoreService.updateScore(req);
                     })
