@@ -6,13 +6,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class AppPostReq {
     private Long userId;
     private int scheduleId;
     private String reason;
-    private String scheduleType;
+
 
     public void setUserId(Long userId) {
         this.userId = userId;

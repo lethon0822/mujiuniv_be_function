@@ -17,23 +17,28 @@ public class ApplicationController {
 
     private final ApplicationService applicationService;
 
-    /** 다음 학기 ID 조회 */
+    /**
+     * 다음 학기 ID 조회
+     */
     @GetMapping("/next-semester")
     public Integer getNextSemesterId(@RequestParam Integer currentSemesterId) {
         return applicationService.getNextSemesterId(currentSemesterId);
     }
 
-    /** 일정 창 열려있는지 확인 */
+    /**
+     * 일정 창 열려있는지 확인
+     */
     @GetMapping("/is-open")
     public boolean isScheduleOpenNow(@RequestParam Integer scheduleId) {
         return applicationService.isScheduleOpenNow(scheduleId);
     }
 
-    /** 정규 신청 */
+    /**
+     * 신청 생성 (휴직 / 복직 신청 모두 포함)
+     */
     @PostMapping
     public void createApplication(@Valid @RequestBody AppPostReq req,
                                   @AuthenticationPrincipal SignedUser signedUser) {
-        // fallback 처리
         if (signedUser != null) {
             req.setUserId(signedUser.signedUserId);
         } else if (req.getUserId() == null) {
@@ -43,21 +48,20 @@ public class ApplicationController {
         applicationService.createApplication(req, signedUser);
     }
 
-    /** 내 신청 목록 */
+    /**
+     * 내 신청 목록 조회
+     */
     @GetMapping("/my")
     public List<ApplicationListRow> getMyApplications(@RequestParam Integer userId) {
         return applicationService.getMyApplications(userId);
     }
 
+    /**
+     * 신청 삭제
+     */
     @DeleteMapping("/{appId}")
     public void deleteApplication(@PathVariable Long appId,
                                   @RequestParam Long userId) {
         applicationService.deleteApplication(userId, appId);
     }
-    /** 신청 취소 */
-//    @PutMapping("/cancel/{appId}")
-//    public boolean cancelApplication(@PathVariable Long appId,
-//                                     @AuthenticationPrincipal SignedUser signedUser) {
-//        return applicationService.cancelApplication(appId, signedUser.signedUserId);
-//    }
 }
