@@ -18,4 +18,8 @@ public interface ApprovalMapper {
                                 @Param("status") String status);
 
     List<CoursePendingRes> findCoursesByStatus(CoursePendingReq req);
+
+    int countCourse(int sid);
+    int countApproval(int sid);
+
 }

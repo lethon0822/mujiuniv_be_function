@@ -6,7 +6,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TodayCourseReq {
-    private int semesterId;
+    private int sid;
     private long userId;
+    private String role;
     private String time;
 }

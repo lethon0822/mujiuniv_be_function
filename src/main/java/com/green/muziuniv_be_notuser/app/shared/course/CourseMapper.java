@@ -15,4 +15,7 @@ public interface CourseMapper {
 
     // 오늘의 강의 조회(학생용)
     List<TodayCourseStuRes> findTodayCourse(TodayCourseReq req);
+
+    // 오늘의 강의 조회(교수용
+    List<TodayCourseStuRes> findTodayCoursePro(TodayCourseReq req);
 }

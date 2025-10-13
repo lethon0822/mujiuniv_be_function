@@ -66,4 +66,21 @@
         </if>
     </select>
 
+<!-- 현학기 강의신청 처리중 카운트 -->
+    <select id="countCourse">
+        SELECT COUNT(course_id)
+        FROM course
+        WHERE semester_id = #{sid}
+        AND STATUS = '처리중';
+    </select>
+
+<!-- 현학기 휴복직, 휴복학 처리중 카운트 -->
+    <select id="countApproval">
+        SELECT COUNT(app_id)
+        FROM application a
+        JOIN schedule s
+        ON a.schedule_id = s.schedule_id
+        WHERE s.semester_id = #{sid} AND STATUS = '처리중';
+    </select>
+
 </mapper>
