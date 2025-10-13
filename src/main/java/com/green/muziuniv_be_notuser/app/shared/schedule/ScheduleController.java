@@ -1,9 +1,6 @@
 package com.green.muziuniv_be_notuser.app.shared.schedule;
 
-import com.green.muziuniv_be_notuser.app.shared.schedule.model.DateRes;
-import com.green.muziuniv_be_notuser.app.shared.schedule.model.ScheduleCreateReq;
-import com.green.muziuniv_be_notuser.app.shared.schedule.model.ScheduleRes;
-import com.green.muziuniv_be_notuser.app.shared.schedule.model.ScheduleUpdateReq;
+import com.green.muziuniv_be_notuser.app.shared.schedule.model.*;
 import com.green.muziuniv_be_notuser.configuration.model.ResultResponse;
 import com.green.muziuniv_be_notuser.configuration.model.SignedUser;
 import jakarta.validation.Valid;
@@ -22,6 +19,7 @@ import java.util.List;
 @Slf4j
 public class ScheduleController {
     private final ScheduleService scheduleService;
+    private final ScheduleValidator scheduleValidator;
 
     @GetMapping
     public List<ScheduleRes> list(
@@ -67,10 +65,10 @@ public class ScheduleController {
         scheduleService.delete(scheduleId);
     }
 
-    //프론트 기능 막아두기 위해서 start datetime을 가져온다
-    @GetMapping("/date")
-    public ResponseEntity<?> findStartDate(@RequestParam String type){
-        DateRes result =scheduleService.findStartDate(type);
-     return ResponseEntity.ok(result);
+    //프론트 기능 진입을 막아두기 위함
+    @PostMapping("/date")
+    public ResponseEntity<?> findStartDate(@RequestBody CheckScheduleDateReq req){
+        scheduleValidator.validateOpen(req.getSemesterId(), req.getType());
+     return ResponseEntity.ok(null);
     }
 }

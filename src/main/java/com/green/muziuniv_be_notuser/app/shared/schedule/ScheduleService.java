@@ -84,8 +84,4 @@ public class ScheduleService {
         }
     }
 
-    public DateRes findStartDate(String type){
-        String replaceType = type.replace(" ","");
-        return scheduleMapper.findStartDate(replaceType);
-    }
 }

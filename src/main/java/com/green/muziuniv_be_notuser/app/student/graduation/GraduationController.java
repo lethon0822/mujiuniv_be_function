@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -20,9 +21,9 @@ public class GraduationController {
 
     // 졸업 자가 진단
     @GetMapping()
-    public ResponseEntity<?> getMyGraduationDiagnosis(@AuthenticationPrincipal SignedUser signedUser){
+    public ResponseEntity<?> getMyGraduationDiagnosis(@AuthenticationPrincipal SignedUser signedUser, @RequestParam Long semesterId){
         Long userId = signedUser.signedUserId;
-        GraduationCheckRes res = graduationService.getMyGraduationDiagnosis(userId);
+        GraduationCheckRes res = graduationService.getMyGraduationDiagnosis(userId, semesterId);
         return ResponseEntity.ok(new ResultResponse<>("졸업 자가진단 완료", res));
     }
 

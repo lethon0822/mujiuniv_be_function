@@ -16,7 +16,8 @@ public interface GraduationRepository extends JpaRepository<Enrollment, Long> {
         JOIN e.course c
         WHERE e.userId= :userId
         AND e.status = '수강완료'
+        AND c.semesterId.semesterId!= :semesterId
         GROUP BY c.type
     """)
-    List<GraduationCheckDTO> getMyGraduationDiagnosis(Long userId);
+    List<GraduationCheckDTO> getMyGraduationDiagnosis(Long userId, Long semesterId);
 }

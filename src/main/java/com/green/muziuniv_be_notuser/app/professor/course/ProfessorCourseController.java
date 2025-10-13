@@ -4,6 +4,7 @@ import com.green.muziuniv_be_notuser.app.professor.course.model.*;
 import com.green.muziuniv_be_notuser.configuration.model.ResultResponse;
 import com.green.muziuniv_be_notuser.configuration.model.SignedUser;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/professor/course")
 @RequiredArgsConstructor
+@Slf4j
 public class ProfessorCourseController {
     private final ProfessorCourseService professorCourseService;
 
@@ -21,9 +23,9 @@ public class ProfessorCourseController {
     public ResultResponse<?> saveCourse(
             @AuthenticationPrincipal SignedUser signedUser,
             @RequestBody ProfessorPostReq req) {
-
+        log.info("dhd{}", req);
         req.setUserId(signedUser.signedUserId);
-       professorCourseService.saveCourse(req);
+        professorCourseService.saveCourse(req);
 
         return new ResultResponse<>("강의 등록 성공", null);
     }
