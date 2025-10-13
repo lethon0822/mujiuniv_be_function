@@ -73,9 +73,12 @@ public class AttendanceService {
         else if (absent <= 25) attendanceEval = 60;
 
         else attendanceEval = 50;
+//        AttendanceSummaryRes res;
+//        res.setAttended(attended);
+
 
         // ✅ 출석/결석 순서 교체
-        return new AttendanceSummaryRes(absent, attended, attendanceEval);
+        return new AttendanceSummaryRes(attended ,absent, attendanceEval);
 
     }
 
