@@ -40,7 +40,6 @@ public class ApprovalController {
     // 처리중 강의조회
     @GetMapping("/course")
     public ResponseEntity<?> getPendingCourses(@ModelAttribute CoursePendingReq req) {
-        log.info("옹냐:{}",req.getSid());
         List<CoursePendingRes> result = approvalService.getPendingCourses(req);
         return ResponseEntity.ok(result);
     }

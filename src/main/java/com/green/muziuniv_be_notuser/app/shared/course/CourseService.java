@@ -1,6 +1,8 @@
 package com.green.muziuniv_be_notuser.app.shared.course;
 
 
+import com.green.muziuniv_be_notuser.app.shared.course.model.*;
+import com.green.muziuniv_be_notuser.app.staff.approval.model.CoursePendingRes;
 import com.green.muziuniv_be_notuser.app.student.enrollment.model.EnrollmentFilterRes;
 import com.green.muziuniv_be_notuser.configuration.model.ResultResponse;
 import com.green.muziuniv_be_notuser.entity.course.Course;
@@ -8,9 +10,6 @@ import com.green.muziuniv_be_notuser.openfeign.department.DepartmentClient;
 import com.green.muziuniv_be_notuser.openfeign.department.model.DepartmentHeadNameRes;
 
 import com.green.muziuniv_be_notuser.openfeign.user.UserClient;
-import com.green.muziuniv_be_notuser.app.shared.course.model.CourseDetailRes;
-import com.green.muziuniv_be_notuser.app.shared.course.model.CourseFilterReq;
-import com.green.muziuniv_be_notuser.app.shared.course.model.CourseFilterRes;
 import com.green.muziuniv_be_notuser.openfeign.user.model.UserInfoDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -76,7 +75,7 @@ public class CourseService {
             if (userInfoDto != null) {
                 course.setProfessorName(userInfoDto.getUserName());
 
-                if (course.getGrade() == 0 || course.getType().contains("교양") ) {  // 학년이 0이거나 타입에 교양이 포함되면 학과를 교양학부로
+                if (course.getGrade() == 0 || course.getType().contains("교양")) {  // 학년이 0이거나 타입에 교양이 포함되면 학과를 교양학부로
                     course.setDeptName("교양학부");
                 } else {
                     course.setDeptName(userInfoDto.getDeptName());
@@ -90,7 +89,7 @@ public class CourseService {
 
 
     //강의계획서 조회
-    public CourseDetailRes findCourseDetail(Long courseId){
+    public CourseDetailRes findCourseDetail(Long courseId) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "courseId가 존재하지 않습니다."));
 
@@ -120,7 +119,36 @@ public class CourseService {
         return result;
     }
 
+    // 오늘의 강의 조회(학생용)
+    public List<TodayCourseStuRes> todayCourseStu(TodayCourseReq req) {
+        List<TodayCourseStuRes> courseList = courseMapper.findTodayCourse(req);
+        if (courseList.isEmpty()) {
+            return null;
+        }
+        Set<Long> userList = courseList.stream()
+                .map(c -> c.getUserId())
+                .collect(Collectors.toSet());
+
+        // map으로 변환 변환시 List로 바꿔서 넣음
+        Map<String, List<Long>> request = new HashMap<>();
+        request.put("userId", new ArrayList<>(userList));
+
+        //통신
+        ResultResponse<Map<Long, UserInfoDto>> proInfo = userClient.getUserInfo(request);
+        Map<Long, UserInfoDto> proGetResMap = proInfo.getResult();
 
 
+        for (TodayCourseStuRes course : courseList) {
+            UserInfoDto userInfoDto = proGetResMap.get(course.getUserId());
+            if (userInfoDto != null) {
+                course.setUserName(userInfoDto.getUserName());
+            }
+        }
+        return courseList;
+    }
 
 }
+
+
+
+

@@ -54,4 +54,17 @@
         ORDER BY c.title
     </select>
 
+    <!-- 오늘의 강의 조회(학생용)-->
+    <select id="findTodayCourse">
+        SELECT c.course_id, c.title, c.user_id, c.classroom, c.time, c.type
+        FROM enrollment e
+        JOIN course c
+        ON e.course_id = c.course_id
+        WHERE e.user_id = #{userId}
+        AND c.semester_id = #{semesterId}
+        AND c.time LIKE '${time}%'
+        ORDER BY c.time ;
+    </select>
+
+
 </mapper>
