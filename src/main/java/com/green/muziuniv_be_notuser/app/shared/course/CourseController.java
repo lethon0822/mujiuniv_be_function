@@ -29,12 +29,18 @@ public class CourseController {
         return ResponseEntity.ok(result);
     }
 
-    //오늘의 강의 조회(학생용)
+    //오늘의 강의 조회
     @GetMapping("/today")
-    public ResponseEntity<?> todayCourseStd(@RequestBody TodayCourseReq req,
+    public ResponseEntity<?> todayCourseStd(@ModelAttribute TodayCourseReq req,
                                             @AuthenticationPrincipal SignedUser signedUser ){
         req.setUserId(signedUser.signedUserId);
-        List<TodayCourseStuRes> result = courseService.todayCourseStu(req);
+        List<TodayCourseStuRes> result;
+        if(req.getRole().equals("student")){
+            result = courseService.todayCourseStu(req);
+        }else {
+            result = courseService.todayCoursePro(req);
+        }
         return ResponseEntity.ok(result);
     }
+
 }

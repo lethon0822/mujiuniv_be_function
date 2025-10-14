@@ -125,6 +125,19 @@ public class CourseService {
         if (courseList.isEmpty()) {
             return null;
         }
+        return courseList(courseList);
+    }
+
+    // 오늘의 강의 조회(교수용)
+    public List<TodayCourseStuRes> todayCoursePro(TodayCourseReq req) {
+        List<TodayCourseStuRes> courseList = courseMapper.findTodayCoursePro(req);
+        if (courseList.isEmpty()) {
+            return null;
+        }
+        return courseList(courseList);
+    }
+
+    private List<TodayCourseStuRes> courseList(List<TodayCourseStuRes> courseList){
         Set<Long> userList = courseList.stream()
                 .map(c -> c.getUserId())
                 .collect(Collectors.toSet());
@@ -146,7 +159,6 @@ public class CourseService {
         }
         return courseList;
     }
-
 }
 
 

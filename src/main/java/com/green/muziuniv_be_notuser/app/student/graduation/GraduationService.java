@@ -13,6 +13,7 @@ import java.util.List;
 public class GraduationService {
 
     private final GraduationRepository graduationRepository;
+    private final GraduationMapper graduationMapper;
 
     public GraduationCheckRes getMyGraduationDiagnosis(Long userId, Long semesterId){
         List<GraduationCheckDTO> creditList =graduationRepository.getMyGraduationDiagnosis(userId, semesterId);
@@ -124,5 +125,10 @@ public class GraduationService {
         res.setDetails(details);
 
         return res;
+    }
+
+//  졸업예정자(수강신청 기준 교직원용)
+    public int findGraduationCandidates(){
+        return graduationMapper.findGraduationCandidates();
     }
 }
