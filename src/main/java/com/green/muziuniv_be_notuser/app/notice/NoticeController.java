@@ -14,19 +14,17 @@ import java.util.List;
 @RequestMapping("/notice")
 @RequiredArgsConstructor
 public class NoticeController {
-
     private final NoticeService noticeService;
 
     //공지사항 페이지에서 공지를 등록 (됨)
     @PostMapping
-    public ResponseEntity<?> postNotice (@RequestBody NoticePostReq req) {
-        noticeService.insertNoticeByStaff(req);
+    public ResponseEntity<?> postNotice(@RequestBody NoticePostReq req) {
+        int result = noticeService.insertNoticeByStaff(req);
         log.info("드라르륵탁", req.getNoticeTitle(), req.getNoticeContent());
-        return ResponseEntity.ok().body(null);
+        return ResponseEntity.ok(result);
     }
 
     //공지사항검색 제목+내용, 키워드 필터링(됨)
-
     @GetMapping("/common")
     public ResponseEntity<?> searchNotice(@ModelAttribute NoticeGetReq req) {
         String keyword = req.getKeyword();
@@ -49,13 +47,14 @@ public class NoticeController {
 
     // 공지사항 자세히 보기(됨)
     @GetMapping("/common/{notice_id}")
-     public ResponseEntity<?> searchSearch(@PathVariable("notice_id") Long noticeId) {
-            NoticeGetRes notice = noticeService.searchSearch(noticeId);
-            if (notice != null) {
-                return ResponseEntity.ok(notice);
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("공지 없음");
-            }
+    public ResponseEntity<?> searchSearch(@PathVariable("notice_id") Long noticeId) {
+        NoticeGetRes notice = noticeService.searchSearch(noticeId);
+        if (notice != null) {
+            noticeService.incrementViews(noticeId);
+            return ResponseEntity.ok(notice);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("공지 없음");
+        }
     }
 
 
@@ -92,4 +91,7 @@ public class NoticeController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 공지를 찾을 수 없습니다.");
         }
     }
+
+    // 조회수
+
 }

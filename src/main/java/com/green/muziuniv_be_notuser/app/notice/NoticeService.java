@@ -4,6 +4,7 @@ import com.green.muziuniv_be_notuser.app.notice.model.*;
 import com.green.muziuniv_be_notuser.entity.notice.Notice;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -14,12 +15,19 @@ public class NoticeService {
     private final NoticeMapper noticeMapper;
     private final NoticeRepository noticeRepository;
 
-    public void insertNoticeByStaff (NoticePostReq req){
-       Notice notice = Notice.builder()
-               .noticeTitle(req.getNoticeTitle())
-               .noticeContent(req.getNoticeContent())
-               .build();
-       noticeRepository.save(notice);
+    // 조회수 증가
+//    @Transactional
+//    public void incrementViews(Long noticeId) {
+//        noticeRepository.incrementViews(noticeId);
+//    }
+
+    public int insertNoticeByStaff (NoticePostReq req){
+//       Notice notice = Notice.builder()
+//               .noticeTitle(req.getNoticeTitle())
+//               .noticeContent(req.getNoticeContent())
+//               .build();
+//       noticeRepository.save(notice);
+        return noticeMapper.insertNotice(req);
     }
 
     //공지사항검색 제목+내용, 키워드 필터링
