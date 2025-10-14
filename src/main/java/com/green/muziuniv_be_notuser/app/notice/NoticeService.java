@@ -42,8 +42,8 @@ public class NoticeService {
 
     //자세히보기
 
-    public NoticeGetRes searchSearch(Long noticeId) {
-        return noticeMapper.searchSearch(noticeId);
+    public NoticeGetRes noticeDetail(Long id) {
+        return noticeMapper.noticeDetail(id);
     }
 
     //수정하기

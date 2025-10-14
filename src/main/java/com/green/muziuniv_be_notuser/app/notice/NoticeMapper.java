@@ -11,11 +11,6 @@ import java.util.List;
 public interface NoticeMapper {
 
 
-
-
-
-
-
     List<NoticeSearchGetRes> searchNoticeByKeyword(@Param("keyword") String keyword);
 
     List<NoticeSearchGetRes> searchNotice();
@@ -25,7 +20,7 @@ public interface NoticeMapper {
     List<NoticeGetRes> searchNoticeContent();
 
 
-    NoticeGetRes searchSearch(@Param("noticeId") Long noticeId);
+    NoticeGetRes noticeDetail(Long id);
 
     boolean updateNotice(NoticeUpdateReq req);
 

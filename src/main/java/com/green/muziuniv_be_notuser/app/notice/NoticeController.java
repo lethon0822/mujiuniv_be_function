@@ -49,14 +49,13 @@ public class NoticeController {
     }
 
     // 공지사항 자세히 보기(됨)
-
     @GetMapping("/common/{notice_id}")
-     public ResponseEntity<?> searchSearch(@PathVariable("notice_id") Long noticeId) {
-            NoticeGetRes notice = noticeService.searchSearch(noticeId);
+     public ResponseEntity<?> searchSearch(@PathVariable("notice_id") Long id) {
+            NoticeGetRes notice = noticeService.noticeDetail(id);
             if (notice != null) {
                 return ResponseEntity.ok(notice);
             } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("공지 없음");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 공지입니다.");
             }
     }
 
