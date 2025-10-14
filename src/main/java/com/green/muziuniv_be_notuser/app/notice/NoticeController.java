@@ -50,7 +50,7 @@ public class NoticeController {
     public ResponseEntity<?> searchSearch(@PathVariable("notice_id") Long noticeId) {
         NoticeGetRes notice = noticeService.searchSearch(noticeId);
         if (notice != null) {
-            noticeService.incrementViews(noticeId);
+//            noticeService.incrementViews(noticeId);
             return ResponseEntity.ok(notice);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("공지 없음");
