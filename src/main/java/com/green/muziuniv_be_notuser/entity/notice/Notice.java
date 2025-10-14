@@ -23,9 +23,4 @@ public class Notice extends UpdatedAt {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String noticeContent;
 
-    @Column(columnDefinition = "int", nullable = false)
-    private Integer isImportant;
-
-    @Column(columnDefinition = "int", nullable = false)
-    private Integer view;
 }

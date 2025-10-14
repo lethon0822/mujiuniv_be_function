@@ -4,10 +4,10 @@
 
 
      <select id="selectNotice">
-      SELECT *
+         SELECT *
          FROM notice
          ORDER BY notice_id DESC;
-    </select>
+     </select>
 
 <!--    <select id="searchNotice" >-->
 <!--        SELECT notice_id, notice_content, notice_title-->

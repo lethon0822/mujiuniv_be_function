@@ -2,12 +2,14 @@ package com.green.muziuniv_be_notuser.app.notice;
 
 import com.green.muziuniv_be_notuser.app.notice.model.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/notice")
 @RequiredArgsConstructor
@@ -19,6 +21,7 @@ public class NoticeController {
     @PostMapping
     public ResponseEntity<?> postNotice (@RequestBody NoticePostReq req) {
         noticeService.insertNoticeByStaff(req);
+        log.info("드라르륵탁", req.getNoticeTitle(), req.getNoticeContent());
         return ResponseEntity.ok().body(null);
     }
 
@@ -61,7 +64,7 @@ public class NoticeController {
                                           @RequestBody NoticePutReq req) {
         req.setNoticeId(id);
         int result = noticeService.updateNotice(req);
-
+        log.info("시바라라락", req.getNoticeTitle(), req.getNoticeContent());
         if (result > 0) {
             return ResponseEntity.ok("공지사항이 수정되었습니다.");
         } else {

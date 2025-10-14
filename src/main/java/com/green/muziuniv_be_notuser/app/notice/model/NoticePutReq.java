@@ -9,7 +9,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class NoticePutReq {
     Long noticeId;
-    String updatedAt;
     String noticeContent;
     String noticeTitle;
 }
