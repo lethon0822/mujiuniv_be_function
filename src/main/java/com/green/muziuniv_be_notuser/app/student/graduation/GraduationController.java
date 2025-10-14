@@ -27,5 +27,11 @@ public class GraduationController {
         return ResponseEntity.ok(new ResultResponse<>("졸업 자가진단 완료", res));
     }
 
+    // 졸업예정자 수 (수강신청 기준)
+    @GetMapping("/count")
+    public ResponseEntity<?> findGraduationCandidates(){
+        return ResponseEntity.ok(graduationService.findGraduationCandidates());
+    }
+
 
 }
