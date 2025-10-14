@@ -3,39 +3,31 @@
 <mapper namespace="com.green.muziuniv_be_notuser.app.notice.NoticeMapper">
 
 
-
-
      <select id="selectNotice">
-      SELECT *
+         SELECT *
          FROM notice
          ORDER BY notice_id DESC;
+     </select>
 
-    </select>
+<!--    <select id="searchNotice" >-->
+<!--        SELECT notice_id, notice_content, notice_title-->
+<!--        FROM notice-->
+<!--        ORDER BY notice_id DESC;-->
 
+<!--    </select>-->
 
     <!-- 제목 내용 검색 키워드-->
-
-    <select id="searchNotice" >
-        SELECT notice_id, notice_content, notice_title
-        FROM notice
-        ORDER BY notice_id DESC;
-
-    </select>
-
     <select id="searchNoticeByKeyword" >
         SELECT notice_id, notice_content, notice_title
         FROM notice
-        WHERE notice_title LIKE CONCAT('%', #{keyword}, '%')
+        WHERE notice_title LIKE CONCAT('%', #{keyword}, '%') OR notice_content LIKE CONCAT('%', #{keyword}, '%')
     </select>
-
-
 
 <!--    자세히 검색-->
     <select id="searchSearch">
         SELECT *
         FROM notice
         WHERE notice_id = #{noticeId}
-
     </select>
 
 <!--    수정-->
