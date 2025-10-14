@@ -26,8 +26,9 @@ public class NoticeController {
     }
 
     //공지사항검색 제목+내용, 키워드 필터링(됨)
-    @GetMapping
-    public ResponseEntity<?> selectNotice(@ModelAttribute NoticeGetReq req) {
+
+    @GetMapping("/common")
+    public ResponseEntity<?> searchNotice(@ModelAttribute NoticeGetReq req) {
         String keyword = req.getKeyword();
         // keyword가 아예 없으면 전체 조회
         if (keyword == null || keyword.isBlank()) {
@@ -40,14 +41,14 @@ public class NoticeController {
     }
 
     //공지사항검색 제목만 (됨)
-    @GetMapping("/search")
+    @GetMapping("/common/title")
     public ResponseEntity<?> searchNoticeTitleAndContent(@PathVariable NoticeGetReq req) {
         List<NoticeGetRes> result = noticeService.searchNoticeByKeyword(req);
         return ResponseEntity.ok(result);
     }
 
     // 공지사항 자세히 보기(됨)
-    @GetMapping("/{notice_id}")
+    @GetMapping("/common/{notice_id}")
      public ResponseEntity<?> searchSearch(@PathVariable("notice_id") Long noticeId) {
             NoticeGetRes notice = noticeService.searchSearch(noticeId);
             if (notice != null) {

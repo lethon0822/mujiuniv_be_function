@@ -32,10 +32,6 @@ public class ApprovalController {
         String result = approvalService.decideApplication(req);
         return ResponseEntity.ok(result);
     }
-    @GetMapping("/test")
-    public ResponseEntity<?> test(){
-        return ResponseEntity.ok("통신되냐?");
-    }
 
     // 처리중 강의조회
     @GetMapping("/course")
