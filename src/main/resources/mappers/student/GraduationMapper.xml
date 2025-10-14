@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.green.muziuniv_be_notuser.app.student.graduation.GraduationMapper">
+
+<!-- 졸업예정자(수강완료가 아닌 수강신청을 기준)-->
+    <select id="findGraduationCandidates">
+        SELECT COUNT(*)
+        FROM (
+        SELECT e.user_id
+        FROM enrollment e
+        JOIN course c ON e.course_id = c.course_id
+        GROUP BY e.user_id
+        HAVING
+        SUM(CASE WHEN c.type = '전공필수' THEN c.credit ELSE 0 END) >= 36
+        AND SUM(CASE WHEN c.type = '전공선택' THEN c.credit ELSE 0 END) >= 34
+        AND SUM(CASE WHEN c.type = '교양필수' THEN c.credit ELSE 0 END) >= 15
+        AND SUM(CASE WHEN c.type = '교양선택' THEN c.credit ELSE 0 END) >= 15
+        ) AS c;
+    </select>
+
+</mapper>

@@ -61,7 +61,17 @@
         JOIN course c
         ON e.course_id = c.course_id
         WHERE e.user_id = #{userId}
-        AND c.semester_id = #{semesterId}
+        AND c.semester_id = #{sid}
+        AND c.time LIKE '${time}%'
+        ORDER BY c.time ;
+    </select>
+
+    <!-- 오늘의 강의 조회(교수용) -->
+    <select id="findTodayCoursePro">
+        SELECT c.course_id, c.title, c.user_id, c.classroom, c.time, c.type
+        FROM course c
+        WHERE c.user_id = #{userId}
+        AND c.semester_id = #{sid}
         AND c.time LIKE '${time}%'
         ORDER BY c.time ;
     </select>

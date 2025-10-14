@@ -49,4 +49,10 @@ public class ApprovalController {
     public ResponseEntity<?> updateCourseStatus(@RequestBody ApprovalCoursePatchReq approvalCoursePatchReq) {
         return ResponseEntity.ok(approvalService.updateCourseStatus(approvalCoursePatchReq));
     }
+
+    // 처리중인 신청 건(강의개설, 휴복직, 휴복학)카운트
+    @GetMapping("/count")
+    public ResponseEntity<?> countApp(@RequestParam int sid){
+        return ResponseEntity.ok(approvalService.countAppWork(sid));
+    }
 }
