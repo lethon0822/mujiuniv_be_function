@@ -1,10 +1,8 @@
 package com.green.muziuniv_be_notuser.app.notice;
 
 import com.green.muziuniv_be_notuser.app.notice.model.*;
-import com.green.muziuniv_be_notuser.entity.notice.Notice;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -50,8 +48,9 @@ public class NoticeService {
 
 
     //자세히보기
-    public NoticeGetRes searchSearch(Long noticeId) {
-        return noticeMapper.searchSearch(noticeId);
+
+    public NoticeGetRes noticeDetail(Long id) {
+        return noticeMapper.noticeDetail(id);
     }
 
     //수정하기
