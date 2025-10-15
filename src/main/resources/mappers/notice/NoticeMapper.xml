@@ -10,7 +10,7 @@
     <select id="selectNotice">
         SELECT notice_id, notice_title, notice_content, DATE(created_at) AS createdAt, type, view
         FROM notice
-        ORDER BY notice_id DESC;
+        ORDER BY type DESC, notice_id DESC;
     </select>
 
 
