@@ -57,7 +57,6 @@ public class NoticeController {
         }
     }
 
-
     //공지사항수정 (됨)
     @PutMapping("/{notice_id}")
     public ResponseEntity<?> updateNotice(@PathVariable("notice_id") Long id,   // ✅ 경로 변수 이름 일치
