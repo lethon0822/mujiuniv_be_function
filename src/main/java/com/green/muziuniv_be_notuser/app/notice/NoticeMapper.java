@@ -17,4 +17,5 @@ public interface NoticeMapper {
     NoticeGetRes noticeDetail(Long id);
     int updateNotice(NoticePutReq req);
     int deleteNotice(Long noticeId);
+    void updateViews(ViewDto dto);
 }
