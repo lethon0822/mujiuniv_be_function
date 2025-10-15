@@ -2,12 +2,14 @@ package com.green.muziuniv_be_notuser.app.notice;
 
 import com.green.muziuniv_be_notuser.app.notice.model.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/notice")
 @RequiredArgsConstructor
@@ -18,33 +20,32 @@ public class NoticeController {
 
     //공지사항 페이지에서 공지를 등록 (됨)
     @PostMapping
-    public ResponseEntity<?> postNotice (@RequestBody NoticePostReq req) {
-        noticeService.insertNoticeByStaff(req);
-        return ResponseEntity.ok().body(null);
+    public ResponseEntity<?> postNotice(@RequestBody NoticePostReq req) {
+        int result = noticeService.insertNoticeByStaff(req);
+        log.info("드라르륵탁", req.getNoticeTitle(), req.getNoticeContent());
+        return ResponseEntity.ok(result);
     }
 
     //공지사항검색 제목+내용, 키워드 필터링(됨)
+    //공지사항검색 제목+내용, 키워드 필터링(됨)
     @GetMapping("/common")
-    public ResponseEntity<?> searchNotice(@ModelAttribute NoticeSearchReq req) {
+    public ResponseEntity<?> searchNotice(@ModelAttribute NoticeGetReq req) {
         String keyword = req.getKeyword();
-
         // keyword가 아예 없으면 전체 조회
-        if (keyword == null || keyword.isBlank()) {
-            List<NoticeSearchGetRes> result = noticeService.searchNotice();
+        if (keyword == null || keyword.isBlank() || "".equals(keyword)) {
+            List<NoticeGetRes> result = noticeService.selectNotice();
             return ResponseEntity.ok(result);
         }
-
-
         // 키워드 검색
-        List<NoticeSearchGetRes> result = noticeService.searchNoticeByKeyword(keyword);
+        List<NoticeGetRes> result = noticeService.searchNoticeByKeyword(req);
         return ResponseEntity.ok(result);
     }
 
 
     //공지사항검색 제목만 (됨)
     @GetMapping("/common/title")
-    public ResponseEntity<?> searchNoticeTitle() {
-        List<NoticeGetRes> result = noticeService.searchNoticeTitle();
+    public ResponseEntity<?> searchNoticeTitleAndContent(@PathVariable NoticeGetReq req) {
+        List<NoticeGetRes> result = noticeService.searchNoticeByKeyword(req);
         return ResponseEntity.ok(result);
     }
 
@@ -62,14 +63,12 @@ public class NoticeController {
 
     //공지사항수정 (됨)
     @PutMapping("/{notice_id}")
-    public ResponseEntity<?> updateNotice(
-            @PathVariable("notice_id") Long id,   // ✅ 경로 변수 이름 일치
-            @RequestBody NoticeUpdateReq req
-    ) {
+    public ResponseEntity<?> updateNotice(@PathVariable("notice_id") Long id,
+                                          @RequestBody NoticePutReq req) {
         req.setNoticeId(id);
-        boolean result = noticeService.updateNotice(req);
-
-        if (result) {
+        int result = noticeService.updateNotice(req);
+        log.info("시바라라락", req.getNoticeTitle(), req.getNoticeContent());
+        if (result > 0) {
             return ResponseEntity.ok("공지사항이 수정되었습니다.");
         } else {
             return ResponseEntity.badRequest().body("수정 실패");
