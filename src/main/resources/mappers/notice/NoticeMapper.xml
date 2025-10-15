@@ -20,7 +20,7 @@
         FROM notice
         WHERE notice_title LIKE CONCAT('%', #{keyword}, '%')
         OR notice_content LIKE CONCAT('%', #{keyword}, '%')
-        ORDER BY created_at DESC
+        ORDER BY FIELD(type, 1) DESC, created_at DESC
     </select>
 
 
@@ -50,10 +50,10 @@
     </delete>
 
     <!--조회수 증가-->
-    <update id="updateViews">
-        update notice
-        set view = #{view}
-        where notice_id = #{id}
-    </update>
+<!--    <update id="updateViews">-->
+<!--        update review-->
+<!--        set readcount = readcount + 1-->
+<!--        where review_num = #{review_num}-->
+<!--    </update>-->
 
 </mapper>

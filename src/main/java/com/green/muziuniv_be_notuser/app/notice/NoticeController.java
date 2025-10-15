@@ -60,7 +60,6 @@ public class NoticeController {
             }
     }
 
-
     //공지사항수정 (됨)
     @PutMapping("/{notice_id}")
     public ResponseEntity<?> updateNotice(@PathVariable("notice_id") Long id,
