@@ -14,7 +14,9 @@ import java.util.List;
 @RequestMapping("/notice")
 @RequiredArgsConstructor
 public class NoticeController {
+
     private final NoticeService noticeService;
+
 
     //공지사항 페이지에서 공지를 등록 (됨)
     @PostMapping
@@ -24,6 +26,7 @@ public class NoticeController {
         return ResponseEntity.ok(result);
     }
 
+    //공지사항검색 제목+내용, 키워드 필터링(됨)
     //공지사항검색 제목+내용, 키워드 필터링(됨)
     @GetMapping("/common")
     public ResponseEntity<?> searchNotice(@ModelAttribute NoticeGetReq req) {
@@ -38,6 +41,7 @@ public class NoticeController {
         return ResponseEntity.ok(result);
     }
 
+
     //공지사항검색 제목만 (됨)
     @GetMapping("/common/title")
     public ResponseEntity<?> searchNoticeTitleAndContent(@PathVariable NoticeGetReq req) {
@@ -47,19 +51,18 @@ public class NoticeController {
 
     // 공지사항 자세히 보기(됨)
     @GetMapping("/common/{notice_id}")
-    public ResponseEntity<?> searchSearch(@PathVariable("notice_id") Long noticeId) {
-        NoticeGetRes notice = noticeService.searchSearch(noticeId);
-        if (notice != null) {
-//            noticeService.incrementViews(noticeId);
-            return ResponseEntity.ok(notice);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("공지 없음");
-        }
+     public ResponseEntity<?> searchSearch(@PathVariable("notice_id") Long id) {
+            NoticeGetRes notice = noticeService.noticeDetail(id);
+            if (notice != null) {
+                return ResponseEntity.ok(notice);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 공지입니다.");
+            }
     }
 
     //공지사항수정 (됨)
     @PutMapping("/{notice_id}")
-    public ResponseEntity<?> updateNotice(@PathVariable("notice_id") Long id,   // ✅ 경로 변수 이름 일치
+    public ResponseEntity<?> updateNotice(@PathVariable("notice_id") Long id,
                                           @RequestBody NoticePutReq req) {
         req.setNoticeId(id);
         int result = noticeService.updateNotice(req);
@@ -85,12 +88,9 @@ public class NoticeController {
 
         int deleted = noticeService.deleteNotice(noticeId);
         if (deleted > 0) {
-            return ResponseEntity.ok("공지사항이 삭제되었습니다.");
+            return ResponseEntity.ok("삭제 완료");
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 공지를 찾을 수 없습니다.");
         }
     }
-
-    // 조회수
-
 }

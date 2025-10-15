@@ -14,7 +14,7 @@ public interface NoticeMapper {
     int insertNotice(NoticePostReq req);
     List<NoticeGetRes> selectNotice();
     List<NoticeGetRes> searchNoticeByKeyword(NoticeGetReq req);
-    NoticeGetRes searchSearch(@Param("noticeId") Long noticeId);
+    NoticeGetRes noticeDetail(Long id);
     int updateNotice(NoticePutReq req);
     int deleteNotice(Long noticeId);
 }
