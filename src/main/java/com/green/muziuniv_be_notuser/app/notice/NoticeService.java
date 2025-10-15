@@ -14,10 +14,9 @@ public class NoticeService {
     private final NoticeRepository noticeRepository;
 
     // 조회수 증가
-//    @Transactional
-//    public void incrementViews(Long noticeId) {
-//        noticeRepository.incrementViews(noticeId);
-//    }
+    public void incrementViews(ViewDto dto) {
+        noticeMapper.updateViews(dto);
+    }
 
     public int insertNoticeByStaff (NoticePostReq req){
 //       Notice notice = Notice.builder()

@@ -94,4 +94,11 @@ public class NoticeController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 공지를 찾을 수 없습니다.");
         }
     }
+
+    //조회수 증가
+    @PutMapping("/common")
+    public ResponseEntity<?> updateViews(@RequestBody ViewDto dto){
+        noticeService.incrementViews(dto);
+        return ResponseEntity.ok(null);
+    }
 }
