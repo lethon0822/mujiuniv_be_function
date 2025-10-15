@@ -7,11 +7,11 @@
         VALUES (#{noticeTitle}, #{noticeContent}, NOW(), NOW(), #{type})
     </insert>
 
-     <select id="selectNotice">
-         SELECT notice_id, notice_title, notice_content, DATE(created_at) AS createdAt, type, view
-         FROM notice
-         ORDER BY notice_id DESC;
-     </select>
+    <select id="selectNotice">
+        SELECT notice_id, notice_title, notice_content, DATE(created_at) AS createdAt, type, view
+        FROM notice
+        ORDER BY type DESC, notice_id DESC;
+    </select>
 
 
     <!-- 제목 내용 검색 키워드-->
