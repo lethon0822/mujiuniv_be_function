@@ -10,8 +10,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class NoticePostReq {
-
-
     String noticeContent;
     String noticeTitle;
+    Integer type;
 }

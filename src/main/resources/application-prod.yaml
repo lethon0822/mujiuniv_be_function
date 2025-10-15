@@ -2,15 +2,38 @@ constants:
   file:
     directory: /home/download
 
+
+eureka:
+  client:
+    enabled: false
+
+server:
+  port: 8080
+
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
 spring:
   application:
-    name: rainbow-academic-management
+    name: mujiuniv-function
+  cloud:
+    kubernetes:
+      discovery:
+        enabled: true
+      reload:
+        enabled: true
+        strategy: refresh
   datasource:
     url: jdbc:mariadb://192.168.0.39/final_project_not_user
     username: green3
     password: figma502
     driver-class-name: org.mariadb.jdbc.Driver
-mybatis:
-  configuration:
-    map-underscore-to-camel-case: true
-  mapper-locations: mappers/**/*.xml
+  jpa:
+    lifecycle:
+      timeout-per-shutdown-phase: 30s  # Pod 종료 대기 시간

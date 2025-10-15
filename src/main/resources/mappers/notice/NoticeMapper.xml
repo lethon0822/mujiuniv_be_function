@@ -2,25 +2,25 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.green.muziuniv_be_notuser.app.notice.NoticeMapper">
 
+    <insert id="insertNotice">
+        INSERT INTO notice(notice_title, notice_content, created_at, updated_at, type)
+        VALUES (#{noticeTitle}, #{noticeContent}, NOW(), NOW(), #{type})
+    </insert>
 
-    <select id="selectNotice">
-        SELECT notice_id, notice_title, created_at
-        FROM notice
-        ORDER BY notice_id DESC;
-    </select>
+     <select id="selectNotice">
+         SELECT *
+         FROM notice
+         ORDER BY notice_id DESC;
+     </select>
+
 
     <!-- 제목 내용 검색 키워드-->
-    <select id="searchNotice" >
-        SELECT notice_id, notice_content, notice_title
-        FROM notice
-        ORDER BY notice_id DESC;
-
-    </select>
-
-    <select id="searchNoticeByKeyword" >
-        SELECT notice_id, notice_content, notice_title
+    <select id="searchNoticeByKeyword">
+        SELECT *
         FROM notice
         WHERE notice_title LIKE CONCAT('%', #{keyword}, '%')
+        OR notice_content LIKE CONCAT('%', #{keyword}, '%')
+        ORDER BY created_at DESC
     </select>
 
 
@@ -38,7 +38,8 @@
         SET
         notice_title = #{noticeTitle},
         notice_content = #{noticeContent},
-        updated_at = NOW()
+        updated_at = NOW(),
+        type = #{type}
         WHERE notice_id = #{noticeId}
     </update>
 
@@ -48,5 +49,11 @@
         WHERE notice_id = #{noticeId}
     </delete>
 
+    <!--조회수 증가-->
+<!--    <update id="updateViews">-->
+<!--        update review-->
+<!--        set readcount = readcount + 1-->
+<!--        where review_num = #{review_num}-->
+<!--    </update>-->
 
 </mapper>

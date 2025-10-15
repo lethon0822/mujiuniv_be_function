@@ -9,20 +9,12 @@ import java.util.List;
 
 @Mapper
 public interface NoticeMapper {
+//    List<NoticeSearchGetRes> searchNoticeByKeyword(@Param("keyword") String keyword);
 
-
-    List<NoticeSearchGetRes> searchNoticeByKeyword(@Param("keyword") String keyword);
-
-    List<NoticeSearchGetRes> searchNotice();
-
-    List<NoticeGetRes> searchNoticeTitle();
-
-    List<NoticeGetRes> searchNoticeContent();
-
-
-    NoticeGetRes noticeDetail(Long id);
-
-    boolean updateNotice(NoticeUpdateReq req);
-
+    int insertNotice(NoticePostReq req);
+    List<NoticeGetRes> selectNotice();
+    List<NoticeGetRes> searchNoticeByKeyword(NoticeGetReq req);
+    NoticeGetRes searchSearch(@Param("noticeId") Long noticeId);
+    int updateNotice(NoticePutReq req);
     int deleteNotice(Long noticeId);
 }

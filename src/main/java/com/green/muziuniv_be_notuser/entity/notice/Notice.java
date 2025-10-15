@@ -23,4 +23,10 @@ public class Notice extends UpdatedAt {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String noticeContent;
 
+    @Column(nullable = false)
+    private int view;
+
+    @Column(nullable = false)
+    private int type;
+
 }

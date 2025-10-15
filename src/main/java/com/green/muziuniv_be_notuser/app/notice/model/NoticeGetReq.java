@@ -9,9 +9,5 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class NoticeGetReq {
-    Long noticeId;
-    String createdAt;
-    String updateAt;
-    String noticeContent;
-    String noticeTitle;
+    String keyword;
 }
