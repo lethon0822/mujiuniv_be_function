@@ -29,7 +29,7 @@ public class NoticeController {
     public ResponseEntity<?> searchNotice(@ModelAttribute NoticeGetReq req) {
         String keyword = req.getKeyword();
         // keyword가 아예 없으면 전체 조회
-        if (keyword == null || keyword.isBlank()) {
+        if (keyword == null || keyword.isBlank() || "".equals(keyword)) {
             List<NoticeGetRes> result = noticeService.selectNotice();
             return ResponseEntity.ok(result);
         }

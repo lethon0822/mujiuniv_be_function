@@ -26,4 +26,7 @@ public class Notice extends UpdatedAt {
     @Column(nullable = false)
     private int view;
 
+    @Column(nullable = false)
+    private int type;
+
 }

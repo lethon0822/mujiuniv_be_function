@@ -12,4 +12,5 @@ import lombok.ToString;
 public class NoticePostReq {
     String noticeContent;
     String noticeTitle;
+    Integer type;
 }

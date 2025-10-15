@@ -11,4 +11,5 @@ public class NoticePutReq {
     Long noticeId;
     String noticeContent;
     String noticeTitle;
+    Integer type;
 }
