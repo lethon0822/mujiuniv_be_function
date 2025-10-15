@@ -8,7 +8,7 @@
     </insert>
 
      <select id="selectNotice">
-         SELECT *
+         SELECT notice_id, notice_title, notice_content, DATE(created_at) AS createdAt, type, view
          FROM notice
          ORDER BY notice_id DESC;
      </select>
