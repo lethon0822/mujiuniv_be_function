@@ -7,11 +7,11 @@
         VALUES (#{noticeTitle}, #{noticeContent}, NOW(), NOW(), #{type})
     </insert>
 
-     <select id="selectNotice">
-         SELECT notice_id, notice_title, notice_content, DATE(created_at) AS createdAt, type, view
-         FROM notice
-         ORDER BY notice_id DESC;
-     </select>
+    <select id="selectNotice">
+        SELECT notice_id, notice_title, notice_content, DATE(created_at) AS createdAt, type, view
+        FROM notice
+        ORDER BY type DESC, notice_id DESC;
+    </select>
 
 
     <!-- 제목 내용 검색 키워드-->
@@ -20,7 +20,7 @@
         FROM notice
         WHERE notice_title LIKE CONCAT('%', #{keyword}, '%')
         OR notice_content LIKE CONCAT('%', #{keyword}, '%')
-        ORDER BY FIELD(type, 1) DESC, created_at DESC
+        ORDER BY created_at DESC
     </select>
 
 
@@ -50,10 +50,10 @@
     </delete>
 
     <!--조회수 증가-->
-<!--    <update id="updateViews">-->
-<!--        update review-->
-<!--        set readcount = readcount + 1-->
-<!--        where review_num = #{review_num}-->
-<!--    </update>-->
+    <update id="updateViews">
+        update notice
+        set view = #{view}
+        where notice_id = #{id}
+    </update>
 
 </mapper>
