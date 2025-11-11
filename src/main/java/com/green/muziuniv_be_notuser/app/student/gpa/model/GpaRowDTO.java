@@ -1,17 +1,15 @@
 package com.green.muziuniv_be_notuser.app.student.gpa.model;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
-public class GpaRes {
+public class GpaRowDTO {
     private Long semesterId;
     private Integer year;
     private Integer semester;
-    private Long totalCredit;
-    private double gpa;
-    private double majorGpa;
+    private Integer credit;
+    private String type;
+    private String rank;
 }
